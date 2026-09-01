@@ -1118,80 +1118,66 @@
     .status-row .value { color: var(--text-primary); font-weight: 600; }
 
     /* ============================================
-       HISTORY / KEYS
+       MY PLANS
     ============================================ */
-    .history-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 20px;
-    }
-    .history-card {
+    .plan-details-card {
         background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        padding: 24px;
-        transition: var(--transition);
+        border: 1px solid rgba(0, 212, 255, 0.28);
+        border-radius: 24px;
+        padding: 34px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        margin-bottom: 24px;
     }
-    .history-card:hover { border-color: var(--border-light); transform: translateY(-3px); }
-    .history-card .hdr {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
+    .plan-details-head {
+        display:flex; align-items:center; justify-content:space-between; gap:16px;
+        margin-bottom:34px; flex-wrap:wrap;
     }
-    .history-card .hdr h4 {
-        font-size: 16px;
-        font-weight: 700;
+    .plan-details-title {
+        display:flex; align-items:center; gap:16px; font-size:26px; font-weight:800; letter-spacing:1px;
     }
-    .history-card .hdr .price-tag {
-        font-weight: 700;
-        color: var(--accent-blue);
-        font-size: 15px;
-        padding: 4px 14px;
-        background: rgba(79, 140, 255, 0.06);
-        border-radius: 20px;
-        border: 1px solid rgba(79, 140, 255, 0.1);
+    .plan-details-title i { color:var(--accent-cyan); font-size:32px; }
+    .plan-status {
+        display:inline-flex; align-items:center; gap:9px; padding:10px 20px; border-radius:40px;
+        font-size:14px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+        border:1px solid rgba(52,211,153,.4); color:var(--accent-green); background:rgba(52,211,153,.08);
     }
-    .history-card .meta {
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-bottom: 12px;
+    .plan-status.inactive { color:var(--accent-red); border-color:rgba(248,113,113,.35); background:rgba(248,113,113,.07); }
+    .plan-status-dot { width:10px; height:10px; border-radius:50%; background:currentColor; }
+    .plan-field-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+    .plan-field { min-height:118px; padding:24px 26px; border:1px solid var(--border-color); border-radius:24px; background:rgba(255,255,255,.01); }
+    .plan-field.wide { grid-column:1/-1; }
+    .plan-field.days-left { background:linear-gradient(145deg,rgba(0,212,255,.08),rgba(52,211,153,.03)); }
+    .plan-field-label { display:block; color:var(--text-secondary); font-size:13px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+    .plan-field-value { display:block; color:var(--text-primary); font-size:22px; font-weight:800; word-break:break-word; }
+    .plan-field.days-left .plan-field-value { color:var(--accent-green); font-size:42px; line-height:1; }
+    .plan-field .plan-subvalue { color:var(--text-secondary); font-size:12px; margin-top:8px; }
+    .daily-like-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:24px; overflow:hidden; box-shadow:0 10px 35px rgba(0,0,0,.22); }
+    .daily-like-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:26px 28px; border-bottom:1px solid var(--border-color); }
+    .daily-like-title { display:flex; align-items:center; gap:14px; font-size:22px; font-weight:800; letter-spacing:1px; }
+    .daily-like-title i { color:var(--accent-green); font-size:27px; }
+    .daily-like-count { color:var(--text-secondary); font-size:14px; }
+    .daily-like-table { width:100%; overflow-x:auto; }
+    .daily-like-table table { width:100%; min-width:620px; border-collapse:collapse; }
+    .daily-like-table th { padding:17px 22px; text-align:left; color:var(--text-secondary); font-size:12px; letter-spacing:1.5px; text-transform:uppercase; background:rgba(255,255,255,.01); border-bottom:1px solid var(--border-color); }
+    .daily-like-table th:last-child { color:var(--accent-green); }
+    .daily-like-table td { padding:20px 22px; font-size:16px; border-bottom:1px solid var(--border-color); white-space:nowrap; }
+    .daily-like-table tr:last-child td { border-bottom:none; }
+    .daily-like-table .given { color:var(--accent-green); font-weight:800; }
+    .daily-like-loading { color:var(--text-secondary); font-style:italic; }
+    .plan-message { margin:18px 28px 24px; padding:13px 16px; border-radius:14px; background:rgba(79,140,255,.06); border:1px solid rgba(79,140,255,.12); color:var(--text-secondary); font-size:12px; line-height:1.5; }
+    .plans-empty { max-width:560px; margin:40px auto; text-align:center; padding:48px 28px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:24px; }
+    .plans-empty i { font-size:42px; color:var(--text-muted); margin-bottom:16px; }
+    .plans-empty h3 { font-size:20px; margin-bottom:8px; }
+    .plans-empty p { color:var(--text-secondary); font-size:13px; line-height:1.6; }
+    @media (max-width: 600px) {
+        .plan-details-card { padding:22px 16px; border-radius:20px; }
+        .plan-details-title { font-size:21px; } .plan-details-title i { font-size:27px; }
+        .plan-field-grid { grid-template-columns:1fr; gap:14px; } .plan-field.wide { grid-column:auto; }
+        .plan-field { min-height:105px; padding:20px; border-radius:20px; } .plan-field-value { font-size:19px; }
+        .plan-field.days-left .plan-field-value { font-size:36px; }
+        .daily-like-head { padding:22px 18px; } .daily-like-title { font-size:18px; }
+        .plan-message { margin:14px 18px 18px; }
     }
-    .history-card .key-box {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 12px 16px;
-        background: var(--bg-input);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-    }
-    .history-card .key-box .key-text {
-        font-family: 'Courier New', monospace;
-        font-weight: 700;
-        font-size: 16px;
-        letter-spacing: 1px;
-        color: var(--accent-green);
-        word-break: break-all;
-    }
-    .history-card .key-box .copy-key {
-        padding: 4px 16px;
-        border: 1.5px solid var(--accent-green);
-        border-radius: var(--radius-sm);
-        background: transparent;
-        color: var(--accent-green);
-        font-weight: 600;
-        font-size: 12px;
-        transition: var(--transition);
-        flex-shrink: 0;
-        cursor: pointer;
-    }
-    .history-card .key-box .copy-key:hover { background: rgba(52, 211, 153, 0.06); }
 
     /* ============================================
        PROFILE
@@ -1683,7 +1669,7 @@
         <div class="dropdown" id="dropdown-menu">
             <div class="dropdown-item" onclick="navigate('home')"><i class="fas fa-th-large"></i> Dashboard</div>
             <div class="dropdown-item" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> Wallet</div>
-            <div class="dropdown-item" onclick="navigate('history')"><i class="fas fa-calendar-check"></i> My Plans</div>
+            <div class="dropdown-item" onclick="navigate('plans')"><i class="fas fa-calendar-check"></i> My Plans</div>
             <div class="dropdown-item" onclick="navigate('profile')"><i class="fas fa-user"></i> Profile</div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</div>
@@ -1933,10 +1919,10 @@
     </div>
 
     <!-- PAGE: MY PLANS -->
-    <div class="page-content hidden" id="page-history">
+    <div class="page-content hidden" id="page-plans">
         <div class="page-header"><h2 class="page-title">My <span>Plans</span></h2></div>
-        <div class="history-grid" id="history-container">
-            <!-- Active plan injected via JS -->
+        <div id="my-plan-container">
+            <!-- Injected via JS -->
         </div>
     </div>
 
@@ -2049,7 +2035,7 @@
 
     // --- STATE ---
     let currentUser = null;
-    let userData = { balance: 0 };
+    let userData = { balance: 0, plan: null };
     window.ZAP_KEY = "";
     window.MANUAL_UPI = "";
     let securityCompleted = false;
@@ -2694,7 +2680,6 @@
             // Run security check before showing content
             await performSecurityCheck();
             initUserData();
-            watchMyPlan();
             fetchDepositSettings();
             fetchPanels();
             initPromotions();
@@ -2774,6 +2759,9 @@
                 if (userData.createdAt) {
                     document.getElementById('prof-date').innerText = new Date(userData.createdAt).toLocaleDateString();
                 }
+                renderMyPlan(userData.plan || null);
+            } else {
+                renderMyPlan(null);
             }
             hideLoader();
         });
@@ -2809,7 +2797,7 @@
         if (target) target.classList.remove('hidden');
         const dropdown = document.getElementById('dropdown-menu');
         if (dropdown) dropdown.classList.remove('active');
-        if (pageId === 'history') fetchPurchases();
+        if (pageId === 'plans') fetchMyPlan();
         if (pageId === 'wallet') switchWalletTab('auto');
         window.scrollTo(0, 0);
     };
@@ -2845,7 +2833,7 @@
                     plansHtml = `<select class="plan-select" id="plan-${panelId}">`;
                     sorted.forEach(([key, data]) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<option value='${JSON.stringify({ key, label, price: data.price || 0, days: data.days || 0 })}'>${label} - ₹${data.price || 0}</option>`;
+                        plansHtml += `<option value='${JSON.stringify({ key, label, price: data.price || 0 })}'>${label} - ₹${data.price || 0}</option>`;
                     });
                     plansHtml += `</select>`;
                 } else {
@@ -2918,66 +2906,6 @@
         }, 300);
     });
 
-    // --- MY PLAN HELPERS ---
-    function parsePlanDays(value) {
-        const match = String(value || '').match(/(\d+)\s*(?:days?|day|d)\b/i);
-        return match ? parseInt(match[1], 10) : 0;
-    }
-
-    function calculatePlanDaysLeft(expiryValue) {
-        if (!expiryValue) return 0;
-        const expiry = new Date(expiryValue);
-        if (Number.isNaN(expiry.getTime())) return 0;
-        expiry.setHours(23, 59, 59, 999);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return Math.max(0, Math.ceil((expiry.getTime() - today.getTime()) / 86400000));
-    }
-
-    function renderMyPlan(plan) {
-        const container = document.getElementById('history-container');
-        if (!container) return;
-
-        if (!plan || plan.status !== 'active') {
-            container.innerHTML = `<div class="empty-state">
-                <i class="fas fa-calendar-xmark"></i>
-                <p>No active plans</p>
-            </div>`;
-            return;
-        }
-
-        const daysLeft = calculatePlanDaysLeft(plan.expiryDate);
-        if (plan.expiryDate && daysLeft <= 0) {
-            container.innerHTML = `<div class="empty-state">
-                <i class="fas fa-calendar-xmark"></i>
-                <p>No active plans</p>
-            </div>`;
-            return;
-        }
-
-        const fmt = (value) => value ? new Date(value).toLocaleDateString() : 'N/A';
-
-        container.innerHTML = `
-            <div class="history-card" style="max-width:560px;width:100%;margin:0 auto;">
-                <div class="hdr">
-                    <h4>${plan.planName || plan.name || 'Premium Plan'}</h4>
-                    <span class="badge" style="background:rgba(52,211,153,.15);color:var(--accent-green);">Active</span>
-                </div>
-                <div class="meta"><i class="fas fa-id-card"></i> UID: ${plan.uid || currentUser?.uid || 'N/A'}</div>
-                <div class="meta"><i class="fas fa-calendar-plus"></i> Start Date: ${fmt(plan.startDate)}</div>
-                <div class="meta"><i class="fas fa-calendar-xmark"></i> Expiry Date: ${fmt(plan.expiryDate)}</div>
-                <div class="meta"><i class="fas fa-hourglass-half"></i> Days Left: <strong style="color:var(--accent-green);">${daysLeft}</strong></div>
-                ${plan.panelName ? `<div class="meta"><i class="fas fa-layer-group"></i> Panel: ${plan.panelName}</div>` : ''}
-            </div>`;
-    }
-
-    function watchMyPlan() {
-        if (!db || !currentUser) return;
-        onValue(ref(db, `users/${currentUser.uid}/plan`), (snap) => {
-            renderMyPlan(snap.exists() ? snap.val() : null);
-        });
-    }
-
     // --- CHECKOUT ---
     window.currentCheckout = {};
     window.appliedCoupon = null;
@@ -2995,7 +2923,6 @@
             panelId, panelName, link: link || '',
             planKey: planData.key || '',
             label: planData.label || 'Plan',
-            days: parseInt(planData.days, 10) || parsePlanDays(planData.label),
             originalPrice: parseFloat(planData.price) || 0,
             finalPrice: parseFloat(planData.price) || 0
         };
@@ -3067,11 +2994,6 @@
             if (result.committed) {
                 const newKey = generateKey(12);
                 const txId = "PUR" + Date.now();
-                const purchaseDate = new Date();
-                const planDays = parseInt(checkout.days, 10) || parsePlanDays(checkout.label);
-                const expiryDate = new Date(purchaseDate);
-                if (planDays > 0) expiryDate.setDate(expiryDate.getDate() + planDays);
-
                 await set(push(ref(db, `purchases/${currentUser.uid}`)), {
                     panelId: checkout.panelId || '',
                     panelName: checkout.panelName || 'Panel',
@@ -3080,22 +3002,11 @@
                     price: price,
                     key: newKey,
                     link: checkout.link || '',
-                    date: purchaseDate.toISOString()
+                    date: new Date().toISOString()
                 });
-
-                await set(ref(db, `users/${currentUser.uid}/plan`), {
-                    planName: checkout.label || 'Plan',
-                    panelName: checkout.panelName || 'Panel',
-                    status: 'active',
-                    uid: currentUser.uid,
-                    startDate: purchaseDate.toISOString(),
-                    expiryDate: planDays > 0 ? expiryDate.toISOString() : '',
-                    daysLeft: planDays
-                });
-
                 await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
                     id: txId, type: "purchase", amount: price, status: "success",
-                    desc: `Purchased ${checkout.panelName || 'Panel'}`, date: purchaseDate.toISOString()
+                    desc: `Purchased ${checkout.panelName || 'Panel'}`, date: new Date().toISOString()
                 });
                 if (window.appliedCoupon && window.appliedCoupon.id) {
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
@@ -3115,16 +3026,109 @@
     };
 
     // --- MY PLANS ---
-    function fetchPurchases() {
-        if (!db || !currentUser) return;
-        showLoader();
-        get(ref(db, `users/${currentUser.uid}/plan`)).then(snap => {
-            renderMyPlan(snap.exists() ? snap.val() : null);
-            hideLoader();
-        }).catch(() => {
-            hideLoader();
-            showToast("Failed to load plan", "error");
-        });
+    let likeHistoryListener = null;
+
+    function parsePlanDate(value) {
+        if (!value) return null;
+        const raw = String(value);
+        const d = new Date(raw.length === 10 ? raw + 'T00:00:00' : raw);
+        return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function calculatePlanDaysLeft(plan) {
+        const start = parsePlanDate(plan?.startDate);
+        const end = parsePlanDate(plan?.endDate);
+        if (!start || !end) return 0;
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        if (today < startDay || today >= endDay) return 0;
+        return Math.max(0, Math.ceil((endDay - today) / 86400000));
+    }
+
+    function formatPlanDate(value) {
+        const d = parsePlanDate(value);
+        return d ? d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) : '-';
+    }
+
+    function isAfterDailyCutoff() { return new Date().getHours() >= 4; }
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[ch]));
+    }
+
+    function getLocalDateKey(date = new Date()) {
+        const y=date.getFullYear(), m=String(date.getMonth()+1).padStart(2,'0'), d=String(date.getDate()).padStart(2,'0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function renderLikeHistory(plan, records) {
+        const container=document.getElementById('my-plan-container');
+        if(!container || !plan) return;
+        const entries=[];
+        Object.entries(records||{}).forEach(([key,value])=>{ if(value && typeof value==='object') entries.push({id:key,...value}); });
+        entries.sort((a,b)=>String(b.date||b.dateKey||'').localeCompare(String(a.date||a.dateKey||'')));
+        const todayKey=getLocalDateKey();
+        const hasToday=entries.some(x=>String(x.date||x.dateKey||'').slice(0,10)===todayKey);
+        if(!hasToday && String(plan.status||'').toLowerCase()==='active' && calculatePlanDaysLeft(plan)>0){
+            entries.unshift({dateKey:todayKey,before:null,after:null,given:isAfterDailyCutoff()?Number(plan.likesPerDay||0):null,pendingToday:!isAfterDailyCutoff()});
+        }
+        const rows=entries.length?entries.map(row=>{
+            const dateKey=row.dateKey||(row.date?String(row.date).slice(0,10):'');
+            const date=dateKey?formatPlanDate(dateKey):(row.date?new Date(row.date).toLocaleDateString('en-IN'):'-');
+            const pending=row.pendingToday || (!row.given && dateKey===todayKey && !isAfterDailyCutoff());
+            const given=pending?'<span class="daily-like-loading">Loading...</span>':(row.given!==undefined&&row.given!==null&&row.given!==''?`<span class="given">+${Number(row.given).toLocaleString('en-IN')}</span>`:'<span class="daily-like-loading">Loading...</span>');
+            const before=row.before!==undefined&&row.before!==null?Number(row.before).toLocaleString('en-IN'):'—';
+            const after=row.after!==undefined&&row.after!==null?Number(row.after).toLocaleString('en-IN'):'—';
+            return `<tr><td>${escapeHtml(date)}</td><td>${before}</td><td>${after}</td><td>${given}</td></tr>`;
+        }).join(''):'<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:28px;">No like history yet.</td></tr>';
+        const body=container.querySelector('#daily-like-history-body'); if(body) body.innerHTML=rows;
+        const count=container.querySelector('#like-history-count'); if(count) count.innerText=`${entries.length} ${entries.length===1?'record':'records'}`;
+    }
+
+    function renderMyPlan(plan) {
+        const container=document.getElementById('my-plan-container');
+        if(!container) return;
+        if(likeHistoryListener){likeHistoryListener();likeHistoryListener=null;}
+        if(!plan){
+            container.innerHTML='<div class="plans-empty"><i class="fas fa-calendar-xmark"></i><h3>No Active Plan</h3><p>Admin ne abhi aapke account par koi plan assign nahi kiya hai.</p></div>';
+            return;
+        }
+        const daysLeft=calculatePlanDaysLeft(plan);
+        const active=String(plan.status||'').toLowerCase()==='active';
+        const displayActive=active && daysLeft>0;
+        const statusText=displayActive?'Active':'Inactive';
+        const planName=escapeHtml(plan.name||plan.planName||'Premium Plan');
+        const uid=escapeHtml(plan.uid||currentUser?.uid||'-');
+        const likes=Number(plan.likesPerDay||0);
+        const message=escapeHtml(plan.dailyMessage||'Daily likes are processed at 4:00 AM.');
+        container.innerHTML=`
+            <div class="plan-details-card">
+                <div class="plan-details-head"><div class="plan-details-title"><i class="far fa-circle-check"></i><span>PLAN DETAILS</span></div><span class="plan-status ${displayActive?'':'inactive'}"><span class="plan-status-dot"></span>${statusText}</span></div>
+                <div class="plan-field-grid">
+                    <div class="plan-field wide"><span class="plan-field-label">Plan Name</span><span class="plan-field-value">${planName}</span></div>
+                    <div class="plan-field wide"><span class="plan-field-label">UID</span><span class="plan-field-value">${uid}</span></div>
+                    <div class="plan-field"><span class="plan-field-label">Start Date</span><span class="plan-field-value">${formatPlanDate(plan.startDate)}</span></div>
+                    <div class="plan-field"><span class="plan-field-label">End Date</span><span class="plan-field-value">${formatPlanDate(plan.endDate)}</span></div>
+                    <div class="plan-field days-left"><span class="plan-field-label">Days Left</span><span class="plan-field-value">${daysLeft}</span><span class="plan-subvalue">Dates ke hisaab se automatically calculated</span></div>
+                    <div class="plan-field"><span class="plan-field-label">Daily Likes</span><span class="plan-field-value">${likes.toLocaleString('en-IN')}</span><span class="plan-subvalue">Admin set quantity</span></div>
+                </div>
+            </div>
+            <div class="daily-like-card">
+                <div class="daily-like-head"><div class="daily-like-title"><i class="far fa-clipboard"></i><span>LIKE HISTORY</span></div><span class="daily-like-count" id="like-history-count">Loading...</span></div>
+                <div class="plan-message"><i class="fas fa-clock"></i> ${message}</div>
+                <div class="daily-like-table"><table><thead><tr><th>DATE</th><th>BEFORE</th><th>AFTER</th><th>GIVEN</th></tr></thead><tbody id="daily-like-history-body"><tr><td colspan="4" style="text-align:center;padding:28px;color:var(--text-secondary);">Loading...</td></tr></tbody></table></div>
+            </div>`;
+        if(db && currentUser){
+            likeHistoryListener=onValue(ref(db,`likeHistory/${currentUser.uid}`),snap=>renderLikeHistory(plan,snap.exists()?snap.val():{}));
+        }
+    }
+
+    function fetchMyPlan(){
+        if(!db||!currentUser) return;
+        if(userData?.plan) renderMyPlan(userData.plan);
+        else get(ref(db,`users/${currentUser.uid}/plan`)).then(snap=>renderMyPlan(snap.exists()?snap.val():null));
     }
 
     // --- INIT ---
