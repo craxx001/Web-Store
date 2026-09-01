@@ -771,6 +771,9 @@
         background: var(--bg-input);
         overflow: hidden;
     }
+    .panel-card .banner-wrap { width: 100%; aspect-ratio: 16 / 4.5; overflow: hidden; background: var(--bg-input); }
+    .panel-card .banner-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
     .panel-card .video-wrap iframe {
         position: absolute;
         inset: 0;
@@ -2576,9 +2579,15 @@
                 if (data.logo && data.logo.length > 5) {
                     const logo = document.getElementById('site-logo');
                     logo.src = data.logo;
+                    logo.alt = data.name || 'Logo';
                     logo.style.display = 'inline-block';
                     const brandIcon = document.querySelector('.brand .brand-icon');
                     if (brandIcon) brandIcon.style.display = 'none';
+                } else {
+                    const logo = document.getElementById('site-logo');
+                    if (logo) logo.style.display = 'none';
+                    const brandIcon = document.querySelector('.brand .brand-icon');
+                    if (brandIcon) brandIcon.style.display = 'flex';
                 }
             }
         });
@@ -2841,9 +2850,9 @@
                 }
 
                 const ytID = extractYouTubeID(p.youtube);
+                const bannerHtml = p.banner ? `<div class="banner-wrap"><img src="${p.banner}" alt="${p.name || 'Banner'}" onerror="this.parentElement.style.display='none'"></div>` : '';
                 const videoHtml = ytID ?
-                    `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytID}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe></div>` :
-                    `<div class="video-wrap"><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-input);color:var(--text-muted);"><i class="fas fa-video-slash" style="font-size:28px;margin-bottom:8px;"></i><span style="font-weight:600;font-size:13px;">No Video</span></div></div>`;
+                    `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytID}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe></div>` : '';
 
                 const card = document.createElement('div');
                 card.className = 'panel-card';
@@ -2851,6 +2860,7 @@
                 card.setAttribute('data-search', searchText);
                 const panelName = (p.name || 'Panel').replace(/'/g, "\\'");
                 card.innerHTML = `
+                    ${bannerHtml}
                     ${videoHtml}
                     <div class="panel-body">
                         <div class="panel-name">${p.name || 'Panel'}</div>
