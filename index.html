@@ -534,6 +534,9 @@
         -webkit-text-fill-color: transparent;
     }
     .navbar .brand img { height: 32px; border-radius: 6px; }
+    .panel-heading-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+    .panel-logo { width:44px; height:44px; border-radius:12px; object-fit:cover; flex:0 0 44px; border:1px solid var(--border); background:var(--surface-2); }
+    .panel-heading-row .panel-name { margin-bottom:0; }
     .navbar .nav-actions {
         display: flex;
         align-items: center;
@@ -771,6 +774,9 @@
         background: var(--bg-input);
         overflow: hidden;
     }
+    .panel-card .banner-wrap { width: 100%; aspect-ratio: 16 / 4.5; overflow: hidden; background: var(--bg-input); }
+    .panel-card .banner-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
     .panel-card .video-wrap iframe {
         position: absolute;
         inset: 0;
@@ -1658,8 +1664,8 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="brand">
-            <div class="brand-icon">FF</div>
-            <img id="site-logo" src="" style="display:none;"/>
+            <div class="brand-icon" id="default-brand-icon">FF</div>
+            <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
             <span id="site-name">GALU MODZ</span>
         </div>
         <div class="nav-actions">
@@ -2107,9 +2113,24 @@
 
     // Run security check on app load
     async function performSecurityCheck() {
-        if (securityCompleted) return;
-        await runSecurityCheck();
+        if (securityCompleted) {
+            try { securityOverlay?.classList.remove('active'); } catch (_) {}
+            return;
+        }
         securityCompleted = true;
+        try {
+            // Cosmetic only: NEVER block authentication or dashboard rendering.
+            const securityPromise = runSecurityCheck();
+            await Promise.race([
+                securityPromise,
+                new Promise(resolve => setTimeout(resolve, 2500))
+            ]);
+        } catch (e) {
+            console.warn('Security check skipped:', e);
+        } finally {
+            // Critical: if the animation times out, its overlay must still disappear.
+            try { securityOverlay?.classList.remove('active'); } catch (_) {}
+        }
     }
 
     // --- UTILITIES ---
@@ -2564,23 +2585,40 @@
     }
 
     // --- BRANDING ---
+    let brandingListenerStarted = false;
     function initBranding() {
-        if (!db) return;
-        onValue(ref(db, 'settings/branding'), (snap) => {
-            const data = snap.val();
-            if (data) {
-                if (data.name) {
-                    document.getElementById('site-name').innerText = data.name;
-                    document.title = data.name + " | PREMIUM";
-                }
-                if (data.logo && data.logo.length > 5) {
-                    const logo = document.getElementById('site-logo');
-                    logo.src = data.logo;
-                    logo.style.display = 'inline-block';
-                    const brandIcon = document.querySelector('.brand .brand-icon');
-                    if (brandIcon) brandIcon.style.display = 'none';
-                }
+        if (!db || brandingListenerStarted) return;
+        brandingListenerStarted = true;
+        const brandingRef = ref(db, 'settings/branding');
+        onValue(brandingRef, (snap) => {
+            const data = snap.val() || {};
+            const nameEl = document.getElementById('site-name');
+            const logoEl = document.getElementById('site-logo');
+            const iconEl = document.getElementById('default-brand-icon');
+            const name = String(data.name || '').trim();
+            const logo = String(data.logo || '').trim();
+
+            if (name && nameEl) {
+                nameEl.textContent = name;
+                document.title = name + ' | PREMIUM';
             }
+
+            if (logo && logoEl) {
+                logoEl.onerror = () => {
+                    logoEl.style.display = 'none';
+                    if (iconEl) iconEl.style.display = 'flex';
+                };
+                logoEl.onload = () => {
+                    logoEl.style.display = 'block';
+                    if (iconEl) iconEl.style.display = 'none';
+                };
+                logoEl.src = logo;
+            } else {
+                if (logoEl) { logoEl.removeAttribute('src'); logoEl.style.display = 'none'; }
+                if (iconEl) iconEl.style.display = 'flex';
+            }
+        }, (error) => {
+            console.error('Branding read failed:', error);
         });
     }
 
@@ -2673,28 +2711,47 @@
 
     // --- AUTH STATE ---
     onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            authScreen.classList.add('hidden');
-            mainApp.style.display = 'block';
-            // Run security check before showing content
-            await performSecurityCheck();
-            initUserData();
-            fetchDepositSettings();
-            fetchPanels();
-            initPromotions();
-            navigate('home');
-            const pending = localStorage.getItem("pending_zap_order");
-            if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
-            hideLoader();
-        } else {
+        try {
+            if (user) {
+                currentUser = user;
+                authScreen.classList.add('hidden');
+                mainApp.style.display = 'block';
+                // Never allow a stale security overlay to cover the dashboard.
+                securityOverlay?.classList.remove('active');
+
+                // Do not await the cosmetic security animation. Firebase auth
+                // must be allowed to finish and the dashboard must become usable.
+                performSecurityCheck().catch(e => console.warn('Security check:', e));
+
+                initBranding();
+                initUserData();
+                fetchDepositSettings();
+                fetchPanels();
+                initPromotions();
+                navigate('home');
+                const pending = localStorage.getItem("pending_zap_order");
+                if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
+            } else {
             currentUser = null;
             mainApp.style.display = 'none';
             authScreen.classList.remove('hidden');
             hideLoader();
             if (paymentPollInterval) clearInterval(paymentPollInterval);
             securityCompleted = false;
-            securityOverlay.classList.remove('active');
+            securityOverlay?.classList.remove('active');
+        }
+        } catch (e) {
+            console.error('Auth state handling error:', e);
+            // Never leave the user trapped behind the loader.
+            hideLoader();
+            if (user) {
+                authScreen.classList.add('hidden');
+                mainApp.style.display = 'block';
+                currentUser = user;
+                try { initBranding(); initUserData(); fetchPanels(); initPromotions(); navigate('home'); } catch (err) { console.error(err); }
+            }
+        } finally {
+            hideLoader();
         }
     });
 
@@ -2841,9 +2898,9 @@
                 }
 
                 const ytID = extractYouTubeID(p.youtube);
+                const bannerHtml = p.banner ? `<div class="banner-wrap"><img src="${p.banner}" alt="${p.name || 'Banner'}" onerror="this.parentElement.style.display='none'"></div>` : '';
                 const videoHtml = ytID ?
-                    `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytID}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe></div>` :
-                    `<div class="video-wrap"><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-input);color:var(--text-muted);"><i class="fas fa-video-slash" style="font-size:28px;margin-bottom:8px;"></i><span style="font-weight:600;font-size:13px;">No Video</span></div></div>`;
+                    `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytID}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe></div>` : '';
 
                 const card = document.createElement('div');
                 card.className = 'panel-card';
@@ -2851,9 +2908,13 @@
                 card.setAttribute('data-search', searchText);
                 const panelName = (p.name || 'Panel').replace(/'/g, "\\'");
                 card.innerHTML = `
+                    ${bannerHtml}
                     ${videoHtml}
                     <div class="panel-body">
-                        <div class="panel-name">${p.name || 'Panel'}</div>
+                        <div class="panel-heading-row">
+                            ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${p.name || 'Panel'} logo" onerror="this.style.display='none'">` : ''}
+                            <div class="panel-name">${p.name || 'Panel'}</div>
+                        </div>
                         <div class="feature-list">${featuresHtml}</div>
                         <div class="trust-row">
                             <span class="trust-item"><i class="fas fa-shield-alt"></i> Safe Payment</span>
@@ -3166,6 +3227,16 @@
     });
     document.getElementById('signup-email').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') document.getElementById('btn-signup').click();
+    });
+
+    // Global safety net: a render/data error must never keep the full-screen loader visible.
+    window.addEventListener('error', (event) => {
+        console.error('Unhandled app error:', event.error || event.message);
+        try { hideLoader(); } catch (_) {}
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        try { hideLoader(); } catch (_) {}
     });
 
     console.log('✅ GALU MODZ App initialized with enhanced security system');
