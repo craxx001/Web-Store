@@ -1683,7 +1683,7 @@
         <div class="dropdown" id="dropdown-menu">
             <div class="dropdown-item" onclick="navigate('home')"><i class="fas fa-th-large"></i> Dashboard</div>
             <div class="dropdown-item" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> Wallet</div>
-            <div class="dropdown-item" onclick="navigate('history')"><i class="fas fa-key"></i> My Keys</div>
+            <div class="dropdown-item" onclick="navigate('history')"><i class="fas fa-calendar-check"></i> My Plans</div>
             <div class="dropdown-item" onclick="navigate('profile')"><i class="fas fa-user"></i> Profile</div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</div>
@@ -1932,11 +1932,11 @@
         </div>
     </div>
 
-    <!-- PAGE: HISTORY -->
+    <!-- PAGE: MY PLANS -->
     <div class="page-content hidden" id="page-history">
-        <div class="page-header"><h2 class="page-title">My <span>Keys</span></h2></div>
+        <div class="page-header"><h2 class="page-title">My <span>Plans</span></h2></div>
         <div class="history-grid" id="history-container">
-            <!-- Injected via JS -->
+            <!-- Active plan injected via JS -->
         </div>
     </div>
 
@@ -2694,6 +2694,7 @@
             // Run security check before showing content
             await performSecurityCheck();
             initUserData();
+            watchMyPlan();
             fetchDepositSettings();
             fetchPanels();
             initPromotions();
@@ -2844,7 +2845,7 @@
                     plansHtml = `<select class="plan-select" id="plan-${panelId}">`;
                     sorted.forEach(([key, data]) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<option value='${JSON.stringify({ key, label, price: data.price || 0 })}'>${label} - ₹${data.price || 0}</option>`;
+                        plansHtml += `<option value='${JSON.stringify({ key, label, price: data.price || 0, days: data.days || 0 })}'>${label} - ₹${data.price || 0}</option>`;
                     });
                     plansHtml += `</select>`;
                 } else {
@@ -2917,6 +2918,66 @@
         }, 300);
     });
 
+    // --- MY PLAN HELPERS ---
+    function parsePlanDays(value) {
+        const match = String(value || '').match(/(\d+)\s*(?:days?|day|d)\b/i);
+        return match ? parseInt(match[1], 10) : 0;
+    }
+
+    function calculatePlanDaysLeft(expiryValue) {
+        if (!expiryValue) return 0;
+        const expiry = new Date(expiryValue);
+        if (Number.isNaN(expiry.getTime())) return 0;
+        expiry.setHours(23, 59, 59, 999);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return Math.max(0, Math.ceil((expiry.getTime() - today.getTime()) / 86400000));
+    }
+
+    function renderMyPlan(plan) {
+        const container = document.getElementById('history-container');
+        if (!container) return;
+
+        if (!plan || plan.status !== 'active') {
+            container.innerHTML = `<div class="empty-state">
+                <i class="fas fa-calendar-xmark"></i>
+                <p>No active plans</p>
+            </div>`;
+            return;
+        }
+
+        const daysLeft = calculatePlanDaysLeft(plan.expiryDate);
+        if (plan.expiryDate && daysLeft <= 0) {
+            container.innerHTML = `<div class="empty-state">
+                <i class="fas fa-calendar-xmark"></i>
+                <p>No active plans</p>
+            </div>`;
+            return;
+        }
+
+        const fmt = (value) => value ? new Date(value).toLocaleDateString() : 'N/A';
+
+        container.innerHTML = `
+            <div class="history-card" style="max-width:560px;width:100%;margin:0 auto;">
+                <div class="hdr">
+                    <h4>${plan.planName || plan.name || 'Premium Plan'}</h4>
+                    <span class="badge" style="background:rgba(52,211,153,.15);color:var(--accent-green);">Active</span>
+                </div>
+                <div class="meta"><i class="fas fa-id-card"></i> UID: ${plan.uid || currentUser?.uid || 'N/A'}</div>
+                <div class="meta"><i class="fas fa-calendar-plus"></i> Start Date: ${fmt(plan.startDate)}</div>
+                <div class="meta"><i class="fas fa-calendar-xmark"></i> Expiry Date: ${fmt(plan.expiryDate)}</div>
+                <div class="meta"><i class="fas fa-hourglass-half"></i> Days Left: <strong style="color:var(--accent-green);">${daysLeft}</strong></div>
+                ${plan.panelName ? `<div class="meta"><i class="fas fa-layer-group"></i> Panel: ${plan.panelName}</div>` : ''}
+            </div>`;
+    }
+
+    function watchMyPlan() {
+        if (!db || !currentUser) return;
+        onValue(ref(db, `users/${currentUser.uid}/plan`), (snap) => {
+            renderMyPlan(snap.exists() ? snap.val() : null);
+        });
+    }
+
     // --- CHECKOUT ---
     window.currentCheckout = {};
     window.appliedCoupon = null;
@@ -2934,6 +2995,7 @@
             panelId, panelName, link: link || '',
             planKey: planData.key || '',
             label: planData.label || 'Plan',
+            days: parseInt(planData.days, 10) || parsePlanDays(planData.label),
             originalPrice: parseFloat(planData.price) || 0,
             finalPrice: parseFloat(planData.price) || 0
         };
@@ -3005,6 +3067,11 @@
             if (result.committed) {
                 const newKey = generateKey(12);
                 const txId = "PUR" + Date.now();
+                const purchaseDate = new Date();
+                const planDays = parseInt(checkout.days, 10) || parsePlanDays(checkout.label);
+                const expiryDate = new Date(purchaseDate);
+                if (planDays > 0) expiryDate.setDate(expiryDate.getDate() + planDays);
+
                 await set(push(ref(db, `purchases/${currentUser.uid}`)), {
                     panelId: checkout.panelId || '',
                     panelName: checkout.panelName || 'Panel',
@@ -3013,11 +3080,22 @@
                     price: price,
                     key: newKey,
                     link: checkout.link || '',
-                    date: new Date().toISOString()
+                    date: purchaseDate.toISOString()
                 });
+
+                await set(ref(db, `users/${currentUser.uid}/plan`), {
+                    planName: checkout.label || 'Plan',
+                    panelName: checkout.panelName || 'Panel',
+                    status: 'active',
+                    uid: currentUser.uid,
+                    startDate: purchaseDate.toISOString(),
+                    expiryDate: planDays > 0 ? expiryDate.toISOString() : '',
+                    daysLeft: planDays
+                });
+
                 await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
                     id: txId, type: "purchase", amount: price, status: "success",
-                    desc: `Purchased ${checkout.panelName || 'Panel'}`, date: new Date().toISOString()
+                    desc: `Purchased ${checkout.panelName || 'Panel'}`, date: purchaseDate.toISOString()
                 });
                 if (window.appliedCoupon && window.appliedCoupon.id) {
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
@@ -3036,47 +3114,17 @@
         }
     };
 
-    // --- HISTORY ---
+    // --- MY PLANS ---
     function fetchPurchases() {
         if (!db || !currentUser) return;
         showLoader();
-        get(ref(db, `purchases/${currentUser.uid}`)).then(snap => {
-            const container = document.getElementById('history-container');
-            container.innerHTML = '';
-            if (!snap.exists()) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-key"></i><p>No keys purchased yet.</p></div>`;
-                document.getElementById('prof-purchases').innerText = '0';
-            } else {
-                const items = [];
-                snap.forEach(child => items.push({ id: child.key, ...child.val() }));
-                items.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-                document.getElementById('prof-purchases').innerText = items.length;
-                items.forEach(p => {
-                    const dateStr = p.date ? new Date(p.date).toLocaleString() : 'N/A';
-                    const label = p.label || (p.days ? `${p.days} Days` : 'Premium Access');
-                    const card = document.createElement('div');
-                    card.className = 'history-card';
-                    const keyId = `hist-key-${p.id || Date.now()}`;
-                    card.innerHTML = `
-                        <div class="hdr">
-                            <h4>${p.panelName || 'Panel'}</h4>
-                            <span class="price-tag">₹${(p.price || 0).toFixed(2)}</span>
-                        </div>
-                        <div class="meta"><i class="fas fa-tag"></i> ${label} &middot; ${dateStr}</div>
-                        <div class="key-box">
-                            <span class="key-text" id="${keyId}">${p.key || 'N/A'}</span>
-                            <button class="copy-key" onclick="copyToClipboard('${keyId}','License Key')"><i class="fas fa-copy"></i> Copy</button>
-                        </div>
-                        <button class="btn-outline" style="width:100%;justify-content:center;border-color:var(--accent-blue);color:var(--accent-blue);" onclick="window.open('${p.link || ''}','_blank')">
-                            <i class="fas fa-download"></i> Access Files
-                        </button>
-                    `;
-                    container.appendChild(card);
-                });
-            }
+        get(ref(db, `users/${currentUser.uid}/plan`)).then(snap => {
+            renderMyPlan(snap.exists() ? snap.val() : null);
             hideLoader();
-        }).catch(() => { hideLoader();
-            showToast("Failed to load history", "error"); });
+        }).catch(() => {
+            hideLoader();
+            showToast("Failed to load plan", "error");
+        });
     }
 
     // --- INIT ---
