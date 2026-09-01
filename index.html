@@ -2114,8 +2114,18 @@
     // Run security check on app load
     async function performSecurityCheck() {
         if (securityCompleted) return;
-        await runSecurityCheck();
-        securityCompleted = true;
+        try {
+            // Security animation must never block the real app/auth flow.
+            await Promise.race([
+                runSecurityCheck(),
+                new Promise(resolve => setTimeout(resolve, 6000))
+            ]);
+        } catch (e) {
+            console.warn('Security check skipped:', e);
+            try { securityOverlay?.classList.remove('active'); } catch (_) {}
+        } finally {
+            securityCompleted = true;
+        }
     }
 
     // --- UTILITIES ---
@@ -2696,29 +2706,45 @@
 
     // --- AUTH STATE ---
     onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            authScreen.classList.add('hidden');
-            mainApp.style.display = 'block';
-            // Run security check before showing content
-            await performSecurityCheck();
-            initBranding();
-            initUserData();
-            fetchDepositSettings();
-            fetchPanels();
-            initPromotions();
-            navigate('home');
-            const pending = localStorage.getItem("pending_zap_order");
-            if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
-            hideLoader();
-        } else {
+        try {
+            if (user) {
+                currentUser = user;
+                authScreen.classList.add('hidden');
+                mainApp.style.display = 'block';
+
+                // Do not await the cosmetic security animation. Firebase auth
+                // must be allowed to finish and the dashboard must become usable.
+                performSecurityCheck().catch(e => console.warn('Security check:', e));
+
+                initBranding();
+                initUserData();
+                fetchDepositSettings();
+                fetchPanels();
+                initPromotions();
+                navigate('home');
+                const pending = localStorage.getItem("pending_zap_order");
+                if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
+            } else {
             currentUser = null;
             mainApp.style.display = 'none';
             authScreen.classList.remove('hidden');
             hideLoader();
             if (paymentPollInterval) clearInterval(paymentPollInterval);
             securityCompleted = false;
-            securityOverlay.classList.remove('active');
+            securityOverlay?.classList.remove('active');
+        }
+        } catch (e) {
+            console.error('Auth state handling error:', e);
+            // Never leave the user trapped behind the loader.
+            hideLoader();
+            if (user) {
+                authScreen.classList.add('hidden');
+                mainApp.style.display = 'block';
+                currentUser = user;
+                try { initBranding(); initUserData(); fetchPanels(); initPromotions(); navigate('home'); } catch (err) { console.error(err); }
+            }
+        } finally {
+            hideLoader();
         }
     });
 
@@ -3194,6 +3220,16 @@
     });
     document.getElementById('signup-email').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') document.getElementById('btn-signup').click();
+    });
+
+    // Global safety net: a render/data error must never keep the full-screen loader visible.
+    window.addEventListener('error', (event) => {
+        console.error('Unhandled app error:', event.error || event.message);
+        try { hideLoader(); } catch (_) {}
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        try { hideLoader(); } catch (_) {}
     });
 
     console.log('✅ GALU MODZ App initialized with enhanced security system');
