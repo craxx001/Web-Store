@@ -901,6 +901,64 @@
     .panel-card .plan-select:focus { border-color: var(--accent-purple); }
     .panel-card .plan-select option { background: var(--bg-card); }
 
+
+    /* iOS-style Liquid Glass plan selector */
+    .plan-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 12px 0;
+    }
+    .plan-options.liquid-glass .plan-option {
+        position: relative;
+        width: 100%;
+        padding: 13px 15px;
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,.18);
+        background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.045));
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 8px 24px rgba(0,0,0,.14);
+        backdrop-filter: blur(18px) saturate(145%);
+        -webkit-backdrop-filter: blur(18px) saturate(145%);
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+    .plan-options.liquid-glass .plan-option::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(115deg, rgba(255,255,255,.18), transparent 42%, rgba(120,150,255,.08));
+        pointer-events: none;
+    }
+    .plan-options.liquid-glass .plan-option:hover { transform: translateY(-1px); border-color: rgba(130,160,255,.5); }
+    .plan-options.liquid-glass .plan-option.selected {
+        border-color: rgba(100,145,255,.8);
+        background: linear-gradient(135deg, rgba(90,140,255,.23), rgba(155,90,255,.16));
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 10px 28px rgba(65,100,220,.2);
+    }
+    .plan-options.liquid-glass .plan-option .plan-option-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .plan-options.liquid-glass .plan-option .plan-option-name { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+    .plan-options.liquid-glass .plan-option .plan-option-price { font-size: 14px; font-weight: 800; color: var(--accent-blue); white-space: nowrap; }
+    .plan-options.liquid-glass .plan-option .plan-check {
+        width: 21px; height: 21px; border-radius: 50%; border: 1px solid rgba(255,255,255,.28);
+        display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; color: transparent;
+        background: rgba(255,255,255,.06);
+    }
+    .plan-options.liquid-glass .plan-option.selected .plan-check { color: #fff; background: linear-gradient(135deg,#4f8cff,#8b5cf6); border-color: transparent; }
+
+    .plan-options:not(.liquid-glass) .plan-option {
+        display: none;
+    }
+    .plan-options .plan-select-hidden { display: none !important; }
+    .plan-options:not(.liquid-glass) .plan-select-hidden { display: block !important; }
+
     /* ============================================
        WALLET - Modern Dashboard
     ============================================ */
@@ -1565,10 +1623,6 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
-
-    .guest-auth-btn { margin-top: 4px; }
-    .guest-hidden { display:none !important; }
-    .guest-purchase-btn.guest-disabled { opacity:.55; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -1624,10 +1678,6 @@
                 <span><i class="fas fa-arrow-right"></i> Login</span>
             </button>
             <p class="auth-toggle">New here? <span id="go-to-signup">Create account</span></p>
-            <div class="auth-divider">or continue as</div>
-            <button class="btn-auth guest-auth-btn" id="btn-guest-login" type="button">
-                <span><i class="fas fa-user-secret"></i> Guest</span>
-            </button>
         </div>
 
         <!-- SIGNUP -->
@@ -1649,10 +1699,6 @@
                 <span><i class="fas fa-user-plus"></i> Sign Up</span>
             </button>
             <p class="auth-toggle">Already registered? <span id="go-to-login">Login</span></p>
-            <div class="auth-divider">or continue as</div>
-            <button class="btn-auth guest-auth-btn" id="btn-guest-signup" type="button">
-                <span><i class="fas fa-user-secret"></i> Guest</span>
-            </button>
         </div>
     </div>
 </div>
@@ -2041,7 +2087,6 @@
 
     // --- STATE ---
     let currentUser = null;
-    let isGuestMode = false;
     let userData = { balance: 0, plan: null };
     window.ZAP_KEY = "";
     window.MANUAL_UPI = "";
@@ -2704,8 +2749,6 @@
     onAuthStateChanged(auth, async (user) => {
         try {
             if (user) {
-                localStorage.removeItem('guestMode');
-                isGuestMode = false;
                 currentUser = user;
                 authScreen.classList.add('hidden');
                 mainApp.style.display = 'block';
@@ -2725,12 +2768,7 @@
                 const pending = localStorage.getItem("pending_zap_order");
                 if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
             } else {
-            if (localStorage.getItem('guestMode') === '1') {
-                enterGuestMode();
-                return;
-            }
             currentUser = null;
-            isGuestMode = false;
             mainApp.style.display = 'none';
             authScreen.classList.remove('hidden');
             hideLoader();
@@ -2764,8 +2802,6 @@
         showLoader();
         try {
             const cred = await createUserWithEmailAndPassword(auth, email, pass);
-            localStorage.removeItem('guestMode');
-            isGuestMode = false;
             await set(ref(db, `users/${cred.user.uid}`), { email, balance: 0, createdAt: serverTimestamp(), status: 'active' });
             showToast("Account created!");
         } catch (e) { showToast(e.message, "error"); } finally {
@@ -2785,8 +2821,6 @@
         showLoader();
         try {
             await signInWithEmailAndPassword(auth, email, pass);
-            localStorage.removeItem('guestMode');
-            isGuestMode = false;
             showToast("Welcome back!");
         } catch (e) { showToast("Invalid credentials", "error"); } finally {
             btn.innerHTML = `<span><i class="fas fa-arrow-right"></i> Login</span>`;
@@ -2795,26 +2829,9 @@
         }
     });
 
-
-    async function enterGuestMode() {
-        isGuestMode = true;
-        currentUser = null;
-        localStorage.setItem('guestMode', '1');
-        authScreen.classList.add('hidden');
-        mainApp.style.display = 'block';
-        hideLoader();
-        document.getElementById('menu-toggle')?.classList.add('guest-hidden');
-        document.getElementById('dropdown-menu')?.classList.remove('active');
-        initBranding();
-        fetchPanels();
-        navigate('home');
-    }
-    document.getElementById('btn-guest-login')?.addEventListener('click', enterGuestMode);
-    document.getElementById('btn-guest-signup')?.addEventListener('click', enterGuestMode);
-
     document.getElementById('btn-logout').addEventListener('click', async function() {
         showLoader();
-        try { localStorage.removeItem('guestMode'); isGuestMode = false; await signOut(auth);
+        try { await signOut(auth);
             document.getElementById('dropdown-menu').classList.remove('active'); } catch (e) { console.error(e); }
         hideLoader();
     });
@@ -2875,7 +2892,6 @@
     };
 
     document.getElementById('menu-toggle').addEventListener('click', function(e) {
-        if (isGuestMode) { e.preventDefault(); e.stopPropagation(); return; }
         document.getElementById('dropdown-menu').classList.toggle('active');
     });
 
@@ -2905,12 +2921,20 @@
                 let plansHtml = '';
                 if (p.plans && Object.keys(p.plans).length > 0) {
                     const sorted = Object.entries(p.plans).sort((a, b) => (a[1].price || 0) - (b[1].price || 0));
-                    plansHtml = `<select class="plan-select" id="plan-${panelId}">`;
-                    sorted.forEach(([key, data]) => {
+                    const glassEnabled = p.liquidGlass !== false;
+                    plansHtml = `<div class="plan-options${glassEnabled ? ' liquid-glass' : ''}" id="plans-ui-${panelId}">`;
+                    plansHtml += `<select class="plan-select plan-select-hidden" id="plan-${panelId}">`;
+                    sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<option value='${JSON.stringify({ key, label, price: data.price || 0 })}'>${label} - ₹${data.price || 0}</option>`;
+                        const value = JSON.stringify({ key, label, price: data.price || 0 }).replace(/'/g, '&#39;');
+                        plansHtml += `<option value='${value}'>${label} - ₹${data.price || 0}</option>`;
                     });
                     plansHtml += `</select>`;
+                    sorted.forEach(([key, data], index) => {
+                        const label = data.label || `${data.days || ''} Days`;
+                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${label}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
+                    });
+                    plansHtml += `</div>`;
                 } else {
                     plansHtml = `<p style="color:var(--text-muted);font-size:13px;text-align:center;margin:8px 0;">Pricing unavailable</p>`;
                 }
@@ -2940,7 +2964,7 @@
                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button class="btn-primary-solid guest-purchase-btn" onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
+                        <button class="btn-primary-solid " onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Purchase Key
                         </button>
                     </div>
@@ -2982,12 +3006,20 @@
         }, 300);
     });
 
+    // --- PLAN SELECTION ---
+    window.selectPlan = function(panelId, index) {
+        const select = document.getElementById(`plan-${panelId}`);
+        const wrap = document.getElementById(`plans-ui-${panelId}`);
+        if (!select || !wrap || !select.options[index]) return;
+        select.selectedIndex = index;
+        wrap.querySelectorAll('.plan-option').forEach((el, i) => el.classList.toggle('selected', i === index));
+    };
+
     // --- CHECKOUT ---
     window.currentCheckout = {};
     window.appliedCoupon = null;
 
     window.handlePurchaseClick = (panelId, panelName, link) => {
-        if (isGuestMode) return showToast('Guests can only view the dashboard', 'warning');
         const select = document.getElementById(`plan-${panelId}`);
         if (!select) return showToast('No plans available', 'error');
         let planData;
