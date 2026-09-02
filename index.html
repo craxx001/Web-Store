@@ -528,10 +528,51 @@
         color: #fff;
         font-weight: 900;
     }
-    .navbar .brand span { 
-        background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    .navbar .brand span {
+        position: relative;
+        display: inline-block;
+        color: #fff;
+        text-shadow: 0 0 8px rgba(255,255,255,.35);
+        animation: nrzGlitch 2.2s infinite steps(1, end);
+    }
+    .navbar .brand span::before,
+    .navbar .brand span::after {
+        content: attr(data-text);
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        opacity: .75;
+    }
+    .navbar .brand span::before {
+        color: #00ffff;
+        transform: translate(-1px, 0);
+        clip-path: inset(0 0 55% 0);
+        animation: nrzGlitchCyan 1.7s infinite steps(1, end);
+    }
+    .navbar .brand span::after {
+        color: #ff005d;
+        transform: translate(1px, 0);
+        clip-path: inset(48% 0 0 0);
+        animation: nrzGlitchPink 1.35s infinite steps(1, end);
+    }
+    @keyframes nrzGlitch {
+        0%, 82%, 100% { transform: translate(0); filter: none; }
+        84% { transform: translate(-2px, 1px); filter: brightness(1.4); }
+        86% { transform: translate(2px, -1px); }
+        88% { transform: translate(-1px, 0); }
+    }
+    @keyframes nrzGlitchCyan {
+        0%, 68%, 100% { transform: translate(-1px, 0); }
+        70% { transform: translate(-4px, -1px); }
+        72% { transform: translate(2px, 1px); }
+        74% { transform: translate(-1px, 0); }
+    }
+    @keyframes nrzGlitchPink {
+        0%, 54%, 100% { transform: translate(1px, 0); }
+        56% { transform: translate(4px, 1px); }
+        58% { transform: translate(-2px, -1px); }
+        60% { transform: translate(1px, 0); }
     }
     .navbar .brand img { height: 32px; border-radius: 6px; }
     .panel-heading-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
@@ -1623,22 +1664,6 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
-
-    /* RGB animated partnership text */
-    .rgb-healing-queen {
-        background: linear-gradient(90deg, #ff0000, #ff7a00, #ffee00, #00ff66, #00d9ff, #4d5cff, #b000ff, #ff00a8, #ff0000);
-        background-size: 300% 100%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-        animation: rgbQueen 4s linear infinite;
-        text-shadow: 0 0 14px rgba(0, 212, 255, 0.18);
-    }
-    @keyframes rgbQueen {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 300% 50%; }
-    }
 </style>
 </head>
 <body>
@@ -1729,7 +1754,7 @@
         <div class="brand">
             <div class="brand-icon" id="default-brand-icon">FF</div>
             <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
-            <span id="site-name">NRZ STORE</span>
+            <span id="site-name" data-text="NRZ STORE">NRZ STORE</span>
         </div>
         <div class="nav-actions">
             <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
@@ -1771,7 +1796,7 @@
         <!-- FOOTER -->
         <div class="store-footer">
             <h3>FFM <span>ONLINE</span> SERVICES</h3>
-            <p>Partnership with "<b class="rgb-healing-queen">Healing Queen</b>"</p>
+            <p>Partnership with "color: var(--accent-gold)<b>Healing Queen</b>"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
             </div>
@@ -2912,24 +2937,6 @@
     // --- FETCH PANELS ---
     function fetchPanels() {
         if (!db) return;
-
-    /* Color-code text: write [ff0000] before the text you want colored. */
-    function colorCodeText(value) {
-        const source = String(value ?? '');
-        const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        const token = /\[#?([0-9a-fA-F]{6})\]/g;
-        let out = '', last = 0, match, currentColor = null;
-        while ((match = token.exec(source))) {
-            const plain = source.slice(last, match.index);
-            out += currentColor ? `<span style="color:#${currentColor}">${escapeHtml(plain)}</span>` : escapeHtml(plain);
-            currentColor = match[1];
-            last = token.lastIndex;
-        }
-        const tail = source.slice(last);
-        out += currentColor ? `<span style="color:#${currentColor}">${escapeHtml(tail)}</span>` : escapeHtml(tail);
-        return out;
-    }
-
         onValue(ref(db, 'panels'), (snap) => {
             const container = document.getElementById('panels-container');
             container.innerHTML = '';
@@ -2944,7 +2951,7 @@
                 const desc = p.description || '';
                 const category = String(p.category || '').trim();
                 const features = desc.split(/\n|-/).filter(f => f && f.trim().length > 0);
-                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${colorCodeText(f.trim())}</span>`).join('');
+                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${f.trim()}</span>`).join('');
                 const updateLink = p.link ? `window.open('${p.link}','_blank')` : '';
                 const updateBtn = updateLink ? `<button class="btn-outline" onclick="${updateLink}"><i class="fas fa-file-download"></i> Update</button>` : '';
                 const feedbackBtn = p.feedback && p.feedback.trim() ?
@@ -2959,12 +2966,12 @@
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
                         const value = JSON.stringify({ key, label, price: data.price || 0 }).replace(/'/g, '&#39;');
-                        plansHtml += `<option value='${value}'>${colorCodeText(label)} - ₹${data.price || 0}</option>`;
+                        plansHtml += `<option value='${value}'>${label} - ₹${data.price || 0}</option>`;
                     });
                     plansHtml += `</select>`;
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
+                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${label}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
                     });
                     plansHtml += `</div>`;
                 } else {
@@ -2987,7 +2994,7 @@
                     <div class="panel-body">
                         <div class="panel-heading-row">
                             ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${p.name || 'Panel'} logo" onerror="this.style.display='none'">` : ''}
-                            <div><div class="panel-name">${colorCodeText(p.name || 'Panel')}</div>${category ? `<div class="panel-category">${colorCodeText(category)}</div>` : ''}</div>
+                            <div><div class="panel-name">${p.name || 'Panel'}</div>${category ? `<div class="panel-category">${category}</div>` : ''}</div>
                         </div>
                         ${featuresHtml ? `<div class="feature-list">${featuresHtml}</div>` : ''}
                         <div class="trust-row">
@@ -3068,8 +3075,8 @@
             finalPrice: parseFloat(planData.price) || 0
         };
         window.appliedCoupon = null;
-        document.getElementById('chk-panel-name').innerHTML = colorCodeText(panelName);
-        document.getElementById('chk-plan-label').innerHTML = colorCodeText(planData.label || 'Plan');
+        document.getElementById('chk-panel-name').innerText = panelName;
+        document.getElementById('chk-plan-label').innerText = planData.label || 'Plan';
         document.getElementById('chk-orig-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-final-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-coupon-input').value = '';
@@ -3166,7 +3173,7 @@
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
                 }
                 closeModal('modal-checkout');
-                document.getElementById('success-plan-name').innerHTML = colorCodeText(checkout.label || 'Plan');
+                document.getElementById('success-plan-name').innerText = checkout.label || 'Plan';
                 document.getElementById('success-quantity').innerText = '1';
                 openModal('modal-success');
             } else {
