@@ -534,6 +534,61 @@
         -webkit-text-fill-color: transparent;
     }
     .navbar .brand img { height: 32px; border-radius: 6px; }
+    .navbar .brand #site-name {
+        color: #fff;
+        background: none;
+        -webkit-background-clip: initial;
+        background-clip: initial;
+        -webkit-text-fill-color: #fff;
+        text-shadow: 2px 0 #ff1a1a, -2px 0 rgba(255,255,255,0.9);
+        position: relative;
+        display: inline-block;
+        animation: nrzGlitch 1.8s steps(1, end) infinite;
+        will-change: transform, text-shadow;
+    }
+    .navbar .brand #site-name::before,
+    .navbar .brand #site-name::after {
+        content: "NRZ STORE";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        pointer-events: none;
+        background: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+    .navbar .brand #site-name::before {
+        color: #ff1a1a;
+        text-shadow: -2px 0 #fff;
+        -webkit-text-fill-color: #ff1a1a;
+        animation: nrzGlitchRed 1.8s steps(1, end) infinite;
+    }
+    .navbar .brand #site-name::after {
+        color: #fff;
+        text-shadow: 2px 0 #ff1a1a;
+        -webkit-text-fill-color: #fff;
+        animation: nrzGlitchWhite 1.8s steps(1, end) infinite;
+    }
+    @keyframes nrzGlitch {
+        0%, 82%, 100% { transform: translate(0); text-shadow: 2px 0 #ff1a1a, -2px 0 #fff; }
+        84% { transform: translate(-2px, 1px); text-shadow: 3px 0 #ff1a1a, -3px 0 #fff; }
+        86% { transform: translate(2px, -1px); text-shadow: -3px 0 #ff1a1a, 3px 0 #fff; }
+        88% { transform: translate(0); }
+        90% { transform: translate(1px, 0); text-shadow: 4px 0 #ff1a1a, -1px 0 #fff; }
+        92% { transform: translate(-1px, 0); }
+    }
+    @keyframes nrzGlitchRed {
+        0%, 80%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+        83% { clip-path: inset(15% 0 65% 0); transform: translate(-3px, 0); }
+        86% { clip-path: inset(55% 0 25% 0); transform: translate(3px, 0); }
+        89% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 0); }
+    }
+    @keyframes nrzGlitchWhite {
+        0%, 81%, 100% { clip-path: inset(100% 0 0 0); transform: translate(0); }
+        84% { clip-path: inset(65% 0 15% 0); transform: translate(3px, 0); }
+        87% { clip-path: inset(25% 0 55% 0); transform: translate(-3px, 0); }
+        90% { clip-path: inset(50% 0 35% 0); transform: translate(2px, 0); }
+    }
     .panel-heading-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
     .panel-logo { width:48px; height:48px; border-radius:13px; object-fit:cover; flex:0 0 48px; border:1px solid var(--border); background:var(--surface-2); }
     .panel-heading-row .panel-name { margin-bottom:0; }
@@ -1771,7 +1826,7 @@
         <!-- FOOTER -->
         <div class="store-footer">
             <h3>FFM <span>ONLINE</span> SERVICES</h3>
-            <p>Partnership with "<b class="rgb-healing-queen">Healing Queen</b>"</p>
+            <p>Partnership with "<a class="rgb-healing-queen" href="https://youtube.com/@healing_queen?si=n1HseYFadalY6UGD" target="_blank" rel="noopener noreferrer" aria-label="Healing Queen YouTube channel">Healing Queen</a>"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
             </div>
