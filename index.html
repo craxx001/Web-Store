@@ -1250,6 +1250,19 @@
         gap: 10px;
     }
     .modal .modal-head i { color: var(--accent-blue); }
+    .checkout-modal-head { justify-content: space-between; margin-bottom: 20px; }
+    .checkout-title { display:flex; align-items:center; gap:10px; }
+    .checkout-head-actions { display:flex; align-items:center; gap:8px; }
+    .checkout-icon-btn { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-secondary); transition:var(--transition); }
+    .checkout-icon-btn:hover { border-color:var(--border-light); color:var(--text-primary); transform:translateY(-1px); }
+    .checkout-icon-btn.gift-btn { color:var(--accent-purple); }
+    .checkout-icon-btn.gift-btn.active { background:rgba(139,92,246,.12); border-color:var(--accent-purple); color:var(--accent-purple); }
+    .checkout-uid-section { margin-bottom:20px; }
+    .checkout-uid-section label { display:block; color:var(--text-secondary); font-size:13px; font-weight:600; margin-bottom:8px; }
+    .checkout-uid-section input { width:100%; padding:12px 14px; background:var(--bg-input); border:1.5px solid var(--border-color); border-radius:var(--radius-sm); font-size:14px; color:var(--text-primary); }
+    .checkout-uid-section input:focus { border-color:var(--accent-blue); box-shadow:0 0 0 4px rgba(79,140,255,.08); }
+    .checkout-actions { margin-top:0; }
+    .checkout-actions .btn { width:100%; }
     .modal .checkout-box {
         background: var(--bg-input);
         border-radius: var(--radius-sm);
@@ -1540,7 +1553,6 @@
         .dropdown { right: 16px; width: 200px; }
         .qr-display { width: 140px; height: 140px; }
         .modal { padding: 24px; }
-        .modal .modal-actions { flex-direction: column; }
         .modal .coupon-section .coupon-box { flex-direction: column; }
         .copy-row { flex-direction: column; align-items: stretch; }
         .history-grid { grid-template-columns: 1fr; }
@@ -1897,14 +1909,6 @@
                 <span class="value green" id="prof-bal">₹0.00</span>
             </div>
             <div class="prof-item">
-                <span class="label"><i class="fas fa-shopping-cart"></i> Purchases</span>
-                <span class="value" id="prof-purchases">0</span>
-            </div>
-            <div class="prof-item">
-                <span class="label"><i class="fas fa-chart-line"></i> Total Spent</span>
-                <span class="value highlight" id="prof-spent">₹0.00</span>
-            </div>
-            <div class="prof-item">
                 <span class="label"><i class="fas fa-calendar-alt"></i> Joined</span>
                 <span class="value" id="prof-date">...</span>
             </div>
@@ -1931,8 +1935,14 @@
 
 <!-- CHECKOUT MODAL -->
 <div class="modal-overlay hidden" id="modal-checkout">
-    <div class="modal">
-        <div class="modal-head"><i class="fas fa-shopping-cart"></i> Checkout</div>
+    <div class="modal checkout-modal">
+        <div class="modal-head checkout-modal-head">
+            <div class="checkout-title"><i class="fas fa-shopping-cart"></i><span>Checkout</span></div>
+            <div class="checkout-head-actions">
+                <button type="button" class="checkout-icon-btn gift-btn" id="btn-toggle-coupon" onclick="toggleCouponUI()" aria-label="Promo Code"><i class="fas fa-gift"></i></button>
+                <button type="button" class="checkout-icon-btn close-btn" onclick="closeModal('modal-checkout')" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
         <div class="checkout-box">
             <div class="row"><span>Item</span><strong id="chk-panel-name">Panel</strong></div>
             <div class="row"><span>Plan</span><strong id="chk-plan-label" style="color:var(--accent-gold);">Plan</strong></div>
@@ -1945,18 +1955,21 @@
                 </div>
             </div>
         </div>
-        <div class="coupon-section">
+        <div class="coupon-section hidden" id="checkout-coupon-section">
             <div class="coupon-head">
                 <span>Promo Code</span>
                 <span class="discount-badge hidden" id="chk-discount-badge">0% OFF</span>
             </div>
             <div class="coupon-box">
-                <input id="chk-coupon-input" placeholder="Enter code"/>
+                <input id="chk-coupon-input" placeholder="Enter code" autocomplete="off"/>
                 <button id="btn-apply-coupon" onclick="applyCouponUI()">Apply</button>
             </div>
         </div>
-        <div class="modal-actions">
-            <button class="btn btn-outline-modal" onclick="closeModal('modal-checkout')">Cancel</button>
+        <div class="checkout-uid-section">
+            <label for="chk-uid-input">UID</label>
+            <input id="chk-uid-input" type="text" inputmode="numeric" placeholder="Enter your UID" autocomplete="off"/>
+        </div>
+        <div class="modal-actions checkout-actions">
             <button class="btn btn-primary-modal" id="btn-confirm-pay" onclick="executePurchase()">Confirm Pay</button>
         </div>
     </div>
@@ -2810,7 +2823,7 @@
             hideLoader();
         });
         onValue(ref(db, `transactions/${currentUser.uid}`), (snap) => {
-            let totalDep = 0, todayDep = 0, pendingDep = 0, totalSpent = 0;
+            let totalDep = 0, todayDep = 0, pendingDep = 0;
             const today = new Date().toLocaleDateString();
             if (snap.exists()) {
                 snap.forEach(child => {
@@ -2822,15 +2835,11 @@
                             if (txDate === today) todayDep += parseFloat(tx.amount) || 0;
                         } else if (tx.status === 'pending') pendingDep += parseFloat(tx.amount) || 0;
                     }
-                    if (tx.status === 'success' && tx.type === 'purchase') {
-                        totalSpent += parseFloat(tx.amount) || 0;
-                    }
                 });
             }
             document.getElementById('wallet-stat-dep').innerText = `₹${totalDep.toFixed(2)}`;
             document.getElementById('wallet-stat-today').innerText = `₹${todayDep.toFixed(2)}`;
             document.getElementById('wallet-stat-pending').innerText = `₹${pendingDep.toFixed(2)}`;
-            document.getElementById('prof-spent').innerText = totalSpent.toFixed(2);
         });
     }
 
@@ -2979,9 +2988,21 @@
         document.getElementById('chk-orig-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-final-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-coupon-input').value = '';
+        document.getElementById('chk-uid-input').value = '';
         document.getElementById('chk-strike-price').classList.add('hidden');
         document.getElementById('chk-discount-badge').classList.add('hidden');
+        document.getElementById('checkout-coupon-section').classList.add('hidden');
+        document.getElementById('btn-toggle-coupon').classList.remove('active');
         openModal('modal-checkout');
+    };
+
+    window.toggleCouponUI = function() {
+        const section = document.getElementById('checkout-coupon-section');
+        const btn = document.getElementById('btn-toggle-coupon');
+        if (!section || !btn) return;
+        const hidden = section.classList.toggle('hidden');
+        btn.classList.toggle('active', !hidden);
+        if (!hidden) document.getElementById('chk-coupon-input')?.focus();
     };
 
     window.applyCouponUI = async function() {
@@ -3025,6 +3046,8 @@
 
     window.executePurchase = async function() {
         const checkout = window.currentCheckout;
+        const enteredUid = document.getElementById('chk-uid-input')?.value.trim() || '';
+        if (!enteredUid) return showToast('Enter your UID first', 'warning');
         const price = checkout.finalPrice || 0;
         const btn = document.getElementById('btn-confirm-pay');
         const balance = parseFloat(userData.balance || 0);
@@ -3046,6 +3069,7 @@
                     panelName: checkout.panelName || 'Panel',
                     plan: checkout.planKey || '',
                     label: checkout.label || 'Plan',
+                    enteredUid: enteredUid,
                     price: price,
                     key: newKey,
                     link: checkout.link || '',
@@ -3053,7 +3077,7 @@
                 });
                 await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
                     id: txId, type: "purchase", amount: price, status: "success",
-                    desc: `Purchased ${checkout.panelName || 'Panel'}`, date: new Date().toISOString()
+                    desc: `Purchased ${checkout.panelName || 'Panel'} (UID: ${enteredUid})`, uid: enteredUid, date: new Date().toISOString()
                 });
                 if (window.appliedCoupon && window.appliedCoupon.id) {
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
