@@ -1565,6 +1565,10 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
+
+    .guest-auth-btn { margin-top: 4px; }
+    .guest-hidden { display:none !important; }
+    .guest-purchase-btn.guest-disabled { opacity:.55; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -1620,11 +1624,10 @@
                 <span><i class="fas fa-arrow-right"></i> Login</span>
             </button>
             <p class="auth-toggle">New here? <span id="go-to-signup">Create account</span></p>
-            <div class="auth-divider">or continue with</div>
-            <div class="social-row">
-                <a class="social-btn wa" href="#" id="auth-wa-link" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a class="social-btn tg" href="#" id="auth-tg-link" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
-            </div>
+            <div class="auth-divider">or continue as</div>
+            <button class="btn-auth guest-auth-btn" id="btn-guest-login" type="button">
+                <span><i class="fas fa-user-secret"></i> Guest</span>
+            </button>
         </div>
 
         <!-- SIGNUP -->
@@ -1646,11 +1649,10 @@
                 <span><i class="fas fa-user-plus"></i> Sign Up</span>
             </button>
             <p class="auth-toggle">Already registered? <span id="go-to-login">Login</span></p>
-            <div class="auth-divider">or continue with</div>
-            <div class="social-row">
-                <a class="social-btn wa" href="#" id="auth-wa-link-2" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a class="social-btn tg" href="#" id="auth-tg-link-2" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
-            </div>
+            <div class="auth-divider">or continue as</div>
+            <button class="btn-auth guest-auth-btn" id="btn-guest-signup" type="button">
+                <span><i class="fas fa-user-secret"></i> Guest</span>
+            </button>
         </div>
     </div>
 </div>
@@ -1980,14 +1982,12 @@
     <div class="modal" style="text-align:center;">
         <i class="fas fa-check-circle success-icon"></i>
         <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
-        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Your premium key is ready.</p>
-        <div class="key-display">
-            <span class="key-label">License Key</span>
-            <div class="key-value" id="modal-key-display">XXXXXX</div>
+        <div class="checkout-box" style="text-align:left;margin:16px 0;">
+            <div class="row"><span>Plan</span><strong id="success-plan-name">Plan</strong></div>
+            <div class="row"><span>Quantity</span><strong id="success-quantity">1</strong></div>
         </div>
+        <p style="color:var(--text-secondary);font-size:13px;line-height:1.5;margin:0 8px 18px;">Your order is processing And it will be delivered soon!</p>
         <div class="action-row">
-            <button class="btn btn-primary-modal" id="modal-btn-access"><i class="fas fa-download"></i> Access Tool</button>
-            <button class="btn btn-outline-modal" onclick="copyToClipboard('modal-key-display','License Key')"><i class="fas fa-copy"></i> Copy</button>
             <button class="btn btn-outline-modal" onclick="closeModal('modal-success')">Close</button>
         </div>
     </div>
@@ -2041,6 +2041,7 @@
 
     // --- STATE ---
     let currentUser = null;
+    let isGuestMode = false;
     let userData = { balance: 0, plan: null };
     window.ZAP_KEY = "";
     window.MANUAL_UPI = "";
@@ -2200,13 +2201,6 @@
         const modal = document.getElementById(id);
         if (modal) modal.classList.remove('hidden');
     };
-
-    function generateKey(length = 12) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-        return result;
-    }
 
     function extractYouTubeID(url) {
         if (!url) return null;
@@ -2572,10 +2566,7 @@
             const wa = data.whatsapp || '#';
             const tgLogin = data.telegram_login || '#';
             const tgDash = data.telegram_dashboard || '#';
-            document.getElementById('auth-wa-link').href = wa;
-            document.getElementById('auth-wa-link-2').href = wa;
-            document.getElementById('auth-tg-link').href = tgLogin;
-            document.getElementById('auth-tg-link-2').href = tgLogin;
+            
             const fab = document.getElementById('global-telegram-btn');
             fab.href = tgDash;
             fab.style.display = tgDash === '#' ? 'none' : 'flex';
@@ -2713,6 +2704,8 @@
     onAuthStateChanged(auth, async (user) => {
         try {
             if (user) {
+                localStorage.removeItem('guestMode');
+                isGuestMode = false;
                 currentUser = user;
                 authScreen.classList.add('hidden');
                 mainApp.style.display = 'block';
@@ -2732,7 +2725,12 @@
                 const pending = localStorage.getItem("pending_zap_order");
                 if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
             } else {
+            if (localStorage.getItem('guestMode') === '1') {
+                enterGuestMode();
+                return;
+            }
             currentUser = null;
+            isGuestMode = false;
             mainApp.style.display = 'none';
             authScreen.classList.remove('hidden');
             hideLoader();
@@ -2766,6 +2764,8 @@
         showLoader();
         try {
             const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            localStorage.removeItem('guestMode');
+            isGuestMode = false;
             await set(ref(db, `users/${cred.user.uid}`), { email, balance: 0, createdAt: serverTimestamp(), status: 'active' });
             showToast("Account created!");
         } catch (e) { showToast(e.message, "error"); } finally {
@@ -2785,6 +2785,8 @@
         showLoader();
         try {
             await signInWithEmailAndPassword(auth, email, pass);
+            localStorage.removeItem('guestMode');
+            isGuestMode = false;
             showToast("Welcome back!");
         } catch (e) { showToast("Invalid credentials", "error"); } finally {
             btn.innerHTML = `<span><i class="fas fa-arrow-right"></i> Login</span>`;
@@ -2793,9 +2795,26 @@
         }
     });
 
+
+    async function enterGuestMode() {
+        isGuestMode = true;
+        currentUser = null;
+        localStorage.setItem('guestMode', '1');
+        authScreen.classList.add('hidden');
+        mainApp.style.display = 'block';
+        hideLoader();
+        document.getElementById('menu-toggle')?.classList.add('guest-hidden');
+        document.getElementById('dropdown-menu')?.classList.remove('active');
+        initBranding();
+        fetchPanels();
+        navigate('home');
+    }
+    document.getElementById('btn-guest-login')?.addEventListener('click', enterGuestMode);
+    document.getElementById('btn-guest-signup')?.addEventListener('click', enterGuestMode);
+
     document.getElementById('btn-logout').addEventListener('click', async function() {
         showLoader();
-        try { await signOut(auth);
+        try { localStorage.removeItem('guestMode'); isGuestMode = false; await signOut(auth);
             document.getElementById('dropdown-menu').classList.remove('active'); } catch (e) { console.error(e); }
         hideLoader();
     });
@@ -2855,7 +2874,8 @@
         window.scrollTo(0, 0);
     };
 
-    document.getElementById('menu-toggle').addEventListener('click', function() {
+    document.getElementById('menu-toggle').addEventListener('click', function(e) {
+        if (isGuestMode) { e.preventDefault(); e.stopPropagation(); return; }
         document.getElementById('dropdown-menu').classList.toggle('active');
     });
 
@@ -2920,7 +2940,7 @@
                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button class="btn-primary-solid" onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
+                        <button class="btn-primary-solid guest-purchase-btn" onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Purchase Key
                         </button>
                     </div>
@@ -2967,6 +2987,7 @@
     window.appliedCoupon = null;
 
     window.handlePurchaseClick = (panelId, panelName, link) => {
+        if (isGuestMode) return showToast('Guests can only view the dashboard', 'warning');
         const select = document.getElementById(`plan-${panelId}`);
         if (!select) return showToast('No plans available', 'error');
         let planData;
@@ -3062,7 +3083,6 @@
                 return undefined;
             });
             if (result.committed) {
-                const newKey = generateKey(12);
                 const txId = "PUR" + Date.now();
                 await set(push(ref(db, `purchases/${currentUser.uid}`)), {
                     panelId: checkout.panelId || '',
@@ -3071,7 +3091,6 @@
                     label: checkout.label || 'Plan',
                     enteredUid: enteredUid,
                     price: price,
-                    key: newKey,
                     link: checkout.link || '',
                     date: new Date().toISOString()
                 });
@@ -3083,8 +3102,8 @@
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
                 }
                 closeModal('modal-checkout');
-                document.getElementById('modal-key-display').innerText = newKey;
-                document.getElementById('modal-btn-access').onclick = () => window.open(checkout.link || "https://t.me/", '_blank');
+                document.getElementById('success-plan-name').innerText = checkout.label || 'Plan';
+                document.getElementById('success-quantity').innerText = '1';
                 openModal('modal-success');
             } else {
                 showToast("Transaction failed. Insufficient funds.", "error");
