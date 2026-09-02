@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-<title>GALU | MODZ</title>
+<title>NRZ RAVI</title>
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -1663,8 +1663,8 @@
         <div class="auth-card" id="login-box">
             <div class="brand">
                 <div class="logo-icon">FF</div>
-                <h1>GALU<span>MODZ</span></h1>
-                <p>Welcome back to your premium dashboard</p>
+                <h1>NRZ <span>STORE</span></h1>
+                <p>Welcome back , Login to continue...</p>
             </div>
             <div class="input-group">
                 <input id="login-email" placeholder="Email address" type="email"/>
@@ -1713,7 +1713,7 @@
         <div class="brand">
             <div class="brand-icon" id="default-brand-icon">FF</div>
             <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
-            <span id="site-name">GALU MODZ</span>
+            <span id="site-name">NRZ STORE</span>
         </div>
         <div class="nav-actions">
             <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
@@ -1722,7 +1722,7 @@
         <div class="dropdown" id="dropdown-menu">
             <div class="dropdown-item" onclick="navigate('home')"><i class="fas fa-th-large"></i> Dashboard</div>
             <div class="dropdown-item" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> Wallet</div>
-            <div class="dropdown-item" onclick="navigate('plans')"><i class="fas fa-calendar-check"></i> My Plans</div>
+            <div class="dropdown-item" onclick="navigate('plans')"><i class="fas fa-calendar-check"></i> Plans</div>
             <div class="dropdown-item" onclick="navigate('profile')"><i class="fas fa-user"></i> Profile</div>
             <div class="dropdown-divider"></div>
             <div class="dropdown-item danger" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</div>
@@ -1732,9 +1732,9 @@
     <!-- PAGE: HOME -->
     <div class="page-content" id="page-home">
         <div class="page-header">
-            <h2 class="page-title">Premium <span>Store</span></h2>
+            <h2 class="page-title">Our <span>Services</span></h2>
             <div class="search-box">
-                <input id="search-input" placeholder="Search panels..." type="text"/>
+                <input id="search-input" placeholder="Search..." type="text"/>
                 <i class="fas fa-search search-icon"></i>
                 <i class="fas fa-spinner search-spinner" id="search-loader"></i>
             </div>
@@ -1748,29 +1748,27 @@
 
         <div class="empty-state hidden" id="search-empty">
             <i class="fas fa-search-minus"></i>
-            <p>No panels found</p>
+            <p>No plans found</p>
             <button class="btn-primary-solid" onclick="document.getElementById('search-input').value=''; document.getElementById('search-input').dispatchEvent(new Event('input'));" style="width:auto;padding:10px 28px;margin-top:12px;font-size:13px;">Clear Search</button>
         </div>
 
         <!-- FOOTER -->
         <div class="store-footer">
-            <h3>FF <span>PANEL</span> STORE</h3>
-            <p>Best trusted store for premium Free Fire panels &amp; services</p>
+            <h3>FFM <span>ONLINE</span> STORE</h3>
+            <p>Partnership with "<b>Healing Queen</b>"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
-                <span>⚡ Secure Checkout</span>
-                <span>👥 248k+ Users</span>
             </div>
             <div class="features">
                 <span>✔ Fast Delivery</span>
                 <span>✔ Instant Service</span>
                 <span>✔ Trusted Seller</span>
             </div>
-            <p class="copy">© 2026-2031 FF Panel Store. All rights reserved.</p>
+            <p class="copy">© 2026-2031:  produced by @nrzravi</p>
         </div>
     </div>
 
-    <!-- PAGE: WALLET -->
+    <!-- PAGE:  -->
     <div class="page-content hidden" id="page-wallet">
         <div class="page-header">
             <h2 class="page-title">My <span>Wallet</span></h2>
@@ -1810,25 +1808,25 @@
 
         <!-- Tabs -->
         <div class="wallet-tabs">
-            <div class="wallet-tab active" onclick="switchWalletTab('auto')" id="tab-btn-auto"><i class="fas fa-bolt"></i> Instant UPI</div>
-            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Crypto</div>
+            <div class="wallet-tab active" onclick="switchWalletTab('auto')" id="tab-btn-auto"><i class="fas fa-bolt"></i> Instant Pay</div>
+            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Binance</div>
             <div class="wallet-tab manual" onclick="switchWalletTab('manual')" id="tab-btn-manual"><i class="fas fa-qrcode"></i> Manual UPI</div>
             <div class="wallet-tab support" onclick="switchWalletTab('support')" id="tab-btn-support"><i class="fas fa-headset"></i> Support</div>
         </div>
 
-        <!-- Tab: Instant UPI -->
+        <!-- Tab: Instant Pay -->
         <div id="wallet-tab-auto" class="wallet-section">
             <div class="premium-card">
                 <div class="card-head">
                     <i class="fas fa-bolt" style="color:var(--accent-blue);"></i>
                     <h3>Instant Gateway</h3>
                 </div>
-                <p class="card-desc">Fast UPI payment. Balance updates automatically within seconds.</p>
+                <p class="card-desc">• Choose any UPI app to complete the payment • After payment verification, your money will be updated in your wallet! {processing may take up to 7 minutes}</p>
                 <div class="input-group">
                     <input id="add-amount" placeholder="Amount (₹)" type="number"/>
                 </div>
                 <div class="input-group">
-                    <input id="add-phone" placeholder="WhatsApp Number" type="tel"/>
+                    <input id="add-phone" placeholder="Contact Number" type="tel"/>
                 </div>
                 <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
                     <i class="fas fa-arrow-right"></i> Pay Now
@@ -1859,7 +1857,7 @@
                     <i class="fab fa-bitcoin" style="color:var(--accent-gold);"></i>
                     <h3>Binance / USDT</h3>
                 </div>
-                <p class="card-desc">Send USDT via Binance Pay or TRC20. Rate: <strong style="color:var(--accent-gold);">1 USDT = ₹<span id="crypto-rate">88.00</span></strong></p>
+                <p class="card-desc">This payment method is currently not available!</p>
 
                 <div class="qr-display crypto">
                     <img id="crypto-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
@@ -1896,7 +1894,7 @@
                     <i class="fas fa-qrcode" style="color:var(--accent-purple);"></i>
                     <h3>Manual UPI</h3>
                 </div>
-                <p class="card-desc">Scan the QR or copy UPI ID to transfer funds manually.</p>
+                <p class="card-desc">This payment method is also not available yet bro!</p>
 
                 <div class="qr-display manual">
                     <img id="manual-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
@@ -3262,7 +3260,7 @@
         try { hideLoader(); } catch (_) {}
     });
 
-    console.log('✅ GALU MODZ App initialized with enhanced security system');
+    console.log('✅ NRZ App initialized with enhanced security system');
 </script>
 </body>
 </html>
