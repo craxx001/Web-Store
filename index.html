@@ -764,16 +764,6 @@
         display: flex;
         flex-direction: column;
     }
-    .panel-card { position: relative; isolation: isolate; }
-    .panel-card > * { position: relative; z-index: 1; }
-    .panel-card.liquid-glass-card {
-        background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.035));
-        border-color: rgba(255,255,255,.22);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 18px 50px rgba(0,0,0,.28);
-        backdrop-filter: blur(24px) saturate(155%); -webkit-backdrop-filter: blur(24px) saturate(155%);
-    }
-    .panel-card.liquid-glass-card::after { content:''; position:absolute; inset:0; z-index:0; pointer-events:none; background:linear-gradient(120deg,rgba(255,255,255,.12),transparent 38%,rgba(120,150,255,.08) 72%,transparent); }
-    .panel-card.panel-has-overlay::before { content:''; position:absolute; inset:0; z-index:0; pointer-events:none; background-image:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.62)),var(--panel-overlay-image); background-size:cover; background-position:center; opacity:.9; }
     .panel-card:hover {
         border-color: var(--border-light);
         transform: translateY(-6px);
@@ -1633,29 +1623,6 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
-
-    /* RGB animated partnership text */
-    .rgb-healing-queen {
-        background: linear-gradient(90deg, #ff0000, #ff7a00, #ffee00, #00ff66, #00d9ff, #4d5cff, #b000ff, #ff00a8, #ff0000);
-        background-size: 300% 100%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-        animation: rgbQueen 4s linear infinite;
-        text-shadow: 0 0 14px rgba(0, 212, 255, 0.18);
-    }
-    @keyframes rgbQueen {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 300% 50%; }
-    }
-    .nrz-glitch { position:relative; display:inline-block; font-weight:900; letter-spacing:.8px; color:#fff; text-shadow:2px 0 #ff2020,-2px 0 #fff; animation:nrzGlitch .9s steps(2,end) infinite; }
-    .nrz-glitch::before,.nrz-glitch::after { content:attr(data-text); position:absolute; left:0; top:0; width:100%; overflow:hidden; pointer-events:none; }
-    .nrz-glitch::before { color:#ff2020; transform:translate(1px,0); clip-path:inset(0 0 52% 0); animation:nrzGlitchTop 1.25s steps(2,end) infinite; }
-    .nrz-glitch::after { color:#fff; transform:translate(-1px,0); clip-path:inset(58% 0 0 0); animation:nrzGlitchBottom .8s steps(2,end) infinite; }
-    @keyframes nrzGlitch { 0%,100%{text-shadow:2px 0 #ff2020,-2px 0 #fff} 50%{text-shadow:-2px 0 #ff2020,2px 0 #fff} }
-    @keyframes nrzGlitchTop { 0%,100%{transform:translate(1px,0)} 25%{transform:translate(-3px,-1px)} 70%{transform:translate(2px,1px)} }
-    @keyframes nrzGlitchBottom { 0%,100%{transform:translate(-1px,0)} 35%{transform:translate(3px,1px)} 80%{transform:translate(-2px,-1px)} }
 </style>
 </head>
 <body>
@@ -1746,7 +1713,7 @@
         <div class="brand">
             <div class="brand-icon" id="default-brand-icon">FF</div>
             <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
-            <span id="site-name" class="nrz-glitch" data-text="NRZ STORE">NRZ STORE</span>
+            <span id="site-name">NRZ STORE</span>
         </div>
         <div class="nav-actions">
             <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
@@ -1788,7 +1755,7 @@
         <!-- FOOTER -->
         <div class="store-footer">
             <h3>FFM <span>ONLINE</span> SERVICES</h3>
-            <p>Partnership with "<a class="rgb-healing-queen" href="https://youtube.com/@healing_queen?si=n1HseYFadalY6UGD" target="_blank" rel="noopener">Healing Queen</a>"</p>
+            <p>Partnership with "color: var(--accent-gold)<b>Healing Queen</b>"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
             </div>
@@ -1964,8 +1931,8 @@
                     Facing issues with deposits, purchases, or your account? Contact support.
                 </p>
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                    <a href="#" id="support-discord-btn" target="_blank" rel="noopener" class="btn-outline" style="border-color:#5865F2;color:#8ea1ff;justify-content:center;padding:12px;">
-                        <i class="fab fa-discord"></i> Create a ticket
+                    <a href="#" id="support-wa-btn" target="_blank" class="btn-outline" style="border-color:#25D366;color:#25D366;justify-content:center;padding:12px;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp Support
                     </a>
                     <a href="#" id="support-tg-btn" target="_blank" class="btn-outline" style="border-color:#0088cc;color:#0088cc;justify-content:center;padding:12px;">
                         <i class="fab fa-telegram-plane"></i> Telegram Support
@@ -2639,15 +2606,14 @@
         if (!db) return;
         onValue(ref(db, 'support_links'), (snap) => {
             const data = snap.val() || {};
-            const discord = data.discord_ticket || '#';
+            const wa = data.whatsapp || '#';
             const tgLogin = data.telegram_login || '#';
             const tgDash = data.telegram_dashboard || '#';
             
             const fab = document.getElementById('global-telegram-btn');
             fab.href = tgDash;
             fab.style.display = tgDash === '#' ? 'none' : 'flex';
-            const discordBtn = document.getElementById('support-discord-btn');
-            if (discordBtn) { discordBtn.href = discord; discordBtn.style.display = discord === '#' ? 'none' : 'flex'; }
+            document.getElementById('support-wa-btn').href = wa;
             document.getElementById('support-tg-btn').href = tgDash !== '#' ? tgDash : tgLogin;
         });
     }
@@ -2930,24 +2896,6 @@
     // --- FETCH PANELS ---
     function fetchPanels() {
         if (!db) return;
-
-    /* Color-code text: write [ff0000] before the text you want colored. */
-    function colorCodeText(value) {
-        const source = String(value ?? '');
-        const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        const token = /\[#?([0-9a-fA-F]{6})\]/g;
-        let out = '', last = 0, match, currentColor = null;
-        while ((match = token.exec(source))) {
-            const plain = source.slice(last, match.index);
-            out += currentColor ? `<span style="color:#${currentColor}">${escapeHtml(plain)}</span>` : escapeHtml(plain);
-            currentColor = match[1];
-            last = token.lastIndex;
-        }
-        const tail = source.slice(last);
-        out += currentColor ? `<span style="color:#${currentColor}">${escapeHtml(tail)}</span>` : escapeHtml(tail);
-        return out;
-    }
-
         onValue(ref(db, 'panels'), (snap) => {
             const container = document.getElementById('panels-container');
             container.innerHTML = '';
@@ -2962,7 +2910,7 @@
                 const desc = p.description || '';
                 const category = String(p.category || '').trim();
                 const features = desc.split(/\n|-/).filter(f => f && f.trim().length > 0);
-                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${colorCodeText(f.trim())}</span>`).join('');
+                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${f.trim()}</span>`).join('');
                 const updateLink = p.link ? `window.open('${p.link}','_blank')` : '';
                 const updateBtn = updateLink ? `<button class="btn-outline" onclick="${updateLink}"><i class="fas fa-file-download"></i> Update</button>` : '';
                 const feedbackBtn = p.feedback && p.feedback.trim() ?
@@ -2977,12 +2925,12 @@
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
                         const value = JSON.stringify({ key, label, price: data.price || 0 }).replace(/'/g, '&#39;');
-                        plansHtml += `<option value='${value}'>${colorCodeText(label)} - ₹${data.price || 0}</option>`;
+                        plansHtml += `<option value='${value}'>${label} - ₹${data.price || 0}</option>`;
                     });
                     plansHtml += `</select>`;
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
+                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${label}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
                     });
                     plansHtml += `</div>`;
                 } else {
@@ -2995,20 +2943,17 @@
                     `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytID}?autoplay=1&mute=1&rel=0&modestbranding=1" allowfullscreen></iframe></div>` : '';
 
                 const card = document.createElement('div');
-                const overlayImage = String(p.overlayImage || '').trim();
-                card.className = `panel-card${p.liquidGlassCard ? ' liquid-glass-card' : ''}${overlayImage ? ' panel-has-overlay' : ''}`;
-                if (overlayImage) card.style.setProperty('--panel-overlay-image', `url(\"${overlayImage.replace(/\"/g, '%22')}\")`);
+                card.className = 'panel-card';
                 const searchText = `${p.name || ''} ${desc}`.toLowerCase();
                 card.setAttribute('data-search', searchText);
-                window.__panelCheckoutData = window.__panelCheckoutData || {};
-                window.__panelCheckoutData[panelId] = { panelName: String(p.name || 'Panel'), link: String(p.link || '') };
+                const panelName = (p.name || 'Panel').replace(/'/g, "\\'");
                 card.innerHTML = `
                     ${bannerHtml}
                     ${videoHtml}
                     <div class="panel-body">
                         <div class="panel-heading-row">
                             ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${p.name || 'Panel'} logo" onerror="this.style.display='none'">` : ''}
-                            <div><div class="panel-name">${colorCodeText(p.name || 'Panel')}</div>${category ? `<div class="panel-category">${colorCodeText(category)}</div>` : ''}</div>
+                            <div><div class="panel-name">${p.name || 'Panel'}</div>${category ? `<div class="panel-category">${category}</div>` : ''}</div>
                         </div>
                         ${featuresHtml ? `<div class="feature-list">${featuresHtml}</div>` : ''}
                         <div class="trust-row">
@@ -3017,7 +2962,7 @@
                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button type="button" class="btn-primary-solid panel-buy-btn" data-panel-id="${panelId}"  style="width:100%;">
+                        <button class="btn-primary-solid " onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Buy Now
                         </button>
                     </div>
@@ -3072,22 +3017,14 @@
     window.currentCheckout = {};
     window.appliedCoupon = null;
 
-    window.handlePurchaseClickById = (panelId) => {
-        const data = window.__panelCheckoutData?.[panelId] || {};
-        return window.handlePurchaseClick(panelId, data.panelName || 'Panel', data.link || '');
-    };
-
     window.handlePurchaseClick = (panelId, panelName, link) => {
-        if (!currentUser || !db) return showToast('Please login again and try.', 'error');
         const select = document.getElementById(`plan-${panelId}`);
         if (!select) return showToast('No plans available', 'error');
         let planData;
         try {
-            const raw = select.value.replace(/&#39;/g, "'");
-            planData = JSON.parse(raw);
+            planData = JSON.parse(select.value);
         } catch(e) {
-            console.error('Plan data parse failed:', e, select.value);
-            return showToast('Error reading plan data. Please refresh the page.', 'error');
+            return showToast('Error reading plan data', 'error');
         }
         window.currentCheckout = {
             panelId, panelName, link: link || '',
@@ -3097,8 +3034,8 @@
             finalPrice: parseFloat(planData.price) || 0
         };
         window.appliedCoupon = null;
-        document.getElementById('chk-panel-name').innerHTML = colorCodeText(panelName);
-        document.getElementById('chk-plan-label').innerHTML = colorCodeText(planData.label || 'Plan');
+        document.getElementById('chk-panel-name').innerText = panelName;
+        document.getElementById('chk-plan-label').innerText = planData.label || 'Plan';
         document.getElementById('chk-orig-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-final-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-coupon-input').value = '';
@@ -3159,45 +3096,54 @@
     };
 
     window.executePurchase = async function() {
-        const checkout = window.currentCheckout || {};
+        const checkout = window.currentCheckout;
         const enteredUid = document.getElementById('chk-uid-input')?.value.trim() || '';
-        if (!currentUser || !db) return showToast('Please login again and try.', 'error');
-        if (!checkout.panelId || !checkout.planKey) return showToast('Please select a valid plan.', 'error');
         if (!enteredUid) return showToast('Enter your UID first', 'warning');
-        const price = Number(checkout.finalPrice ?? checkout.originalPrice ?? 0);
-        if (!Number.isFinite(price) || price < 0) return showToast('Invalid purchase amount.', 'error');
+        const price = checkout.finalPrice || 0;
         const btn = document.getElementById('btn-confirm-pay');
-        if (!btn) return showToast('Checkout button unavailable. Reload the page.', 'error');
-        showLoader(); btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+        const balance = parseFloat(userData.balance || 0);
+        if (balance < price) return showToast(`Insufficient balance. Need ₹${price.toFixed(2)}`, "error");
+        showLoader();
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
         try {
-            const userSnap = await get(ref(db, `users/${currentUser.uid}`));
-            const latestUser = userSnap.val() || {};
-            if (Number(latestUser.balance || 0) < price) { showToast(`Insufficient balance. Need ₹${price.toFixed(2)}`, 'error'); return; }
-            const result = await runTransaction(ref(db, `users/${currentUser.uid}/balance`), bal => { const current=Number(bal||0); return current >= price ? current-price : undefined; });
-            if (!result.committed) throw new Error('Balance changed before payment. Please try again.');
-            const txId='PUR'+Date.now();
-            const purchaseRef=push(ref(db, `purchases/${currentUser.uid}`));
-            await set(purchaseRef,{id:purchaseRef.key,panelId:checkout.panelId,panelName:checkout.panelName||'Panel',plan:checkout.planKey,label:checkout.label||'Plan',enteredUid,price,link:checkout.link||'',date:new Date().toISOString(),status:'success'});
-            await set(ref(db, `transactions/${currentUser.uid}/${txId}`),{id:txId,type:'purchase',amount:price,status:'success',desc:`Purchased ${checkout.panelName||'Panel'} (UID: ${enteredUid})`,uid:enteredUid,panelId:checkout.panelId,plan:checkout.planKey,date:new Date().toISOString()});
-            if (window.appliedCoupon?.id) await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), curr => (Number(curr)||0)+1);
-            if (userData) userData.balance=Number(latestUser.balance||0)-price;
-            ['wallet-stat-bal','prof-bal'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerText='₹'+(Number(latestUser.balance||0)-price).toFixed(2);});
-            closeModal('modal-checkout');
-            document.getElementById('success-plan-name').innerHTML=colorCodeText(checkout.label||'Plan');
-            document.getElementById('success-quantity').innerText='1';
-            openModal('modal-success');
-        } catch(e) { console.error('Purchase failed:',e); showToast(e?.message||'Purchase failed. Please try again.','error'); }
-        finally { hideLoader(); btn.disabled=false; btn.innerHTML='Confirm Pay'; }
+            const result = await runTransaction(ref(db, `users/${currentUser.uid}/balance`), (bal) => {
+                if (bal === null) return 0;
+                if (bal >= price) return bal - price;
+                return undefined;
+            });
+            if (result.committed) {
+                const txId = "PUR" + Date.now();
+                await set(push(ref(db, `purchases/${currentUser.uid}`)), {
+                    panelId: checkout.panelId || '',
+                    panelName: checkout.panelName || 'Panel',
+                    plan: checkout.planKey || '',
+                    label: checkout.label || 'Plan',
+                    enteredUid: enteredUid,
+                    price: price,
+                    link: checkout.link || '',
+                    date: new Date().toISOString()
+                });
+                await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
+                    id: txId, type: "purchase", amount: price, status: "success",
+                    desc: `Purchased ${checkout.panelName || 'Panel'} (UID: ${enteredUid})`, uid: enteredUid, date: new Date().toISOString()
+                });
+                if (window.appliedCoupon && window.appliedCoupon.id) {
+                    await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
+                }
+                closeModal('modal-checkout');
+                document.getElementById('success-plan-name').innerText = checkout.label || 'Plan';
+                document.getElementById('success-quantity').innerText = '1';
+                openModal('modal-success');
+            } else {
+                showToast("Transaction failed. Insufficient funds.", "error");
+            }
+        } catch (e) { showToast("System error. Try again.", "error"); } finally {
+            hideLoader();
+            btn.disabled = false;
+            btn.innerHTML = `Confirm Pay`;
+        }
     };
-
-    // Fallback click handler: keeps Buy Now working even if an inline handler is blocked by the browser.
-    document.addEventListener('click', (event) => {
-        const btn = event.target.closest?.('.panel-buy-btn');
-        if (!btn) return;
-        event.preventDefault();
-        const panelId = btn.dataset.panelId;
-        if (panelId) window.handlePurchaseClickById(panelId);
-    });
 
     // --- MY PLANS ---
     function parsePlanDate(value) {
