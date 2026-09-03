@@ -3018,7 +3018,7 @@
                     plansHtml += `</select>`;
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
+                        plansHtml += `<button type="button" class="plan-option js-plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
                     });
                     plansHtml += `</div>`;
                 } else {
@@ -3048,11 +3048,28 @@
                          </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button class="btn-primary-solid " onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
+                        <button type="button" class="btn-primary-solid js-buy-now" style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Buy Now
                         </button>
                     </div>
                 `;
+
+                // Bind dynamically-created controls without inline onclick handlers.
+                // Inline handlers were fragile when panel names/links contained quotes.
+                const buyBtn = card.querySelector('.js-buy-now');
+                if (buyBtn) {
+                    buyBtn.addEventListener('click', () => {
+                        handlePurchaseClick(panelId, p.name || 'Panel', p.link || '');
+                    });
+                }
+
+                card.querySelectorAll('.js-plan-option').forEach((planBtn) => {
+                    planBtn.addEventListener('click', () => {
+                        const index = Number(planBtn.dataset.planIndex);
+                        if (Number.isInteger(index)) selectPlan(panelId, index);
+                    });
+                });
+
                 container.appendChild(card);
             });
             const searchInput = document.getElementById('search-input');
@@ -3182,13 +3199,21 @@
     };
 
     window.executePurchase = async function() {
-        const checkout = window.currentCheckout;
+        const checkout = window.currentCheckout || {};
         const enteredUid = document.getElementById('chk-uid-input')?.value.trim() || '';
-        if (!enteredUid) return showToast('Enter your UID first', 'warning');
-        const price = checkout.finalPrice || 0;
         const btn = document.getElementById('btn-confirm-pay');
-        const balance = parseFloat(userData.balance || 0);
+
+        if (!currentUser || !db) return showToast('Please login again', 'error');
+        if (!btn) return showToast('Checkout is unavailable. Please refresh.', 'error');
+        if (!checkout.panelId || !checkout.planKey) return showToast('Please select a valid plan', 'error');
+        if (!enteredUid) return showToast('Enter your UID first', 'warning');
+
+        const price = Number(checkout.finalPrice);
+        if (!Number.isFinite(price) || price < 0) return showToast('Invalid plan price', 'error');
+
+        const balance = Number(userData?.balance || 0);
         if (balance < price) return showToast(`Insufficient balance. Need ₹${price.toFixed(2)}`, "error");
+
         showLoader();
         btn.disabled = true;
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
@@ -3224,7 +3249,10 @@
             } else {
                 showToast("Transaction failed. Insufficient funds.", "error");
             }
-        } catch (e) { showToast("System error. Try again.", "error"); } finally {
+        } catch (e) {
+            console.error("Purchase error:", e);
+            showToast("System error: " + (e?.message || "Please try again."), "error");
+        } finally {
             hideLoader();
             btn.disabled = false;
             btn.innerHTML = `Confirm Pay`;
