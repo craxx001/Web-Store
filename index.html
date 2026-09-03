@@ -3000,7 +3000,8 @@
                 if (overlayImage) card.style.setProperty('--panel-overlay-image', `url(\"${overlayImage.replace(/\"/g, '%22')}\")`);
                 const searchText = `${p.name || ''} ${desc}`.toLowerCase();
                 card.setAttribute('data-search', searchText);
-                const panelName = (p.name || 'Panel').replace(/'/g, "\\'");
+                window.__panelCheckoutData = window.__panelCheckoutData || {};
+                window.__panelCheckoutData[panelId] = { panelName: String(p.name || 'Panel'), link: String(p.link || '') };
                 card.innerHTML = `
                     ${bannerHtml}
                     ${videoHtml}
@@ -3016,7 +3017,7 @@
                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button class="btn-primary-solid " onclick="window.handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
+                        <button type="button" class="btn-primary-solid panel-buy-btn" data-panel-id="${panelId}"  style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Buy Now
                         </button>
                     </div>
@@ -3071,14 +3072,22 @@
     window.currentCheckout = {};
     window.appliedCoupon = null;
 
+    window.handlePurchaseClickById = (panelId) => {
+        const data = window.__panelCheckoutData?.[panelId] || {};
+        return window.handlePurchaseClick(panelId, data.panelName || 'Panel', data.link || '');
+    };
+
     window.handlePurchaseClick = (panelId, panelName, link) => {
+        if (!currentUser || !db) return showToast('Please login again and try.', 'error');
         const select = document.getElementById(`plan-${panelId}`);
         if (!select) return showToast('No plans available', 'error');
         let planData;
         try {
-            planData = JSON.parse(select.value);
+            const raw = select.value.replace(/&#39;/g, "'");
+            planData = JSON.parse(raw);
         } catch(e) {
-            return showToast('Error reading plan data', 'error');
+            console.error('Plan data parse failed:', e, select.value);
+            return showToast('Error reading plan data. Please refresh the page.', 'error');
         }
         window.currentCheckout = {
             panelId, panelName, link: link || '',
@@ -3155,7 +3164,7 @@
         if (!currentUser || !db) return showToast('Please login again and try.', 'error');
         if (!checkout.panelId || !checkout.planKey) return showToast('Please select a valid plan.', 'error');
         if (!enteredUid) return showToast('Enter your UID first', 'warning');
-        const price = Number(checkout.finalPrice || 0);
+        const price = Number(checkout.finalPrice ?? checkout.originalPrice ?? 0);
         if (!Number.isFinite(price) || price < 0) return showToast('Invalid purchase amount.', 'error');
         const btn = document.getElementById('btn-confirm-pay');
         if (!btn) return showToast('Checkout button unavailable. Reload the page.', 'error');
@@ -3180,6 +3189,15 @@
         } catch(e) { console.error('Purchase failed:',e); showToast(e?.message||'Purchase failed. Please try again.','error'); }
         finally { hideLoader(); btn.disabled=false; btn.innerHTML='Confirm Pay'; }
     };
+
+    // Fallback click handler: keeps Buy Now working even if an inline handler is blocked by the browser.
+    document.addEventListener('click', (event) => {
+        const btn = event.target.closest?.('.panel-buy-btn');
+        if (!btn) return;
+        event.preventDefault();
+        const panelId = btn.dataset.panelId;
+        if (panelId) window.handlePurchaseClickById(panelId);
+    });
 
     // --- MY PLANS ---
     function parsePlanDate(value) {
