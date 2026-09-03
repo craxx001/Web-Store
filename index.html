@@ -534,6 +534,61 @@
         -webkit-text-fill-color: transparent;
     }
     .navbar .brand img { height: 32px; border-radius: 6px; }
+    .navbar .brand #site-name {
+        color: #fff;
+        background: none;
+        -webkit-background-clip: initial;
+        background-clip: initial;
+        -webkit-text-fill-color: #fff;
+        text-shadow: 2px 0 #ff1a1a, -2px 0 rgba(255,255,255,0.9);
+        position: relative;
+        display: inline-block;
+        animation: nrzGlitch 1.8s steps(1, end) infinite;
+        will-change: transform, text-shadow;
+    }
+    .navbar .brand #site-name::before,
+    .navbar .brand #site-name::after {
+        content: "NRZ STORE";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        pointer-events: none;
+        background: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+    .navbar .brand #site-name::before {
+        color: #ff1a1a;
+        text-shadow: -2px 0 #fff;
+        -webkit-text-fill-color: #ff1a1a;
+        animation: nrzGlitchRed 1.8s steps(1, end) infinite;
+    }
+    .navbar .brand #site-name::after {
+        color: #fff;
+        text-shadow: 2px 0 #ff1a1a;
+        -webkit-text-fill-color: #fff;
+        animation: nrzGlitchWhite 1.8s steps(1, end) infinite;
+    }
+    @keyframes nrzGlitch {
+        0%, 82%, 100% { transform: translate(0); text-shadow: 2px 0 #ff1a1a, -2px 0 #fff; }
+        84% { transform: translate(-2px, 1px); text-shadow: 3px 0 #ff1a1a, -3px 0 #fff; }
+        86% { transform: translate(2px, -1px); text-shadow: -3px 0 #ff1a1a, 3px 0 #fff; }
+        88% { transform: translate(0); }
+        90% { transform: translate(1px, 0); text-shadow: 4px 0 #ff1a1a, -1px 0 #fff; }
+        92% { transform: translate(-1px, 0); }
+    }
+    @keyframes nrzGlitchRed {
+        0%, 80%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+        83% { clip-path: inset(15% 0 65% 0); transform: translate(-3px, 0); }
+        86% { clip-path: inset(55% 0 25% 0); transform: translate(3px, 0); }
+        89% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 0); }
+    }
+    @keyframes nrzGlitchWhite {
+        0%, 81%, 100% { clip-path: inset(100% 0 0 0); transform: translate(0); }
+        84% { clip-path: inset(65% 0 15% 0); transform: translate(3px, 0); }
+        87% { clip-path: inset(25% 0 55% 0); transform: translate(-3px, 0); }
+        90% { clip-path: inset(50% 0 35% 0); transform: translate(2px, 0); }
+    }
     .panel-heading-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
     .panel-logo { width:48px; height:48px; border-radius:13px; object-fit:cover; flex:0 0 48px; border:1px solid var(--border); background:var(--surface-2); }
     .panel-heading-row .panel-name { margin-bottom:0; }
@@ -1623,6 +1678,22 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
+
+    /* RGB animated partnership text */
+    .rgb-healing-queen {
+        background: linear-gradient(90deg, #ff0000, #ff7a00, #ffee00, #00ff66, #00d9ff, #4d5cff, #b000ff, #ff00a8, #ff0000);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        animation: rgbQueen 4s linear infinite;
+        text-shadow: 0 0 14px rgba(0, 212, 255, 0.18);
+    }
+    @keyframes rgbQueen {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 300% 50%; }
+    }
 </style>
 </head>
 <body>
@@ -1734,7 +1805,7 @@
         <div class="page-header">
             <h2 class="page-title">Our <span>Services</span></h2>
             <div class="search-box">
-                <input id="search-input" placeholder="Search..." type="text"/>
+                <input id="search-input" placeholder="Search plans..." type="text"/>
                 <i class="fas fa-search search-icon"></i>
                 <i class="fas fa-spinner search-spinner" id="search-loader"></i>
             </div>
@@ -1754,13 +1825,12 @@
 
         <!-- FOOTER -->
         <div class="store-footer">
-            <h3>FFM <span>ONLINE</span> SERVICES</h3>
-            <p>Partnership with "color: var(--accent-gold)<b>Healing Queen</b>"</p>
+            <h3>NRZ <span>ONLINE</span> SERVICES</h3>
+            <p>Partnership with "<a class="rgb-healing-queen" href="https://youtube.com/@healing_queen?si=n1HseYFadalY6UGD" target="_blank" rel="noopener noreferrer" aria-label="Healing Queen YouTube channel">Healing Queen</a>"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
             </div>
             <div class="features">
-                <span>✔ Fast Delivery</span>
                 <span>✔ Instant Service</span>
                 <span>✔ Trusted Seller</span>
             </div>
@@ -2896,6 +2966,24 @@
     // --- FETCH PANELS ---
     function fetchPanels() {
         if (!db) return;
+
+    /* Color-code text: write [ff0000] before the text you want colored. */
+    function colorCodeText(value) {
+        const source = String(value ?? '');
+        const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const token = /\[#?([0-9a-fA-F]{6})\]/g;
+        let out = '', last = 0, match, currentColor = null;
+        while ((match = token.exec(source))) {
+            const plain = source.slice(last, match.index);
+            out += currentColor ? `<span style="color:#${currentColor}">${escapeHtml(plain)}</span>` : escapeHtml(plain);
+            currentColor = match[1];
+            last = token.lastIndex;
+        }
+        const tail = source.slice(last);
+        out += currentColor ? `<span style="color:#${currentColor}">${escapeHtml(tail)}</span>` : escapeHtml(tail);
+        return out;
+    }
+
         onValue(ref(db, 'panels'), (snap) => {
             const container = document.getElementById('panels-container');
             container.innerHTML = '';
@@ -2910,7 +2998,7 @@
                 const desc = p.description || '';
                 const category = String(p.category || '').trim();
                 const features = desc.split(/\n|-/).filter(f => f && f.trim().length > 0);
-                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${f.trim()}</span>`).join('');
+                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${colorCodeText(f.trim())}</span>`).join('');
                 const updateLink = p.link ? `window.open('${p.link}','_blank')` : '';
                 const updateBtn = updateLink ? `<button class="btn-outline" onclick="${updateLink}"><i class="fas fa-file-download"></i> Update</button>` : '';
                 const feedbackBtn = p.feedback && p.feedback.trim() ?
@@ -2925,12 +3013,12 @@
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
                         const value = JSON.stringify({ key, label, price: data.price || 0 }).replace(/'/g, '&#39;');
-                        plansHtml += `<option value='${value}'>${label} - ₹${data.price || 0}</option>`;
+                        plansHtml += `<option value='${value}'>${colorCodeText(label)} - ₹${data.price || 0}</option>`;
                     });
                     plansHtml += `</select>`;
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${label}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
+                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
                     });
                     plansHtml += `</div>`;
                 } else {
@@ -2953,13 +3041,11 @@
                     <div class="panel-body">
                         <div class="panel-heading-row">
                             ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${p.name || 'Panel'} logo" onerror="this.style.display='none'">` : ''}
-                            <div><div class="panel-name">${p.name || 'Panel'}</div>${category ? `<div class="panel-category">${category}</div>` : ''}</div>
+                            <div><div class="panel-name">${colorCodeText(p.name || 'Panel')}</div>${category ? `<div class="panel-category">${colorCodeText(category)}</div>` : ''}</div>
                         </div>
                         ${featuresHtml ? `<div class="feature-list">${featuresHtml}</div>` : ''}
                         <div class="trust-row">
-                            <span class="trust-item"><i class="fas fa-shield-alt"></i> Safe Payment</span>
-                            <span class="trust-item"><i class="fas fa-podcast"></i> Online</span>
-                        </div>
+                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
                         <button class="btn-primary-solid " onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
@@ -3034,8 +3120,8 @@
             finalPrice: parseFloat(planData.price) || 0
         };
         window.appliedCoupon = null;
-        document.getElementById('chk-panel-name').innerText = panelName;
-        document.getElementById('chk-plan-label').innerText = planData.label || 'Plan';
+        document.getElementById('chk-panel-name').innerHTML = colorCodeText(panelName);
+        document.getElementById('chk-plan-label').innerHTML = colorCodeText(planData.label || 'Plan');
         document.getElementById('chk-orig-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-final-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-coupon-input').value = '';
@@ -3132,7 +3218,7 @@
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
                 }
                 closeModal('modal-checkout');
-                document.getElementById('success-plan-name').innerText = checkout.label || 'Plan';
+                document.getElementById('success-plan-name').innerHTML = colorCodeText(checkout.label || 'Plan');
                 document.getElementById('success-quantity').innerText = '1';
                 openModal('modal-success');
             } else {
