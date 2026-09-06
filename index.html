@@ -1565,6 +1565,23 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
+    .healing-queen-link {
+        font-weight: 800;
+        background: linear-gradient(90deg, #ff004c, #ff8a00, #ffe600, #00ff88, #00c8ff, #7a5cff, #ff00c8, #ff004c);
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: healingQueenRGB 4s linear infinite;
+        text-shadow: 0 0 14px rgba(0, 200, 255, 0.18);
+        transition: filter 0.3s ease;
+    }
+    .healing-queen-link:hover { filter: brightness(1.35); }
+    @keyframes healingQueenRGB {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 300% 50%; }
+    }
+
 </style>
 </head>
 <body>
@@ -1707,7 +1724,7 @@
         <!-- FOOTER -->
         <div class="store-footer">
             <h3>FF <span>PANEL</span> STORE</h3>
-            <p>Best trusted store for premium Free Fire panels &amp; services</p>
+            <p>Partnership with <a class="healing-queen-link" href="https://youtube.com/@healing_queen?si=2bRoAMH-MXYtUi1v" target="_blank" rel="noopener noreferrer">Healing Queen</a></p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
                 <span>⚡ Secure Checkout</span>
