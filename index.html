@@ -1565,23 +1565,6 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
-    .healing-queen-link {
-        font-weight: 800;
-        background: linear-gradient(90deg, #ff004c, #ff8a00, #ffe600, #00ff88, #00c8ff, #7a5cff, #ff00c8, #ff004c);
-        background-size: 300% auto;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: healingQueenRGB 4s linear infinite;
-        text-shadow: 0 0 14px rgba(0, 200, 255, 0.18);
-        transition: filter 0.3s ease;
-    }
-    .healing-queen-link:hover { filter: brightness(1.35); }
-    @keyframes healingQueenRGB {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 300% 50%; }
-    }
-
 </style>
 </head>
 <body>
@@ -1701,9 +1684,9 @@
     <!-- PAGE: HOME -->
     <div class="page-content" id="page-home">
         <div class="page-header">
-            <h2 class="page-title">Premium <span>Store</span></h2>
+            <h2 class="page-title">All <span>Products</span></h2>
             <div class="search-box">
-                <input id="search-input" placeholder="Search panels..." type="text"/>
+                <input id="search-input" placeholder="Search products..." type="text"/>
                 <i class="fas fa-search search-icon"></i>
                 <i class="fas fa-spinner search-spinner" id="search-loader"></i>
             </div>
@@ -1723,19 +1706,17 @@
 
         <!-- FOOTER -->
         <div class="store-footer">
-            <h3>FF <span>PANEL</span> STORE</h3>
-            <p>Partnership with <a class="healing-queen-link" href="https://youtube.com/@healing_queen?si=2bRoAMH-MXYtUi1v" target="_blank" rel="noopener noreferrer">Healing Queen</a></p>
+            <h3>NRZ <span>ONLINE</span> SERVICES</h3>
+            <p>Partnership with "Healing Queen"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
-                <span>⚡ Secure Checkout</span>
-                <span>👥 248k+ Users</span>
             </div>
             <div class="features">
                 <span>✔ Fast Delivery</span>
                 <span>✔ Instant Service</span>
                 <span>✔ Trusted Seller</span>
             </div>
-            <p class="copy">© 2026-2031 FF Panel Store. All rights reserved.</p>
+            <p class="copy">© 2026-2031 produced by @nrzravi</p>
         </div>
     </div>
 
@@ -2932,8 +2913,6 @@
                         </div>
                         ${featuresHtml ? `<div class="feature-list">${featuresHtml}</div>` : ''}
                         <div class="trust-row">
-                            <span class="trust-item"><i class="fas fa-shield-alt"></i> Safe Payment</span>
-                            <span class="trust-item"><i class="fas fa-medal"></i> Verified</span>
                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
