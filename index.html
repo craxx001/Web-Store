@@ -1775,10 +1775,19 @@
                 </div>
                 <p class="card-desc">Fast UPI payment. Balance updates automatically within seconds.</p>
                 <div class="input-group">
-                    <input id="add-amount" placeholder="Amount (₹)" type="number"/>
+                    <select id="add-amount" class="plan-select" aria-label="Select top-up amount">
+                        <option value="" selected disabled>Select Top-up Amount</option>
+                        <option value="5">₹5</option>
+                        <option value="20">₹20</option>
+                        <option value="50">₹50</option>
+                        <option value="100">₹100</option>
+                        <option value="250">₹250</option>
+                        <option value="500">₹500</option>
+                        <option value="1000">₹1000</option>
+                    </select>
                 </div>
                 <div class="input-group">
-                    <input id="add-phone" placeholder="WhatsApp Number" type="tel"/>
+                    <input id="add-phone" placeholder="Contact Info (Optional)" type="text" autocomplete="off"/>
                 </div>
                 <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
                     <i class="fas fa-arrow-right"></i> Pay Now
@@ -1978,14 +1987,8 @@
     <div class="modal" style="text-align:center;">
         <i class="fas fa-check-circle success-icon"></i>
         <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
-        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Your premium key is ready.</p>
-        <div class="key-display">
-            <span class="key-label">License Key</span>
-            <div class="key-value" id="modal-key-display">XXXXXX</div>
-        </div>
+        <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:16px;">We have received your order and processing will start shortly.</p>
         <div class="action-row">
-            <button class="btn btn-primary-modal" id="modal-btn-access"><i class="fas fa-download"></i> Access Tool</button>
-            <button class="btn btn-outline-modal" onclick="copyToClipboard('modal-key-display','License Key')"><i class="fas fa-copy"></i> Copy</button>
             <button class="btn btn-outline-modal" onclick="closeModal('modal-success')">Close</button>
         </div>
     </div>
@@ -2380,8 +2383,8 @@
         const btn = this;
 
         if (!window.ZAP_KEY) return showToast("Gateway offline. Contact admin.", "error");
-        if (!Number.isFinite(amt) || amt < 1 || amt > 5000) return showToast("Enter an amount between ₹1 and ₹5,000", "error");
-        if (!phone) return showToast("Enter a valid 10-digit Indian mobile number", "error");
+        const allowedAmounts = [5, 20, 50, 100, 250, 500, 1000];
+        if (!allowedAmounts.includes(amt)) return showToast("Please select a valid top-up amount", "error");
         if (!currentUser) return showToast("Please login again", "error");
 
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating Order...`;
@@ -3079,8 +3082,6 @@
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
                 }
                 closeModal('modal-checkout');
-                document.getElementById('modal-key-display').innerText = newKey;
-                document.getElementById('modal-btn-access').onclick = () => window.open(checkout.link || "https://t.me/", '_blank');
                 openModal('modal-success');
             } else {
                 showToast("Transaction failed. Insufficient funds.", "error");
