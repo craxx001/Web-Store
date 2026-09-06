@@ -998,6 +998,20 @@
 
     .wallet-section { animation: fadeUp 0.3s ease; }
 
+    /* Instant Gateway amount pills */
+    .amount-pills { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+    .amount-pill {
+        padding:9px 16px; border:1.5px solid var(--border-color); border-radius:999px;
+        background:var(--bg-input); color:var(--text-secondary); font-size:13px; font-weight:700;
+        transition:var(--transition); cursor:pointer;
+    }
+    .amount-pill:hover { border-color:var(--accent-blue); color:var(--text-primary); transform:translateY(-1px); }
+    .amount-pill.active { background:var(--accent-blue); border-color:var(--accent-blue); color:#fff; box-shadow:0 6px 20px rgba(79,140,255,.2); }
+    .unavailable-card { text-align:center; max-width:560px; margin:0 auto; }
+    .unavailable-card i { font-size:44px; color:var(--text-muted); margin-bottom:14px; display:block; }
+    .unavailable-card h3 { font-size:20px; font-weight:800; margin-bottom:8px; }
+    .unavailable-card p { color:var(--text-secondary); font-size:14px; }
+
     .premium-card {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
@@ -1773,22 +1787,26 @@
                     <i class="fas fa-bolt" style="color:var(--accent-blue);"></i>
                     <h3>Instant Gateway</h3>
                 </div>
-                <p class="card-desc">Fast UPI payment. Balance updates automatically within seconds.</p>
-                <div class="input-group">
-                    <select id="add-amount" class="plan-select" aria-label="Select top-up amount">
-                        <option value="" selected disabled>Select Top-up Amount</option>
-                        <option value="5">₹5</option>
-                        <option value="20">₹20</option>
-                        <option value="50">₹50</option>
-                        <option value="100">₹100</option>
-                        <option value="250">₹250</option>
-                        <option value="500">₹500</option>
-                        <option value="1000">₹1000</option>
-                    </select>
+                <p class="card-desc">Select a top-up amount and continue with the ZapPay payment gateway.</p>
+
+                <div class="amount-pills" id="amount-pills">
+                    <button type="button" class="amount-pill" data-amount="5">₹5</button>
+                    <button type="button" class="amount-pill" data-amount="20">₹20</button>
+                    <button type="button" class="amount-pill" data-amount="50">₹50</button>
+                    <button type="button" class="amount-pill" data-amount="100">₹100</button>
+                    <button type="button" class="amount-pill" data-amount="250">₹250</button>
+                    <button type="button" class="amount-pill" data-amount="500">₹500</button>
+                    <button type="button" class="amount-pill" data-amount="1000">₹1000</button>
                 </div>
+                <input id="add-amount" type="hidden" value=""/>
+
                 <div class="input-group">
                     <input id="add-phone" placeholder="Contact Info (Optional)" type="text" autocomplete="off"/>
+                    <small style="display:block;color:var(--text-muted);font-size:11px;margin-top:6px;">
+                        Optional — enter a phone number, social ID, username, or any contact detail.
+                    </small>
                 </div>
+
                 <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
                     <i class="fas fa-arrow-right"></i> Pay Now
                 </button>
@@ -1813,73 +1831,19 @@
 
         <!-- Tab: Crypto -->
         <div id="wallet-tab-crypto" class="wallet-section hidden">
-            <div class="premium-card">
-                <div class="card-head">
-                    <i class="fab fa-bitcoin" style="color:var(--accent-gold);"></i>
-                    <h3>Binance / USDT</h3>
-                </div>
-                <p class="card-desc">Send USDT via Binance Pay or TRC20. Rate: <strong style="color:var(--accent-gold);">1 USDT = ₹<span id="crypto-rate">88.00</span></strong></p>
-
-                <div class="qr-display crypto">
-                    <img id="crypto-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
-                </div>
-                <div style="text-align:center;margin-bottom:20px;">
-                    <a id="crypto-qr-download" href="#" download="QR.jpg" class="btn-outline" style="border-color:var(--accent-gold);color:var(--accent-gold);">Download QR</a>
-                </div>
-
-                <div class="copy-row">
-                    <div>
-                        <span class="copy-label">Binance Pay ID</span>
-                        <div class="copy-value" id="crypto-payid-display">Loading...</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyToClipboard('crypto-payid-display','Binance Pay ID')">Copy</button>
-                </div>
-                <div class="copy-row">
-                    <div>
-                        <span class="copy-label">USDT Address (TRC20)</span>
-                        <div class="copy-value" id="crypto-address-display">Loading...</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyToClipboard('crypto-address-display','USDT Address')">Copy</button>
-                </div>
-
-                <button class="btn-primary-solid" style="width:100%;background:linear-gradient(135deg,var(--accent-gold),#f59e0b);color:#000;" onclick="openModal('modal-crypto-deposit')">
-                    <i class="fas fa-check-circle"></i> I Have Paid
-                </button>
+            <div class="premium-card unavailable-card">
+                <i class="fas fa-ban"></i>
+                <h3>This payment method is currently unavailable</h3>
+                <p>Crypto payments are temporarily unavailable.</p>
             </div>
         </div>
 
         <!-- Tab: Manual UPI -->
         <div id="wallet-tab-manual" class="wallet-section hidden">
-            <div class="premium-card">
-                <div class="card-head">
-                    <i class="fas fa-qrcode" style="color:var(--accent-purple);"></i>
-                    <h3>Manual UPI</h3>
-                </div>
-                <p class="card-desc">Scan the QR or copy UPI ID to transfer funds manually.</p>
-
-                <div class="qr-display manual">
-                    <img id="manual-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
-                </div>
-                <div style="text-align:center;margin-bottom:20px;">
-                    <a id="manual-qr-download" href="#" download="QR.jpg" class="btn-outline" style="border-color:var(--accent-purple);color:var(--accent-purple);">Download QR</a>
-                </div>
-
-                <div class="copy-row">
-                    <div>
-                        <span class="copy-label">UPI ID</span>
-                        <div class="copy-value" id="manual-upi-display">Loading...</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyToClipboard('manual-upi-display','UPI ID')">Copy</button>
-                </div>
-
-                <div class="input-group"><input id="manual-amount" placeholder="Amount Sent (₹)" type="number"/></div>
-                <div class="input-group"><input id="manual-utr" placeholder="12-Digit UTR / Ref No." type="text"/></div>
-                <div class="input-group"><input id="manual-app" placeholder="Payment App (PhonePe, Paytm, etc.)" type="text"/></div>
-                <div class="input-group"><input id="manual-screenshot" placeholder="Screenshot URL (Drive, ImgBB)" type="url"/></div>
-
-                <button class="btn-primary-solid" id="btn-submit-manual" style="width:100%;background:linear-gradient(135deg,var(--accent-purple),#7c3aed);">
-                    <i class="fas fa-paper-plane"></i> Submit Request
-                </button>
+            <div class="premium-card unavailable-card">
+                <i class="fas fa-ban"></i>
+                <h3>This payment method is currently unavailable</h3>
+                <p>Manual UPI payments are temporarily unavailable.</p>
             </div>
         </div>
 
@@ -1986,8 +1950,10 @@
 <div class="modal-overlay hidden" id="modal-success">
     <div class="modal" style="text-align:center;">
         <i class="fas fa-check-circle success-icon"></i>
-        <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
-        <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:16px;">We have received your order and processing will start shortly.</p>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:10px;">Purchase Success!</h2>
+        <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:22px;">
+            We have received your order and processing will start shortly.
+        </p>
         <div class="action-row">
             <button class="btn btn-outline-modal" onclick="closeModal('modal-success')">Close</button>
         </div>
@@ -2240,6 +2206,16 @@
         if (section) section.classList.remove('hidden');
     };
 
+    // --- INSTANT GATEWAY AMOUNT PILLS ---
+    document.querySelectorAll('.amount-pill').forEach((pill) => {
+        pill.addEventListener('click', function() {
+            const amount = this.dataset.amount;
+            document.getElementById('add-amount').value = amount;
+            document.querySelectorAll('.amount-pill').forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
     // --- ZAPPAY PAYMENT SYSTEM ---
     const ZAPPAY_API_BASE = "https://zappay-beta.vercel.app";
     let paymentPollInterval = null;
@@ -2379,12 +2355,12 @@
     // --- AUTO DEPOSIT ---
     document.getElementById('btn-submit-payment').addEventListener('click', async function() {
         const amt = sanitizeAmount(document.getElementById('add-amount').value);
-        const phone = sanitizePhone(document.getElementById('add-phone').value);
+        const contactInfo = document.getElementById('add-phone').value.trim();
+        const phone = sanitizePhone(contactInfo);
         const btn = this;
 
         if (!window.ZAP_KEY) return showToast("Gateway offline. Contact admin.", "error");
-        const allowedAmounts = [5, 20, 50, 100, 250, 500, 1000];
-        if (!allowedAmounts.includes(amt)) return showToast("Please select a valid top-up amount", "error");
+        if (!Number.isFinite(amt) || ![5, 20, 50, 100, 250, 500, 1000].includes(amt)) return showToast("Please select a valid top-up amount", "error");
         if (!currentUser) return showToast("Please login again", "error");
 
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating Order...`;
@@ -2400,13 +2376,15 @@
                 amount: amt,
                 status: "pending",
                 desc: "ZapPay Gateway Deposit",
+                contact_info: contactInfo,
                 date: new Date().toISOString()
             });
             await set(ref(db, `gateway_payments/${orderId}`), {
                 uid: currentUser.uid,
                 email: currentUser.email || "",
                 amount: amt,
-                phone: phone,
+                phone: phone || "",
+                contact_info: contactInfo,
                 status: "pending",
                 gateway: "ZapPay",
                 timestamp: serverTimestamp()
@@ -2826,18 +2804,56 @@
         onValue(ref(db, `transactions/${currentUser.uid}`), (snap) => {
             let totalDep = 0, todayDep = 0, pendingDep = 0;
             const today = new Date().toLocaleDateString();
+            const PENDING_TTL = 30 * 60 * 1000;
+
             if (snap.exists()) {
                 snap.forEach(child => {
                     const tx = child.val();
-                    const txDate = new Date(tx.date).toLocaleDateString();
+                    const txDateObj = tx.date ? new Date(tx.date) : null;
+                    const txDate = txDateObj && !Number.isNaN(txDateObj.getTime())
+                        ? txDateObj.toLocaleDateString()
+                        : '';
+
                     if (tx.type && tx.type.includes('deposit')) {
+                        if (tx.status === 'pending' && txDateObj && (Date.now() - txDateObj.getTime()) >= PENDING_TTL) {
+                            update(ref(db, `transactions/${currentUser.uid}/${child.key}`), {
+                                status: 'expired',
+                                expired_at: new Date().toISOString()
+                            }).catch(() => {});
+                            if (tx.type === 'deposit_auto') {
+                                update(ref(db, `gateway_payments/${child.key}`), {
+                                    status: 'expired',
+                                    expired_at: new Date().toISOString()
+                                }).catch(() => {});
+                            }
+                            return;
+                        }
+
                         if (tx.status === 'success') {
                             totalDep += parseFloat(tx.amount) || 0;
                             if (txDate === today) todayDep += parseFloat(tx.amount) || 0;
-                        } else if (tx.status === 'pending') pendingDep += parseFloat(tx.amount) || 0;
+                        } else if (tx.status === 'pending') {
+                            pendingDep += parseFloat(tx.amount) || 0;
+                            if (txDateObj) {
+                                const remaining = PENDING_TTL - (Date.now() - txDateObj.getTime());
+                                if (remaining > 0) setTimeout(() => {
+                                        update(ref(db, `transactions/${currentUser.uid}/${child.key}`), {
+                                            status: 'expired',
+                                            expired_at: new Date().toISOString()
+                                        }).catch(() => {});
+                                        if (tx.type === 'deposit_auto') {
+                                            update(ref(db, `gateway_payments/${child.key}`), {
+                                                status: 'expired',
+                                                expired_at: new Date().toISOString()
+                                            }).catch(() => {});
+                                        }
+                                    }, remaining + 1000);
+                            }
+                        }
                     }
                 });
             }
+
             document.getElementById('wallet-stat-dep').innerText = `₹${totalDep.toFixed(2)}`;
             document.getElementById('wallet-stat-today').innerText = `₹${todayDep.toFixed(2)}`;
             document.getElementById('wallet-stat-pending').innerText = `₹${pendingDep.toFixed(2)}`;
