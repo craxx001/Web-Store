@@ -1015,6 +1015,63 @@
     .plan-options:not(.liquid-glass) .plan-select-hidden { display: block !important; }
 
     /* ============================================
+       INSTANT GATEWAY TOP-UP PRESETS
+    ============================================ */
+    .topup-presets {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 18px 0 14px;
+    }
+    .topup-preset {
+        padding: 13px 8px;
+        border-radius: 12px;
+        border: 1.5px solid var(--border-color);
+        background: var(--bg-input);
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 800;
+        transition: var(--transition);
+    }
+    .topup-preset:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+        transform: translateY(-1px);
+    }
+    .topup-preset.selected {
+        color: #fff;
+        border-color: var(--accent-blue);
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        box-shadow: 0 8px 24px rgba(79,140,255,.18);
+    }
+    .topup-selected {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding: 12px 14px;
+        border: 1px solid rgba(79,140,255,.18);
+        border-radius: var(--radius-sm);
+        background: rgba(79,140,255,.06);
+    }
+    .topup-selected span:first-child {
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .topup-selected strong {
+        color: var(--accent-blue);
+        font-size: 17px;
+    }
+    @media (max-width: 520px) {
+        .topup-presets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 360px) {
+        .topup-presets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* ============================================
        WALLET - Modern Dashboard
     ============================================ */
     .wallet-stats {
@@ -1891,15 +1948,32 @@
                     <i class="fas fa-bolt" style="color:var(--accent-blue);"></i>
                     <h3>Instant Gateway</h3>
                 </div>
-                <p class="card-desc">• Choose any UPI app to complete the payment • After payment verification, your money will be updated in your wallet! {processing may take up to 7 minutes}</p>
+                <p class="card-desc">Select a wallet top-up amount, enter your mobile number, then tap Pay Now to open the existing ZapPay gateway.</p>
+
+                <div class="topup-presets" id="topup-presets">
+                    <button type="button" class="topup-preset" data-amount="5" onclick="selectTopupAmount(5)">₹5</button>
+                    <button type="button" class="topup-preset" data-amount="25" onclick="selectTopupAmount(25)">₹25</button>
+                    <button type="button" class="topup-preset" data-amount="50" onclick="selectTopupAmount(50)">₹50</button>
+                    <button type="button" class="topup-preset" data-amount="100" onclick="selectTopupAmount(100)">₹100</button>
+                    <button type="button" class="topup-preset" data-amount="250" onclick="selectTopupAmount(250)">₹250</button>
+                    <button type="button" class="topup-preset" data-amount="500" onclick="selectTopupAmount(500)">₹500</button>
+                    <button type="button" class="topup-preset" data-amount="1000" onclick="selectTopupAmount(1000)">₹1000</button>
+                </div>
+
+                <div class="topup-selected">
+                    <span>Selected top-up</span>
+                    <strong id="selected-topup-amount">₹5.00</strong>
+                </div>
+
                 <div class="input-group">
-                    <input id="add-amount" placeholder="Amount (₹)" type="number"/>
+                    <input id="add-amount" type="hidden" value="5"/>
                 </div>
                 <div class="input-group">
-                    <input id="add-phone" placeholder="Contact Number" type="tel"/>
+                    <input id="add-phone" placeholder="Contact Number" type="tel" inputmode="numeric" autocomplete="tel"/>
                 </div>
+
                 <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
-                    <i class="fas fa-arrow-right"></i> Pay Now
+                    <i class="fas fa-bolt"></i> Pay Now
                 </button>
 
                 <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border-color);">
@@ -1918,6 +1992,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+
         </div>
 
         <!-- Tab: Crypto -->
@@ -2482,6 +2558,26 @@
         } catch (e) { console.error(e); }
     }
 
+    // --- INSTANT TOP-UP PRESETS ---
+    window.selectTopupAmount = function(amount) {
+        const allowed = [5, 25, 50, 100, 250, 500, 1000];
+        const value = Number(amount);
+        if (!allowed.includes(value)) return;
+
+        const amountInput = document.getElementById('add-amount');
+        const amountLabel = document.getElementById('selected-topup-amount');
+
+        if (amountInput) amountInput.value = String(value);
+        if (amountLabel) amountLabel.textContent = `₹${value.toFixed(2)}`;
+
+        document.querySelectorAll('.topup-preset').forEach(btn => {
+            btn.classList.toggle('selected', Number(btn.dataset.amount) === value);
+        });
+    };
+
+    // Select ₹5 by default.
+    selectTopupAmount(5);
+
     // --- AUTO DEPOSIT ---
     document.getElementById('btn-submit-payment').addEventListener('click', async function() {
         const amt = sanitizeAmount(document.getElementById('add-amount').value);
@@ -2505,7 +2601,7 @@
                 type: "deposit_auto",
                 amount: amt,
                 status: "pending",
-                desc: "ZapPay Gateway Deposit",
+                desc: `ZapPay Gateway Deposit - ₹${amt.toFixed(2)}`,
                 date: new Date().toISOString()
             });
             await set(ref(db, `gateway_payments/${orderId}`), {
@@ -3018,7 +3114,7 @@
                     plansHtml += `</select>`;
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<button type="button" class="plan-option js-plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
+                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' selected' : ''}" data-plan-index="${index}" onclick="selectPlan('${panelId}',${index})"><span class="plan-option-content"><span class="plan-option-name">${colorCodeText(label)}</span><span style="display:flex;align-items:center;gap:10px;"><span class="plan-option-price">₹${data.price || 0}</span><span class="plan-check"><i class="fas fa-check" style="font-size:10px;"></i></span></span></span></button>`;
                     });
                     plansHtml += `</div>`;
                 } else {
@@ -3048,28 +3144,11 @@
                          </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button type="button" class="btn-primary-solid js-buy-now" style="width:100%;">
+                        <button class="btn-primary-solid " onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Buy Now
                         </button>
                     </div>
                 `;
-
-                // Bind dynamically-created controls without inline onclick handlers.
-                // Inline handlers were fragile when panel names/links contained quotes.
-                const buyBtn = card.querySelector('.js-buy-now');
-                if (buyBtn) {
-                    buyBtn.addEventListener('click', () => {
-                        handlePurchaseClick(panelId, p.name || 'Panel', p.link || '');
-                    });
-                }
-
-                card.querySelectorAll('.js-plan-option').forEach((planBtn) => {
-                    planBtn.addEventListener('click', () => {
-                        const index = Number(planBtn.dataset.planIndex);
-                        if (Number.isInteger(index)) selectPlan(panelId, index);
-                    });
-                });
-
                 container.appendChild(card);
             });
             const searchInput = document.getElementById('search-input');
@@ -3199,21 +3278,15 @@
     };
 
     window.executePurchase = async function() {
-        const checkout = window.currentCheckout || {};
+        const checkout = window.currentCheckout;
         const enteredUid = document.getElementById('chk-uid-input')?.value.trim() || '';
-        const btn = document.getElementById('btn-confirm-pay');
-
-        if (!currentUser || !db) return showToast('Please login again', 'error');
-        if (!btn) return showToast('Checkout is unavailable. Please refresh.', 'error');
-        if (!checkout.panelId || !checkout.planKey) return showToast('Please select a valid plan', 'error');
         if (!enteredUid) return showToast('Enter your UID first', 'warning');
-
-        const price = Number(checkout.finalPrice);
-        if (!Number.isFinite(price) || price < 0) return showToast('Invalid plan price', 'error');
-
-        const balance = Number(userData?.balance || 0);
+        const price = Number(checkout.finalPrice || 0);
+        const btn = document.getElementById('btn-confirm-pay');
+        if (!Number.isFinite(price) || price <= 0) return showToast("Invalid plan price", "error");
+        const balanceSnap = await get(ref(db, `users/${currentUser.uid}/balance`));
+        const balance = Number(balanceSnap.val() || 0);
         if (balance < price) return showToast(`Insufficient balance. Need ₹${price.toFixed(2)}`, "error");
-
         showLoader();
         btn.disabled = true;
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
@@ -3249,10 +3322,7 @@
             } else {
                 showToast("Transaction failed. Insufficient funds.", "error");
             }
-        } catch (e) {
-            console.error("Purchase error:", e);
-            showToast("System error: " + (e?.message || "Please try again."), "error");
-        } finally {
+        } catch (e) { showToast("System error. Try again.", "error"); } finally {
             hideLoader();
             btn.disabled = false;
             btn.innerHTML = `Confirm Pay`;
