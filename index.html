@@ -883,24 +883,30 @@
     .btn-primary-solid:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     .panel-card .plans-container {
-        display:grid;
-        grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+        display:flex;
+        flex-direction:column;
         gap:10px;
         margin-top:4px;
+        width:100%;
     }
     .panel-card .plan-option {
-        position:relative; padding:14px 13px;
-        border:1px solid rgba(255,255,255,.10); border-radius:16px;
+        position:relative;
+        width:100%;
+        min-height:48px;
+        padding:12px 14px;
+        border:1px solid rgba(255,255,255,.10); border-radius:var(--radius-sm);
         background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
         backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
         box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.16);
-        cursor:pointer; transition:var(--transition); color:var(--text-primary); text-align:left; overflow:hidden;
+        cursor:pointer; transition:var(--transition); color:var(--text-primary);
+        display:flex; align-items:center; justify-content:space-between; gap:14px;
+        text-align:initial; overflow:hidden;
     }
     .panel-card .plan-option:hover { transform:translateY(-2px); border-color:rgba(79,140,255,.45); background:linear-gradient(135deg,rgba(79,140,255,.13),rgba(139,92,246,.08)); }
     .panel-card .plan-option.active { border-color:var(--accent-blue); box-shadow:0 0 0 1px rgba(79,140,255,.25),0 10px 28px rgba(79,140,255,.12); }
-    .plan-option .plan-option-label { display:block; font-size:13px; font-weight:700; line-height:1.35; word-break:break-word; }
-    .plan-option .plan-option-price { display:block; margin-top:7px; font-size:16px; font-weight:900; color:var(--accent-green); }
-    .plan-option .plan-option-check { position:absolute; top:8px; right:9px; font-size:10px; color:var(--accent-blue); opacity:0; transition:var(--transition); }
+    .plan-option .plan-option-label { order:1; flex:1; display:block; font-size:13px; font-weight:700; line-height:1.35; word-break:break-word; text-align:left; }
+    .plan-option .plan-option-price { order:2; display:block; margin-top:0; font-size:16px; font-weight:900; color:var(--accent-green); white-space:nowrap; }
+    .plan-option .plan-option-check { position:absolute; top:50%; right:9px; transform:translateY(-50%); font-size:10px; color:var(--accent-blue); opacity:0; transition:var(--transition); }
     .plan-option.active .plan-option-check { opacity:1; }
 
     /* ============================================
@@ -1409,6 +1415,13 @@
         color: var(--accent-green);
         letter-spacing: 2px;
         word-break: break-all;
+    }
+    .success-order-message {
+        color:var(--text-secondary);
+        font-size:14px;
+        line-height:1.7;
+        margin:0;
+        text-align:center;
     }
     .modal .action-row {
         display: flex;
@@ -1988,12 +2001,9 @@
         <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
         <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Your premium key is ready.</p>
         <div class="key-display">
-            <span class="key-label">License Key</span>
-            <div class="key-value" id="modal-key-display">XXXXXX</div>
+            <p class="success-order-message">We have received your order, processing will be start shortly.</p>
         </div>
         <div class="action-row">
-            <button class="btn btn-primary-modal" id="modal-btn-access"><i class="fas fa-download"></i> Access Tool</button>
-            <button class="btn btn-outline-modal" onclick="copyToClipboard('modal-key-display','License Key')"><i class="fas fa-copy"></i> Copy</button>
             <button class="btn btn-outline-modal" onclick="closeModal('modal-success')">Close</button>
         </div>
     </div>
@@ -3097,8 +3107,6 @@
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
                 }
                 closeModal('modal-checkout');
-                document.getElementById('modal-key-display').innerText = newKey;
-                document.getElementById('modal-btn-access').onclick = () => window.open(checkout.link || "https://t.me/", '_blank');
                 openModal('modal-success');
             } else {
                 showToast("Transaction failed. Insufficient funds.", "error");
