@@ -1565,6 +1565,14 @@
         .page-content { padding: 76px 12px 50px; }
         .modal .action-row { flex-direction: column; }
     }
+
+    /* Wallet fixed top-up amount pills */
+    .wallet-amount-label { margin: 18px 0 12px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .wallet-amount-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .amount-pill { padding: 10px 17px; min-width: 62px; border-radius: 999px; border: 1.5px solid var(--border-color); background: var(--bg-input); color: var(--text-secondary); font-size: 14px; font-weight: 700; transition: var(--transition); }
+    .amount-pill:hover { border-color: var(--accent-blue); color: var(--text-primary); transform: translateY(-1px); }
+    .amount-pill.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-color: transparent; color: #fff; box-shadow: 0 7px 22px rgba(79,140,255,.22); }
+    @media (max-width: 480px) { .wallet-amount-pills { gap: 8px; } .amount-pill { min-width: 58px; padding: 9px 13px; } }
 </style>
 </head>
 <body>
@@ -1749,13 +1757,6 @@
                     <h2 id="wallet-stat-dep">₹0.00</h2>
                 </div>
             </div>
-            <div class="wallet-stat">
-                <div class="stat-icon gold"><i class="fas fa-clock"></i></div>
-                <div class="stat-info">
-                    <h4>Pending</h4>
-                    <h2 id="wallet-stat-pending">₹0.00</h2>
-                </div>
-            </div>
         </div>
 
         <!-- Tabs -->
@@ -1774,12 +1775,17 @@
                     <h3>Instant Gateway</h3>
                 </div>
                 <p class="card-desc">Fast UPI payment. Balance updates automatically within seconds.</p>
-                <div class="input-group">
-                    <input id="add-amount" placeholder="Amount (₹)" type="number"/>
+                <div class="wallet-amount-label">Select Top-up Amount</div>
+                <div class="wallet-amount-pills" id="wallet-amount-pills">
+                    <button type="button" class="amount-pill" data-amount="5">₹5</button>
+                    <button type="button" class="amount-pill" data-amount="20">₹20</button>
+                    <button type="button" class="amount-pill" data-amount="50">₹50</button>
+                    <button type="button" class="amount-pill" data-amount="100">₹100</button>
+                    <button type="button" class="amount-pill" data-amount="250">₹250</button>
+                    <button type="button" class="amount-pill" data-amount="500">₹500</button>
+                    <button type="button" class="amount-pill" data-amount="1000">₹1000</button>
                 </div>
-                <div class="input-group">
-                    <input id="add-phone" placeholder="WhatsApp Number" type="tel"/>
-                </div>
+                <input id="add-amount" type="hidden" value="5"/>
                 <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
                     <i class="fas fa-arrow-right"></i> Pay Now
                 </button>
@@ -2237,6 +2243,16 @@
         if (section) section.classList.remove('hidden');
     };
 
+    // --- WALLET TOP-UP AMOUNT PILLS ---
+    document.querySelectorAll('.amount-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.amount-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            document.getElementById('add-amount').value = pill.dataset.amount;
+        });
+    });
+    document.querySelector('.amount-pill[data-amount="5"]')?.classList.add('active');
+
     // --- ZAPPAY PAYMENT SYSTEM ---
     const ZAPPAY_API_BASE = "https://zappay-beta.vercel.app";
     let paymentPollInterval = null;
@@ -2247,15 +2263,7 @@
         return Number.isFinite(n) ? Math.floor(n * 100) / 100 : NaN;
     }
 
-    function sanitizePhone(value) {
-        const digits = String(value || '').replace(/\D/g, '');
-        if (digits.length === 10 && /^[6-9]/.test(digits)) return digits;
-        if (digits.length === 12 && digits.startsWith('91') && /^[6-9]/.test(digits.slice(2))) return digits.slice(2);
-        if (digits.length === 11 && digits.startsWith('0') && /^[6-9]/.test(digits.slice(1))) return digits.slice(1);
-        return '';
-    }
-
-    async function zapPayCreateOrder(amount, title, phone) {
+    async function zapPayCreateOrder(amount, title) {
         const key = String(window.ZAP_KEY || '').trim();
         const response = await fetch(`${ZAPPAY_API_BASE}/api/developer/create-order`, {
             method: 'POST',
@@ -2263,7 +2271,6 @@
             body: JSON.stringify({
                 amount,
                 title: title || 'Wallet Deposit',
-                customer_mobile: phone || undefined,
                 useEmbedded: true
             })
         });
@@ -2376,19 +2383,17 @@
     // --- AUTO DEPOSIT ---
     document.getElementById('btn-submit-payment').addEventListener('click', async function() {
         const amt = sanitizeAmount(document.getElementById('add-amount').value);
-        const phone = sanitizePhone(document.getElementById('add-phone').value);
         const btn = this;
 
         if (!window.ZAP_KEY) return showToast("Gateway offline. Contact admin.", "error");
         if (!Number.isFinite(amt) || amt < 1 || amt > 5000) return showToast("Enter an amount between ₹1 and ₹5,000", "error");
-        if (!phone) return showToast("Enter a valid 10-digit Indian mobile number", "error");
         if (!currentUser) return showToast("Please login again", "error");
 
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating Order...`;
         btn.disabled = true;
 
         try {
-            const order = await zapPayCreateOrder(amt, `Wallet Deposit - ${currentUser.uid}`, phone);
+            const order = await zapPayCreateOrder(amt, `Wallet Deposit - ${currentUser.uid}`);
             const orderId = order.order_id;
 
             await set(ref(db, `transactions/${currentUser.uid}/${orderId}`), {
@@ -2821,7 +2826,7 @@
             hideLoader();
         });
         onValue(ref(db, `transactions/${currentUser.uid}`), (snap) => {
-            let totalDep = 0, todayDep = 0, pendingDep = 0;
+            let totalDep = 0, todayDep = 0;
             const today = new Date().toLocaleDateString();
             if (snap.exists()) {
                 snap.forEach(child => {
@@ -2831,13 +2836,12 @@
                         if (tx.status === 'success') {
                             totalDep += parseFloat(tx.amount) || 0;
                             if (txDate === today) todayDep += parseFloat(tx.amount) || 0;
-                        } else if (tx.status === 'pending') pendingDep += parseFloat(tx.amount) || 0;
+                        }
                     }
                 });
             }
             document.getElementById('wallet-stat-dep').innerText = `₹${totalDep.toFixed(2)}`;
             document.getElementById('wallet-stat-today').innerText = `₹${todayDep.toFixed(2)}`;
-            document.getElementById('wallet-stat-pending').innerText = `₹${pendingDep.toFixed(2)}`;
         });
     }
 
