@@ -1689,7 +1689,7 @@
             <div class="brand">
                 <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" style="display:none;"></div>
                 <h1>NRZ <span>STORE</span></h1>
-                <p>Welcome back to your premium dashboard</p>
+                <p>Welcome back ! please login or signup to continue</p>
             </div>
             <div class="input-group">
                 <input id="login-email" placeholder="Email address" type="email"/>
@@ -1722,13 +1722,13 @@
                 <i class="fas fa-envelope input-icon"></i>
             </div>
             <div class="input-group">
-                <input id="signup-pass" placeholder="Password (min 6 chars)" type="password"/>
+                <input id="signup-pass" placeholder="Set password" type="password"/>
                 <i class="fas fa-lock input-icon"></i>
             </div>
             <button class="btn-auth" id="btn-signup">
                 <span><i class="fas fa-user-plus"></i> Sign Up</span>
             </button>
-            <p class="auth-toggle">Already registered? <span id="go-to-login">Login</span></p>
+            <p class="auth-toggle">Have an account? <span id="go-to-login">Login</span></p>
             <div class="auth-divider">or continue with</div>
             <div class="social-row">
                 <a class="social-btn wa" href="#" id="auth-wa-link-2" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
@@ -1836,8 +1836,8 @@
 
         <!-- Tabs -->
         <div class="wallet-tabs">
-            <div class="wallet-tab active" onclick="switchWalletTab('auto')" id="tab-btn-auto"><i class="fas fa-bolt"></i> Instant UPI</div>
-            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Crypto</div>
+            <div class="wallet-tab active" onclick="switchWalletTab('auto')" id="tab-btn-auto"><i class="fas fa-bolt"></i> Instant Pay</div>
+            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Binance</div>
             <div class="wallet-tab manual" onclick="switchWalletTab('manual')" id="tab-btn-manual"><i class="fas fa-qrcode"></i> Manual UPI</div>
             <div class="wallet-tab support" onclick="switchWalletTab('support')" id="tab-btn-support"><i class="fas fa-headset"></i> Support</div>
         </div>
@@ -1890,7 +1890,7 @@
                     <i class="fab fa-bitcoin" style="color:var(--accent-gold);"></i>
                     <h3>Binance / USDT</h3>
                 </div>
-                <p class="card-desc">Send USDT via Binance Pay or TRC20. Rate: <strong style="color:var(--accent-gold);">1 USDT = ₹<span id="crypto-rate">88.00</span></strong></p>
+                <p class="card-desc">This payment method is currently unavailable. Rate: <strong style="color:var(--accent-gold);">1 USDT = ₹<span id="crypto-rate">88.00</span></strong></p>
 
                 <div class="qr-display crypto">
                     <img id="crypto-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
@@ -1927,7 +1927,7 @@
                     <i class="fas fa-qrcode" style="color:var(--accent-purple);"></i>
                     <h3>Manual UPI</h3>
                 </div>
-                <p class="card-desc">Scan the QR or copy UPI ID to transfer funds manually.</p>
+                <p class="card-desc">Scan the QR or copy UPI ID to pay ! *money will be added to your wallet under 30 minutes*.</p>
 
                 <div class="qr-display manual">
                     <img id="manual-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
