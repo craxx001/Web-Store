@@ -882,71 +882,108 @@
     }
     .btn-primary-solid:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+    /* PLAN PURCHASE ROW - compact layout like the reference image */
     .panel-card .plans-container {
         display:flex;
         flex-direction:column;
-        gap:12px;
+        gap:10px;
         width:100%;
         margin-top:4px;
     }
     .panel-card .plan-option {
-        position:relative;
         width:100%;
-        min-height:78px;
-        height:78px;
-        padding:15px 22px;
-        display:flex;
-        flex-direction:column;
-        align-items:flex-start;
-        justify-content:center;
+        min-height:92px;
+        position:relative;
+        display:grid;
+        grid-template-columns:minmax(0,1fr) auto auto;
+        align-items:center;
+        gap:18px;
+        padding:15px 16px 15px 20px;
         border:1px solid rgba(255,255,255,.12);
         border-radius:18px;
-        background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));
-        box-shadow:0 8px 24px rgba(79,140,255,.16),inset 0 1px 0 rgba(255,255,255,.22);
-        cursor:pointer;
+        background:linear-gradient(110deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 24px rgba(0,0,0,.18);
+        cursor:default;
         transition:var(--transition);
-        color:#fff;
+        color:var(--text-primary);
         text-align:left;
         overflow:hidden;
     }
+    .panel-card .plan-option::before {
+        content:'';
+        width:4px;
+        position:absolute;
+        left:0;
+        top:14px;
+        bottom:14px;
+        border-radius:0 8px 8px 0;
+        background:linear-gradient(180deg,var(--accent-blue),var(--accent-purple));
+        opacity:.9;
+    }
     .panel-card .plan-option:hover {
         transform:translateY(-2px);
-        box-shadow:0 12px 32px rgba(79,140,255,.28),inset 0 1px 0 rgba(255,255,255,.28);
+        border-color:rgba(79,140,255,.45);
+        background:linear-gradient(110deg,rgba(79,140,255,.10),rgba(139,92,246,.06));
+        box-shadow:0 12px 30px rgba(0,0,0,.24);
     }
     .panel-card .plan-option.active {
-        border-color:rgba(255,255,255,.42);
-        box-shadow:0 0 0 2px rgba(255,255,255,.14),0 12px 34px rgba(79,140,255,.30),inset 0 1px 0 rgba(255,255,255,.28);
+        border-color:rgba(79,140,255,.45);
+        box-shadow:0 0 0 1px rgba(79,140,255,.14),0 10px 28px rgba(79,140,255,.10);
     }
     .plan-option .plan-option-label {
         display:block;
-        width:calc(100% - 28px);
-        font-size:17px;
+        min-width:0;
+        font-size:19px;
         font-weight:800;
         line-height:1.25;
         word-break:break-word;
     }
     .plan-option .plan-option-price {
         display:block;
-        margin-top:4px;
-        font-size:16px;
+        margin:0;
+        white-space:nowrap;
+        font-size:22px;
         font-weight:900;
-        color:#fff;
+        color:var(--accent-green);
     }
-    .plan-option .plan-option-check {
-        position:absolute;
-        top:50%;
-        right:18px;
-        transform:translateY(-50%);
-        font-size:20px;
+    .plan-option .plan-option-check { display:none; }
+    .plan-option .plan-buy-btn {
+        min-width:122px;
+        padding:12px 20px;
+        border-radius:14px;
+        background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));
         color:#fff;
-        opacity:0;
+        font-size:14px;
+        font-weight:800;
+        border:0;
+        box-shadow:0 6px 18px rgba(79,140,255,.20);
         transition:var(--transition);
+        cursor:pointer;
+        white-space:nowrap;
     }
-    .plan-option.active .plan-option-check { opacity:1; }
-
-    @media (max-width: 600px) {
-        .panel-card .plans-container { grid-template-columns:1fr; }
-        .panel-card .plan-option { width:100%; min-height:78px; height:78px; padding:15px 20px; }
+    .plan-option .plan-buy-btn:hover {
+        transform:translateY(-1px);
+        box-shadow:0 9px 24px rgba(79,140,255,.32);
+    }
+    @media (max-width:600px) {
+        .panel-card .plan-option {
+            grid-template-columns:minmax(0,1fr) auto;
+            gap:10px 12px;
+            min-height:78px;
+            padding:13px 12px 13px 17px;
+        }
+        .plan-option .plan-option-label { font-size:15px; }
+        .plan-option .plan-option-price {
+            grid-column:2;
+            grid-row:1;
+            font-size:18px;
+        }
+        .plan-option .plan-buy-btn {
+            grid-column:1 / -1;
+            width:100%;
+            min-width:0;
+            padding:10px 16px;
+        }
     }
 
     /* ============================================
@@ -2937,19 +2974,21 @@
                 const updateBtn = updateLink ? `<button class="btn-outline" onclick="${updateLink}"><i class="fas fa-file-download"></i> Update</button>` : '';
                 const feedbackBtn = p.feedback && p.feedback.trim() ?
                     `<button class="btn-outline feedback" onclick="window.open('${p.feedback}','_blank')"><i class="fas fa-star"></i> Feedback</button>` : '';
+                const panelName = (p.name || 'Panel').replace(/'/g, "\'");
+                const panelLink = (p.link || '').replace(/'/g, "\'");
 
                 let plansHtml = '';
                 if (p.plans && Object.keys(p.plans).length > 0) {
                     const sorted = Object.entries(p.plans).sort((a, b) => (a[1].price || 0) - (b[1].price || 0));
                     plansHtml = `<div class="plans-container" id="plans-${panelId}" role="group" aria-label="Plans">`;
-                    sorted.forEach(([key, data], index) => {
+                    sorted.forEach(([key, data]) => {
                         const label = data.label || `${data.days || ''} Days`;
                         const payload = JSON.stringify({ key, label, price: data.price || 0 }).replace(/"/g, '&quot;');
-                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' active' : ''}" data-plan='${payload}' onclick="selectPlanOption(this, '${panelId}')">
-                            <i class="fas fa-check-circle plan-option-check"></i>
+                        plansHtml += `<div class="plan-option" data-plan='${payload}'>
                             <span class="plan-option-label">${ffColorText(label)}</span>
                             <span class="plan-option-price">₹${data.price || 0}</span>
-                        </button>`;
+                            <button type="button" class="plan-buy-btn" onclick="handlePlanBuy(this, '${panelId}', '${panelName}', '${panelLink}')">Buy Now</button>
+                        </div>`;
                     });
                     plansHtml += `</div>`;
                 } else {
@@ -2965,23 +3004,11 @@
                 card.className = 'panel-card';
                 const searchText = `${p.name || ''} ${desc}`.toLowerCase();
                 card.setAttribute('data-search', searchText);
-                const panelName = (p.name || 'Panel').replace(/'/g, "\\'");
                 card.innerHTML = `
                     ${bannerHtml}
                     ${videoHtml}
                     <div class="panel-body">
-                        <div class="panel-heading-row">
-                            ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${escapeHtml(p.name || 'Panel')} logo" onerror="this.style.display='none'">` : ''}
-                            <div><div class="panel-name">${ffColorText(p.name || 'Panel')}</div>${category ? `<div class="panel-category">${ffColorText(category)}</div>` : ''}</div>
-                        </div>
-                        ${featuresHtml ? `<div class="feature-list">${featuresHtml}</div>` : ''}
-                        <div class="trust-row">
-                        </div>
-                        ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button class="btn-primary-solid" onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
-                            <i class="fas fa-shopping-cart"></i> Purchase Key
-                        </button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -3024,6 +3051,18 @@
     // --- CHECKOUT ---
     window.currentCheckout = {};
     window.appliedCoupon = null;
+
+    // Each plan has its own Buy Now action.
+    window.handlePlanBuy = (button, panelId, panelName, link) => {
+        const selected = button?.closest('.plan-option');
+        const container = document.getElementById(`plans-${panelId}`);
+        if (!selected || !container) return showToast('Plan unavailable', 'error');
+
+        container.querySelectorAll('.plan-option').forEach(row => row.classList.remove('active'));
+        selected.classList.add('active');
+
+        window.handlePurchaseClick(panelId, panelName, link || '');
+    };
 
     window.handlePurchaseClick = (panelId, panelName, link) => {
         const container = document.getElementById(`plans-${panelId}`);
