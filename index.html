@@ -884,12 +884,17 @@
 
     .panel-card .plans-container {
         display:grid;
-        grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-        gap:10px;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:12px;
         margin-top:4px;
     }
     .panel-card .plan-option {
-        position:relative; padding:14px 13px;
+        position:relative;
+        min-height:150px;
+        padding:24px 20px;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
         border:1px solid rgba(255,255,255,.10); border-radius:16px;
         background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
         backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
@@ -902,6 +907,11 @@
     .plan-option .plan-option-price { display:block; margin-top:7px; font-size:16px; font-weight:900; color:var(--accent-green); }
     .plan-option .plan-option-check { position:absolute; top:8px; right:9px; font-size:10px; color:var(--accent-blue); opacity:0; transition:var(--transition); }
     .plan-option.active .plan-option-check { opacity:1; }
+
+    @media (max-width: 600px) {
+        .panel-card .plans-container { grid-template-columns:1fr; }
+        .panel-card .plan-option { min-height:132px; padding:22px 20px; }
+    }
 
     /* ============================================
        WALLET - Modern Dashboard
