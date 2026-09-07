@@ -1599,6 +1599,20 @@
         font-size: 12px;
     }
 
+    .healing-queen-rgb {
+        background: linear-gradient(90deg,#ff004c,#ff8a00,#ffee00,#00ff85,#00c8ff,#7c3cff,#ff00c8,#ff004c);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: healingQueenRGB 3s linear infinite;
+        font-weight: 800;
+    }
+    @keyframes healingQueenRGB {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 300% 50%; }
+    }
+
     /* ============================================
        RESPONSIVE
     ============================================ */
@@ -1776,7 +1790,7 @@
         <!-- FOOTER -->
         <div class="store-footer">
             <h3>NRZ <span>ONLINE</span> SERVICES</h3>
-            <p>Partnership with "Healing Queen"</p>
+            <p>Partnership with "<span class="healing-queen-rgb">Healing Queen</span>"</p>
             <div class="badges">
                 <span>🔒 Safe Payment</span>
             </div>
@@ -1947,11 +1961,11 @@
                 <i class="fas fa-headset" style="font-size:48px;color:var(--accent-green);margin-bottom:12px;display:block;"></i>
                 <h3 style="font-size:20px;font-weight:800;margin-bottom:8px;">Need Help?</h3>
                 <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:24px;">
-                    Facing issues with deposits, purchases, or your account? Contact support.
+                    Agar apko yaha deposit, purchase, services ya account related koi bhi issue aarhi hai to niche Support Links ka use karke solve kara skte ho !
                 </p>
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                    <a href="#" id="support-wa-btn" target="_blank" class="btn-outline" style="border-color:#25D366;color:#25D366;justify-content:center;padding:12px;">
-                        <i class="fab fa-whatsapp"></i> WhatsApp Support
+                    <a href="#" id="support-wa-btn" target="_blank" class="btn-outline" style="border-color:#5865F2;color:#5865F2;justify-content:center;padding:12px;" href="https://discord.gg/ySBDUyTVae">
+                        <i class="fab fa-discord"></i> Discord Support
                     </a>
                     <a href="#" id="support-tg-btn" target="_blank" class="btn-outline" style="border-color:#0088cc;color:#0088cc;justify-content:center;padding:12px;">
                         <i class="fab fa-telegram-plane"></i> Telegram Support
@@ -2640,7 +2654,7 @@
             fab.href = tgDash;
             fab.style.display = tgDash === '#' ? 'none' : 'flex';
             document.getElementById('support-wa-btn').href = wa;
-            document.getElementById('support-tg-btn').href = tgDash !== '#' ? tgDash : tgLogin;
+            document.getElementById('support-tg-btn').href = "https://t.me/nrzempire";
         });
     }
 
