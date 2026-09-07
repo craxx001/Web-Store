@@ -882,24 +882,26 @@
     }
     .btn-primary-solid:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-    .panel-card .plan-select {
-        width: 100%;
-        padding: 10px 16px;
-        background: var(--bg-input);
-        border: 1.5px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-primary);
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238892a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 14px center;
-        transition: var(--transition);
-        cursor: pointer;
+    .panel-card .plans-container {
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+        gap:10px;
+        margin-top:4px;
     }
-    .panel-card .plan-select:focus { border-color: var(--accent-purple); }
-    .panel-card .plan-select option { background: var(--bg-card); }
+    .panel-card .plan-option {
+        position:relative; padding:14px 13px;
+        border:1px solid rgba(255,255,255,.10); border-radius:16px;
+        background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+        backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.16);
+        cursor:pointer; transition:var(--transition); color:var(--text-primary); text-align:left; overflow:hidden;
+    }
+    .panel-card .plan-option:hover { transform:translateY(-2px); border-color:rgba(79,140,255,.45); background:linear-gradient(135deg,rgba(79,140,255,.13),rgba(139,92,246,.08)); }
+    .panel-card .plan-option.active { border-color:var(--accent-blue); box-shadow:0 0 0 1px rgba(79,140,255,.25),0 10px 28px rgba(79,140,255,.12); }
+    .plan-option .plan-option-label { display:block; font-size:13px; font-weight:700; line-height:1.35; word-break:break-word; }
+    .plan-option .plan-option-price { display:block; margin-top:7px; font-size:16px; font-weight:900; color:var(--accent-green); }
+    .plan-option .plan-option-check { position:absolute; top:8px; right:9px; font-size:10px; color:var(--accent-blue); opacity:0; transition:var(--transition); }
+    .plan-option.active .plan-option-check { opacity:1; }
 
     /* ============================================
        WALLET - Modern Dashboard
@@ -2860,6 +2862,13 @@
         document.getElementById('dropdown-menu').classList.toggle('active');
     });
 
+    window.selectPlanOption = function(el, panelId) {
+        const container = document.getElementById(`plans-${panelId}`);
+        if (!container) return;
+        container.querySelectorAll('.plan-option').forEach(btn => btn.classList.remove('active'));
+        el.classList.add('active');
+    };
+
     // --- FETCH PANELS ---
     function fetchPanels() {
         if (!db) return;
@@ -2886,12 +2895,17 @@
                 let plansHtml = '';
                 if (p.plans && Object.keys(p.plans).length > 0) {
                     const sorted = Object.entries(p.plans).sort((a, b) => (a[1].price || 0) - (b[1].price || 0));
-                    plansHtml = `<select class="plan-select" id="plan-${panelId}">`;
-                    sorted.forEach(([key, data]) => {
+                    plansHtml = `<div class="plans-container" id="plans-${panelId}" role="group" aria-label="Plans">`;
+                    sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
-                        plansHtml += `<option value='${JSON.stringify({ key, label, price: data.price || 0 })}'>${label} - ₹${data.price || 0}</option>`;
+                        const payload = JSON.stringify({ key, label, price: data.price || 0 }).replace(/"/g, '&quot;');
+                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' active' : ''}" data-plan='${payload}' onclick="selectPlanOption(this, '${panelId}')">
+                            <i class="fas fa-check-circle plan-option-check"></i>
+                            <span class="plan-option-label">${ffColorText(label)}</span>
+                            <span class="plan-option-price">₹${data.price || 0}</span>
+                        </button>`;
                     });
-                    plansHtml += `</select>`;
+                    plansHtml += `</div>`;
                 } else {
                     plansHtml = `<p style="color:var(--text-muted);font-size:13px;text-align:center;margin:8px 0;">Pricing unavailable</p>`;
                 }
@@ -2966,11 +2980,12 @@
     window.appliedCoupon = null;
 
     window.handlePurchaseClick = (panelId, panelName, link) => {
-        const select = document.getElementById(`plan-${panelId}`);
-        if (!select) return showToast('No plans available', 'error');
+        const container = document.getElementById(`plans-${panelId}`);
+        const selected = container?.querySelector('.plan-option.active');
+        if (!selected) return showToast('Please select a plan', 'warning');
         let planData;
         try {
-            planData = JSON.parse(select.value);
+            planData = JSON.parse(selected.getAttribute('data-plan') || '{}');
         } catch(e) {
             return showToast('Error reading plan data', 'error');
         }
