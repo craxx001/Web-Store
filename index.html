@@ -2877,7 +2877,7 @@
                 const desc = p.description || '';
                 const category = String(p.category || '').trim();
                 const features = desc.split(/\n|-/).filter(f => f && f.trim().length > 0);
-                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${f.trim()}</span>`).join('');
+                const featuresHtml = features.map(f => `<span class="chip"><i class="fas fa-bolt"></i> ${ffColorText(f.trim())}</span>`).join('');
                 const updateLink = p.link ? `window.open('${p.link}','_blank')` : '';
                 const updateBtn = updateLink ? `<button class="btn-outline" onclick="${updateLink}"><i class="fas fa-file-download"></i> Update</button>` : '';
                 const feedbackBtn = p.feedback && p.feedback.trim() ?
@@ -2911,8 +2911,8 @@
                     ${videoHtml}
                     <div class="panel-body">
                         <div class="panel-heading-row">
-                            ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${p.name || 'Panel'} logo" onerror="this.style.display='none'">` : ''}
-                            <div><div class="panel-name">${p.name || 'Panel'}</div>${category ? `<div class="panel-category">${category}</div>` : ''}</div>
+                            ${p.logo ? `<img class="panel-logo" src="${p.logo}" alt="${escapeHtml(p.name || 'Panel')} logo" onerror="this.style.display='none'">` : ''}
+                            <div><div class="panel-name">${ffColorText(p.name || 'Panel')}</div>${category ? `<div class="panel-category">${ffColorText(category)}</div>` : ''}</div>
                         </div>
                         ${featuresHtml ? `<div class="feature-list">${featuresHtml}</div>` : ''}
                         <div class="trust-row">
@@ -3129,6 +3129,34 @@
 
     function escapeHtml(value) {
         return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[ch]));
+    }
+
+    // Free Fire color-code support: [ff0000]Red Text
+    // A color code applies until another [RRGGBB] code is found.
+    function ffColorText(value) {
+        const text = String(value ?? '');
+        const colorRe = /\[([0-9a-fA-F]{6})\]/g;
+        let html = '';
+        let last = 0;
+        let currentColor = null;
+        let match;
+
+        while ((match = colorRe.exec(text)) !== null) {
+            const before = text.slice(last, match.index);
+            if (before) {
+                const safe = escapeHtml(before);
+                html += currentColor ? `<span style="color:#${currentColor}">${safe}</span>` : safe;
+            }
+            currentColor = match[1];
+            last = match.index + match[0].length;
+        }
+
+        const rest = text.slice(last);
+        if (rest) {
+            const safe = escapeHtml(rest);
+            html += currentColor ? `<span style="color:#${currentColor}">${safe}</span>` : safe;
+        }
+        return html;
     }
 
     function renderMyPlan(plan) {
