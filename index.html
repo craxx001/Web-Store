@@ -19,25 +19,25 @@
        ROOT VARIABLES & RESET
     ============================================ */
     :root {
-        --bg-primary: #08090d;
-        --bg-secondary: #0e1016;
-        --bg-card: #141820;
-        --bg-card-hover: #1a1f2a;
-        --bg-input: #0c0f15;
-        --border-color: #252b3a;
-        --border-light: #333a4d;
+        --bg-primary: #0b0906;
+        --bg-secondary: #12100b;
+        --bg-card: #18140d;
+        --bg-card-hover: #211a10;
+        --bg-input: #100e09;
+        --border-color: #332a1a;
+        --border-light: #4a3a20;
         --text-primary: #eef2f8;
         --text-secondary: #8892a8;
         --text-muted: #4a5266;
-        --accent-blue: #4f8cff;
-        --accent-cyan: #00d4ff;
-        --accent-purple: #8b5cf6;
-        --accent-pink: #ec4899;
-        --accent-gold: #fbbf24;
+        --accent-blue: #ffb300;
+        --accent-cyan: #ffd54a;
+        --accent-purple: #ff7a00;
+        --accent-pink: #ff8a00;
+        --accent-gold: #ffc107;
         --accent-green: #34d399;
         --accent-red: #f87171;
         --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
-        --shadow-glow: 0 0 40px rgba(79, 140, 255, 0.15);
+        --shadow-glow: 0 0 40px rgba(255, 179, 0, 0.15);
         --radius: 16px;
         --radius-sm: 10px;
         --radius-lg: 24px;
@@ -93,7 +93,7 @@
         border: 3px solid var(--border-color);
         border-top-color: var(--accent-blue);
         animation: spin 0.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
-        box-shadow: 0 0 30px rgba(79, 140, 255, 0.1);
+        box-shadow: 0 0 30px rgba(255, 179, 0, 0.1);
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     #loader .loader-text {
@@ -199,7 +199,7 @@
     }
     #security-overlay .security-dots span.active {
         background: var(--accent-blue);
-        box-shadow: 0 0 12px rgba(79, 140, 255, 0.4);
+        box-shadow: 0 0 12px rgba(255, 179, 0, 0.4);
     }
     #security-overlay .security-dots span.done {
         background: var(--accent-green);
@@ -281,7 +281,7 @@
         width: 600px;
         height: 600px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(79, 140, 255, 0.06), transparent 70%);
+        background: radial-gradient(circle, rgba(255, 179, 0, 0.06), transparent 70%);
         top: -200px;
         right: -200px;
         pointer-events: none;
@@ -292,7 +292,7 @@
         width: 500px;
         height: 500px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(139, 92, 246, 0.05), transparent 70%);
+        background: radial-gradient(circle, rgba(255, 122, 0, 0.05), transparent 70%);
         bottom: -200px;
         left: -200px;
         pointer-events: none;
@@ -359,7 +359,7 @@
         font-size: 24px;
         font-weight: 900;
         color: #fff;
-        box-shadow: 0 8px 24px rgba(79, 140, 255, 0.3);
+        box-shadow: 0 8px 24px rgba(255, 179, 0, 0.3);
         overflow: hidden;
     }
     .auth-card .brand .logo-icon img {
@@ -411,7 +411,7 @@
     }
     .auth-card .input-group input:focus {
         border-color: var(--accent-blue);
-        box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.08);
+        box-shadow: 0 0 0 4px rgba(255, 179, 0, 0.08);
     }
     .auth-card .input-group input:focus + .input-icon,
     .auth-card .input-group input:focus ~ .input-icon {
@@ -446,7 +446,7 @@
         transition: var(--transition);
     }
     .btn-auth:hover::before { opacity: 1; }
-    .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(79, 140, 255, 0.3); }
+    .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 179, 0, 0.3); }
     .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-auth span { position: relative; z-index: 1; }
     .btn-auth i { position: relative; z-index: 1; }
@@ -575,15 +575,15 @@
         align-items: center;
         gap: 8px;
         padding: 8px 18px;
-        background: rgba(79, 140, 255, 0.08);
-        border: 1px solid rgba(79, 140, 255, 0.15);
+        background: rgba(255, 179, 0, 0.08);
+        border: 1px solid rgba(255, 179, 0, 0.15);
         border-radius: 30px;
         font-weight: 700;
         font-size: 14px;
         color: var(--accent-blue);
         transition: var(--transition);
     }
-    .navbar .balance-pill:hover { border-color: rgba(79, 140, 255, 0.3); }
+    .navbar .balance-pill:hover { border-color: rgba(255, 179, 0, 0.3); }
     .navbar .balance-pill i { font-size: 14px; }
     .navbar .menu-btn {
         width: 42px;
@@ -699,7 +699,7 @@
     }
     .search-box input:focus {
         border-color: var(--accent-purple);
-        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.06);
+        box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.06);
     }
     .search-box input::placeholder { color: var(--text-muted); }
     .search-box .search-icon {
@@ -903,7 +903,7 @@
     }
     .btn-primary-solid:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(79, 140, 255, 0.3);
+        box-shadow: 0 8px 30px rgba(255, 179, 0, 0.3);
     }
     .btn-primary-solid:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
@@ -941,7 +941,7 @@
         display:flex;
         align-items:center;
         justify-content:center;
-        background:#1877F2;
+        background:#ffb300;
         color:#fff;
         font-size:10px;
         line-height:1;
@@ -983,9 +983,9 @@
         font-size: 20px;
         flex-shrink: 0;
     }
-    .wallet-stat .stat-icon.blue { background: rgba(79, 140, 255, 0.1); color: var(--accent-blue); }
+    .wallet-stat .stat-icon.blue { background: rgba(255, 179, 0, 0.1); color: var(--accent-blue); }
     .wallet-stat .stat-icon.green { background: rgba(52, 211, 153, 0.1); color: var(--accent-green); }
-    .wallet-stat .stat-icon.purple { background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); }
+    .wallet-stat .stat-icon.purple { background: rgba(255, 122, 0, 0.1); color: var(--accent-purple); }
     .wallet-stat .stat-icon.gold { background: rgba(251, 191, 36, 0.1); color: var(--accent-gold); }
     .wallet-stat .stat-info h4 {
         font-size: 12px;
@@ -1094,7 +1094,7 @@
     }
     .premium-card .input-group input:focus {
         border-color: var(--accent-blue);
-        box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.06);
+        box-shadow: 0 0 0 4px rgba(255, 179, 0, 0.06);
     }
     .premium-card .input-group input::placeholder { color: var(--text-muted); }
 
@@ -1113,7 +1113,7 @@
     }
     .qr-display img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--radius-sm); }
     .qr-display.crypto { border-color: rgba(251, 191, 36, 0.25); }
-    .qr-display.manual { border-color: rgba(139, 92, 246, 0.25); }
+    .qr-display.manual { border-color: rgba(255, 122, 0, 0.25); }
 
     .copy-row {
         display: flex;
@@ -1181,7 +1181,7 @@
     ============================================ */
     .plan-details-card {
         background: var(--bg-card);
-        border: 1px solid rgba(0, 212, 255, 0.28);
+        border: 1px solid rgba(255, 213, 74, 0.28);
         border-radius: 24px;
         padding: 34px;
         box-shadow: 0 12px 40px rgba(0,0,0,0.25);
@@ -1348,7 +1348,7 @@
     .modal .strike { text-decoration: line-through; color: var(--text-muted); font-size: 14px; font-weight: 500; margin-right: 8px; }
     .modal .discount-badge {
         padding: 2px 12px;
-        background: rgba(139, 92, 246, 0.12);
+        background: rgba(255, 122, 0, 0.12);
         border: 1px solid var(--accent-purple);
         border-radius: 20px;
         font-size: 11px;
@@ -1427,7 +1427,7 @@
     }
     .modal .modal-actions .btn-primary-modal:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(79, 140, 255, 0.3);
+        box-shadow: 0 8px 30px rgba(255, 179, 0, 0.3);
     }
 
     .modal .success-icon {
