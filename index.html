@@ -8,7 +8,6 @@
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"/>
 <!-- FontAwesome -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 
@@ -1650,131 +1649,20 @@
     .amount-pill.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-color: transparent; color: #fff; box-shadow: 0 7px 22px rgba(79,140,255,.22); }
     @media (max-width: 480px) { .wallet-amount-pills { gap: 8px; } .amount-pill { min-width: 58px; padding: 9px 13px; } }
 
-/* NRZ Store neon handwritten branding */
-.nrz-neon-brand {
-    position: relative;
-    display: inline-block;
-    font-family: 'Pacifico', cursive !important;
-    font-weight: 400 !important;
-    letter-spacing: 0.5px;
-    line-height: 1.15;
-    color: transparent !important;
-    -webkit-text-fill-color: transparent !important;
-    background-image: linear-gradient(
-        90deg,
-        /* GREEN */
-        #003b16 0%,
-        #00ff4c 5%,
-        #c8ffd5 9%,
-        #00ff4c 13%,
-        #003b16 16.5%,
-
-        /* YELLOW */
-        #6b4f00 16.7%,
-        #ffd400 21.5%,
-        #fff6a6 25.5%,
-        #ffd400 30%,
-        #6b4f00 33.2%,
-
-        /* PINK */
-        #65002f 33.4%,
-        #ff1493 38.5%,
-        #ffc0e4 42.5%,
-        #ff1493 47%,
-        #65002f 49.8%,
-
-        /* BLUE */
-        #00295c 50%,
-        #00aaff 55%,
-        #b8edff 59%,
-        #00aaff 63.5%,
-        #00295c 66.4%,
-
-        /* RED */
-        #5c0000 66.6%,
-        #ff2020 71.5%,
-        #ffb0b0 75.5%,
-        #ff2020 80%,
-        #5c0000 83.1%,
-
-        /* PURPLE */
-        #26004f 83.3%,
-        #9747ff 88.5%,
-        #e1b8ff 92.5%,
-        #9747ff 97%,
-        #26004f 100%
-    );
-    background-size: 600% 100%;
-    background-position: 0% 50%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    animation: nrzNeonColorCycle 18s ease-in-out infinite;
-    filter: drop-shadow(0 0 4px rgba(0,255,76,.9));
+/* NRZ STORE — Red/White Neon Glitch */
+.nrz-store-glitch, #site-name {
+    color:#fff !important; font-weight:900; letter-spacing:.02em; position:relative; display:inline-block;
+    text-shadow:0 0 5px rgba(255,255,255,.85),0 0 12px rgba(255,0,0,.65),0 0 24px rgba(255,0,0,.42);
+    animation:nrzNeonFlicker 3.2s infinite;
 }
-
-/* Blurred duplicate creates the soft neon-tube glow seen in the reference image. */
-.nrz-neon-brand::after {
-    content: attr(data-brand);
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    font: inherit;
-    letter-spacing: inherit;
-    background-image: inherit;
-    background-size: inherit;
-    background-position: inherit;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    filter: blur(8px);
-    opacity: .95;
-    animation: nrzNeonColorCycle 18s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes nrzNeonColorCycle {
-    0%, 12% {
-        background-position: 0% 50%;
-        filter: drop-shadow(0 0 5px rgba(0,255,76,.95));
-    }
-    16%, 28% {
-        background-position: 20% 50%;
-        filter: drop-shadow(0 0 5px rgba(255,212,0,.95));
-    }
-    32%, 44% {
-        background-position: 40% 50%;
-        filter: drop-shadow(0 0 5px rgba(255,20,147,.95));
-    }
-    48%, 60% {
-        background-position: 60% 50%;
-        filter: drop-shadow(0 0 5px rgba(0,170,255,.95));
-    }
-    64%, 76% {
-        background-position: 80% 50%;
-        filter: drop-shadow(0 0 5px rgba(255,32,32,.95));
-    }
-    80%, 92% {
-        background-position: 100% 50%;
-        filter: drop-shadow(0 0 5px rgba(151,71,255,.95));
-    }
-    100% {
-        background-position: 0% 50%;
-        filter: drop-shadow(0 0 5px rgba(0,255,76,.95));
-    }
-}
-
-/* Navbar brand stays compact while keeping the handwritten logo look. */
-.navbar #site-name.nrz-neon-brand {
-    font-size: 20px;
-    white-space: nowrap;
-}
-
-/* Auth branding is larger, matching the uploaded neon-sign reference. */
-.auth-card .nrz-neon-brand {
-    font-size: 42px;
-    text-align: center;
-}
+.nrz-store-glitch .nrz-red { color:#ff2020 !important; -webkit-text-fill-color:#ff2020 !important; text-shadow:0 0 4px #fff,0 0 9px rgba(255,0,0,.95),0 0 18px rgba(255,0,0,.75),0 0 34px rgba(255,0,0,.45); }
+.nrz-store-glitch .nrz-white { color:#fff !important; -webkit-text-fill-color:#fff !important; text-shadow:0 0 4px #fff,0 0 10px rgba(255,255,255,.85),0 0 20px rgba(255,0,0,.45); }
+.nrz-store-glitch::before,.nrz-store-glitch::after,#site-name::before,#site-name::after { content:attr(data-text); position:absolute; inset:0; pointer-events:none; opacity:0; overflow:hidden; }
+.nrz-store-glitch::before,#site-name::before { color:#ff1a1a; text-shadow:-2px 0 #ff1a1a; animation:nrzGlitchRed 2.7s steps(2,end) infinite; }
+.nrz-store-glitch::after,#site-name::after { color:#fff; text-shadow:2px 0 #fff; animation:nrzGlitchWhite 2.7s steps(2,end) infinite; }
+@keyframes nrzGlitchRed { 0%,82%,100%{opacity:0;clip-path:inset(50% 0 50% 0);transform:translate(0)} 83%{opacity:.9;clip-path:inset(12% 0 72% 0);transform:translate(-3px,-1px)} 84%{opacity:.75;clip-path:inset(68% 0 16% 0);transform:translate(3px,1px)} 85%{opacity:0} 92%{opacity:.8;clip-path:inset(42% 0 38% 0);transform:translate(-2px,0)} 93%{opacity:0} }
+@keyframes nrzGlitchWhite { 0%,84%,100%{opacity:0;clip-path:inset(50% 0 50% 0);transform:translate(0)} 85%{opacity:.9;clip-path:inset(72% 0 12% 0);transform:translate(3px,1px)} 86%{opacity:.7;clip-path:inset(18% 0 66% 0);transform:translate(-3px,-1px)} 87%{opacity:0} 94%{opacity:.85;clip-path:inset(36% 0 44% 0);transform:translate(2px,0)} 95%{opacity:0} }
+@keyframes nrzNeonFlicker { 0%,18%,20%,22%,63%,65%,100%{filter:brightness(1)} 19%,64%{filter:brightness(.72)} 21%{filter:brightness(1.35)} }
 
 </style>
 </head>
@@ -1816,7 +1704,7 @@
         <div class="auth-card" id="login-box">
             <div class="brand">
                 <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" style="display:none;"></div>
-                <h1 class="nrz-neon-brand">NRZ Store</h1>
+                <h1 class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></h1>
                 <p>Welcome back to your premium dashboard</p>
             </div>
             <div class="input-group">
@@ -1842,7 +1730,7 @@
         <div class="auth-card hidden" id="signup-box">
             <div class="brand">
                 <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" style="display:none;"></div>
-                <h1 class="nrz-neon-brand">NRZ Store</h1>
+                <h1 class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></h1>
                 <p>Create your account and get started</p>
             </div>
             <div class="input-group">
@@ -1876,7 +1764,7 @@
         <div class="brand">
             <div class="brand-icon" id="default-brand-icon">FF</div>
             <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
-            <span id="site-name" class="nrz-neon-brand">NRZ Store</span>
+            <span id="site-name" class="nrz-store-glitch" data-text="NRZ STORE">NRZ STORE</span>
         </div>
         <div class="nav-actions">
             <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
@@ -3477,11 +3365,5 @@
 
     console.log('✅ NRZ STORE App initialized with enhanced security system');
 </script>
-<script>
-document.querySelectorAll('.nrz-neon-brand').forEach(function(el) {
-    el.setAttribute('data-brand', el.textContent.trim());
-});
-</script>
-
 </body>
 </html>
