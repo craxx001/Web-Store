@@ -1649,21 +1649,23 @@
     .amount-pill.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-color: transparent; color: #fff; box-shadow: 0 7px 22px rgba(79,140,255,.22); }
     @media (max-width: 480px) { .wallet-amount-pills { gap: 8px; } .amount-pill { min-width: 58px; padding: 9px 13px; } }
 
-/* NRZ STORE — Red/White Neon Glitch */
+/* NRZ STORE — independent red/white neon glitch branding */
 .nrz-store-glitch, #site-name {
-    color:#fff !important; font-weight:900; letter-spacing:.02em; position:relative; display:inline-block;
-    text-shadow:0 0 5px rgba(255,255,255,.85),0 0 12px rgba(255,0,0,.65),0 0 24px rgba(255,0,0,.42);
-    animation:nrzNeonFlicker 3.2s infinite;
+  color:#fff !important; -webkit-text-fill-color:#fff !important; font-weight:900;
+  position:relative; display:inline-block; letter-spacing:.02em;
+  text-shadow:none !important; filter:none !important;
+  isolation:isolate; animation:nrzGlitchFlicker 2.8s steps(1,end) infinite;
 }
-.nrz-store-glitch .nrz-red { color:#ff2020 !important; -webkit-text-fill-color:#ff2020 !important; text-shadow:0 0 4px #fff,0 0 9px rgba(255,0,0,.95),0 0 18px rgba(255,0,0,.75),0 0 34px rgba(255,0,0,.45); }
-.nrz-store-glitch .nrz-white { color:#fff !important; -webkit-text-fill-color:#fff !important; text-shadow:0 0 4px #fff,0 0 10px rgba(255,255,255,.85),0 0 20px rgba(255,0,0,.45); }
-.nrz-store-glitch::before,.nrz-store-glitch::after,#site-name::before,#site-name::after { content:attr(data-text); position:absolute; inset:0; pointer-events:none; opacity:0; overflow:hidden; }
-.nrz-store-glitch::before,#site-name::before { color:#ff1a1a; text-shadow:-2px 0 #ff1a1a; animation:nrzGlitchRed 2.7s steps(2,end) infinite; }
-.nrz-store-glitch::after,#site-name::after { color:#fff; text-shadow:2px 0 #fff; animation:nrzGlitchWhite 2.7s steps(2,end) infinite; }
-@keyframes nrzGlitchRed { 0%,82%,100%{opacity:0;clip-path:inset(50% 0 50% 0);transform:translate(0)} 83%{opacity:.9;clip-path:inset(12% 0 72% 0);transform:translate(-3px,-1px)} 84%{opacity:.75;clip-path:inset(68% 0 16% 0);transform:translate(3px,1px)} 85%{opacity:0} 92%{opacity:.8;clip-path:inset(42% 0 38% 0);transform:translate(-2px,0)} 93%{opacity:0} }
-@keyframes nrzGlitchWhite { 0%,84%,100%{opacity:0;clip-path:inset(50% 0 50% 0);transform:translate(0)} 85%{opacity:.9;clip-path:inset(72% 0 12% 0);transform:translate(3px,1px)} 86%{opacity:.7;clip-path:inset(18% 0 66% 0);transform:translate(-3px,-1px)} 87%{opacity:0} 94%{opacity:.85;clip-path:inset(36% 0 44% 0);transform:translate(2px,0)} 95%{opacity:0} }
-@keyframes nrzNeonFlicker { 0%,18%,20%,22%,63%,65%,100%{filter:brightness(1)} 19%,64%{filter:brightness(.72)} 21%{filter:brightness(1.35)} }
-
+.nrz-store-glitch .nrz-red { color:#ff2020 !important; -webkit-text-fill-color:#ff2020 !important; text-shadow:none !important; }
+.nrz-store-glitch .nrz-white { color:#fff !important; -webkit-text-fill-color:#fff !important; text-shadow:none !important; }
+.nrz-store-glitch::before,.nrz-store-glitch::after,#site-name::before,#site-name::after {
+ content:attr(data-text); position:absolute; inset:0; pointer-events:none; overflow:hidden; opacity:0;
+}
+.nrz-store-glitch::before,#site-name::before { color:#ff2020; -webkit-text-fill-color:#ff2020; clip-path:inset(45% 0 45% 0); animation:nrzGlitchRed 2.8s steps(1,end) infinite; }
+.nrz-store-glitch::after,#site-name::after { color:#fff; -webkit-text-fill-color:#fff; clip-path:inset(45% 0 45% 0); animation:nrzGlitchWhite 2.8s steps(1,end) infinite; }
+@keyframes nrzGlitchRed { 0%,78%,100%{opacity:0;transform:none} 79%{opacity:1;clip-path:inset(8% 0 78% 0);transform:translate(-3px,0)} 80%{opacity:.8;clip-path:inset(66% 0 14% 0);transform:translate(3px,0)} 81%{opacity:0} 91%{opacity:.9;clip-path:inset(38% 0 42% 0);transform:translate(-2px,0)} 92%{opacity:0} }
+@keyframes nrzGlitchWhite { 0%,81%,100%{opacity:0;transform:none} 82%{opacity:1;clip-path:inset(70% 0 9% 0);transform:translate(3px,0)} 83%{opacity:.75;clip-path:inset(16% 0 64% 0);transform:translate(-3px,0)} 84%{opacity:0} 94%{opacity:.9;clip-path:inset(42% 0 36% 0);transform:translate(2px,0)} 95%{opacity:0} }
+@keyframes nrzGlitchFlicker { 0%,100%{opacity:1} 79%,82%{opacity:.82} 80%{opacity:1} }
 </style>
 </head>
 <body>
@@ -1764,7 +1766,7 @@
         <div class="brand">
             <div class="brand-icon" id="default-brand-icon">FF</div>
             <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
-            <span id="site-name" class="nrz-store-glitch" data-text="NRZ STORE">NRZ STORE</span>
+            <span id="site-name" class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></span>
         </div>
         <div class="nav-actions">
             <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
