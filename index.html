@@ -347,6 +347,31 @@
         text-align: center;
         margin-bottom: 32px;
     }
+    .auth-card .brand .logo-icon,
+    .auth-card .brand img { display:none !important; }
+    .auth-card .brand .logo-icon {
+        display: none !important;
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        font-size: 24px;
+        font-weight: 900;
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(255, 179, 0, 0.3);
+        overflow: hidden;
+    }
+    .auth-card .brand .logo-icon img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        border-radius: inherit;
+    }
     .auth-card .brand h1 {
         font-size: 26px;
         font-weight: 800;
@@ -1683,8 +1708,7 @@
         <!-- LOGIN -->
         <div class="auth-card" id="login-box">
             <div class="brand">
-                <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" loading="eager" decoding="async"></div>
-                <h1 class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></h1>
+                                <h1 class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></h1>
                 <p>Welcome back to your premium dashboard</p>
             </div>
             <div class="input-group">
@@ -1709,8 +1733,7 @@
         <!-- SIGNUP -->
         <div class="auth-card hidden" id="signup-box">
             <div class="brand">
-                <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" loading="eager" decoding="async"></div>
-                <h1 class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></h1>
+                                <h1 class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></h1>
                 <p>Create your account and get started</p>
             </div>
             <div class="input-group">
@@ -2035,7 +2058,7 @@
         </div>
         <div class="checkout-uid-section">
             <label for="chk-uid-input">UID</label>
-            <input id="chk-uid-input" type="text" inputmode="text" placeholder="Enter your UID/map code" autocomplete="off"/>
+            <input id="chk-uid-input" type="text" inputmode="numeric" placeholder="Enter your UID" autocomplete="off"/>
         </div>
         <div class="modal-actions checkout-actions">
             <button class="btn btn-primary-modal" id="btn-confirm-pay" onclick="executePurchase()">Confirm Pay</button>
@@ -2048,7 +2071,7 @@
     <div class="modal" style="text-align:center;">
         <i class="fas fa-check-circle success-icon"></i>
         <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
-        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Order placed.</p>
+        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Your premium key is ready.</p>
         <div class="key-display">
             <p class="success-order-message">We have received your order, processing will be start shortly.</p>
         </div>
@@ -2637,12 +2660,12 @@
             const tgDash = data.telegram_dashboard || '#';
             document.getElementById('auth-wa-link').href = wa;
             document.getElementById('auth-wa-link-2').href = wa;
-            document.getElementById('auth-tg-link').href = tgLogin;
-            document.getElementById('auth-tg-link-2').href = tgLogin;
+            document.getElementById('auth-tg-link').href = "https://t.me/nrzempire";
+            document.getElementById('auth-tg-link-2').href = "https://t.me/nrzempire";
             const fab = document.getElementById('global-telegram-btn');
             fab.href = tgDash;
             fab.style.display = tgDash === '#' ? 'none' : 'flex';
-            document.getElementById('support-wa-btn').href = 'https://discord.gg/vKx2bphJAU';
+            document.getElementById('support-wa-btn').href = "https://discord.gg/vKx2bphJAU";
             document.getElementById('support-tg-btn').href = "https://t.me/nrzempire";
         });
     }
@@ -2658,24 +2681,8 @@
             const nameEl = document.getElementById('site-name');
             const logoEl = document.getElementById('site-logo');
             const iconEl = document.getElementById('default-brand-icon');
-            const authLogos = document.querySelectorAll('.auth-brand-logo');
             const name = String(data.name || '').trim();
             const logo = String(data.logo || '').trim();
-
-            authLogos.forEach(img => {
-                img.onerror = () => {
-                    img.style.display = 'none';
-                };
-                img.onload = () => {
-                    img.style.display = 'block';
-                };
-                if (logo) {
-                    img.src = logo;
-                } else {
-                    img.removeAttribute('src');
-                    img.style.display = 'none';
-                }
-            });
 
             if (name && nameEl) {
                 nameEl.dataset.text = name;
