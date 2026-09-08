@@ -347,10 +347,7 @@
         text-align: center;
         margin-bottom: 32px;
     }
-    .auth-card .brand .logo-icon,
-    .auth-card .brand img { display:none !important; }
     .auth-card .brand .logo-icon {
-        display: none !important;
         width: 56px;
         height: 56px;
         background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
@@ -1976,10 +1973,10 @@
                     Agar apko yaha deposit, purchase, services ya account related koi bhi issue aarhi hai to niche Support Links ka use karke solve kara skte ho !
                 </p>
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                    <a href="#" id="support-wa-btn" target="_blank" class="btn-outline" style="border-color:#5865F2;color:#5865F2;justify-content:center;padding:12px;" href="https://discord.gg/vKx2bphJAU">
+                    <a href="https://discord.gg/vKx2bphJAU" id="support-wa-btn" target="_blank" rel="noopener noreferrer" class="btn-outline" style="border-color:#5865F2;color:#5865F2;justify-content:center;padding:12px;">
                         <i class="fab fa-discord"></i> Discord Support
                     </a>
-                    <a href="#" id="support-tg-btn" target="_blank" class="btn-outline" style="border-color:#0088cc;color:#0088cc;justify-content:center;padding:12px;">
+                    <a href="https://t.me/nrzempire" id="support-tg-btn" target="_blank" rel="noopener noreferrer" class="btn-outline" style="border-color:#0088cc;color:#0088cc;justify-content:center;padding:12px;">
                         <i class="fab fa-telegram-plane"></i> Telegram Support
                     </a>
                 </div>
@@ -2660,13 +2657,13 @@
             const tgDash = data.telegram_dashboard || '#';
             document.getElementById('auth-wa-link').href = wa;
             document.getElementById('auth-wa-link-2').href = wa;
-            document.getElementById('auth-tg-link').href = "https://t.me/nrzempire";
-            document.getElementById('auth-tg-link-2').href = "https://t.me/nrzempire";
+            document.getElementById('auth-tg-link').href = tgLogin;
+            document.getElementById('auth-tg-link-2').href = tgLogin;
             const fab = document.getElementById('global-telegram-btn');
             fab.href = tgDash;
             fab.style.display = tgDash === '#' ? 'none' : 'flex';
-            document.getElementById('support-wa-btn').href = "https://discord.gg/vKx2bphJAU";
-            document.getElementById('support-tg-btn').href = "https://t.me/nrzempire";
+            document.getElementById('support-wa-btn').href = 'https://discord.gg/vKx2bphJAU';
+            document.getElementById('support-tg-btn').href = 'https://t.me/nrzempire';
         });
     }
 
