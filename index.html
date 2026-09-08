@@ -515,7 +515,7 @@
     /* ============================================
        MAIN APP
     ============================================ */
-    #main-app { display: none; }
+    #main-app { display: block; }
 
     /* NAVBAR - Sleek & Modern */
     .navbar {
@@ -1682,62 +1682,7 @@
 <!-- ==========================================
      AUTH SCREEN - Modern & Clean
      ========================================== -->
-<div id="auth-screen">
-    <div class="auth-container">
-        <!-- LOGIN -->
-        <div class="auth-card" id="login-box">
-            <div class="brand">
-                <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" style="display:none;"></div>
-                <h1>NRZ <span>STORE</span></h1>
-                <p>Welcome back to your premium dashboard</p>
-            </div>
-            <div class="input-group">
-                <input id="login-email" placeholder="Email address" type="email"/>
-                <i class="fas fa-envelope input-icon"></i>
-            </div>
-            <div class="input-group">
-                <input id="login-pass" placeholder="Password" type="password"/>
-                <i class="fas fa-lock input-icon"></i>
-            </div>
-            <button class="btn-auth" id="btn-login">
-                <span><i class="fas fa-arrow-right"></i> Login</span>
-            </button>
-            <p class="auth-toggle">New here? <span id="go-to-signup">Create account</span></p>
-            <div class="auth-divider">or continue with</div>
-            <div class="social-row">
-                <a class="social-btn wa" href="#" id="auth-wa-link" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a class="social-btn tg" href="#" id="auth-tg-link" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
-            </div>
-        </div>
-
-        <!-- SIGNUP -->
-        <div class="auth-card hidden" id="signup-box">
-            <div class="brand">
-                <div class="logo-icon"><img class="auth-brand-logo" src="" alt="NRZ STORE logo" style="display:none;"></div>
-                <h1>NRZ <span>STORE</span></h1>
-                <p>Create your account and get started</p>
-            </div>
-            <div class="input-group">
-                <input id="signup-email" placeholder="Email address" type="email"/>
-                <i class="fas fa-envelope input-icon"></i>
-            </div>
-            <div class="input-group">
-                <input id="signup-pass" placeholder="Password (min 6 chars)" type="password"/>
-                <i class="fas fa-lock input-icon"></i>
-            </div>
-            <button class="btn-auth" id="btn-signup">
-                <span><i class="fas fa-user-plus"></i> Sign Up</span>
-            </button>
-            <p class="auth-toggle">Already registered? <span id="go-to-login">Login</span></p>
-            <div class="auth-divider">or continue with</div>
-            <div class="social-row">
-                <a class="social-btn wa" href="#" id="auth-wa-link-2" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a class="social-btn tg" href="#" id="auth-tg-link-2" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Customer login/signup removed: store opens directly. -->
 <!-- ==========================================
      MAIN APP
      ========================================== -->
@@ -1750,18 +1695,7 @@
             <img id="site-logo" src="" alt="Site Logo" style="display:none;width:34px;height:34px;object-fit:cover;border-radius:9px;" />
             <span id="site-name">NRZ STORE</span>
         </div>
-        <div class="nav-actions">
-            <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
-            <button class="menu-btn" id="menu-toggle"><i class="fas fa-bars"></i></button>
-        </div>
-        <div class="dropdown" id="dropdown-menu">
-            <div class="dropdown-item" onclick="navigate('home')"><i class="fas fa-th-large"></i> Dashboard</div>
-            <div class="dropdown-item" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> Wallet</div>
-            <div class="dropdown-item" onclick="navigate('plans')"><i class="fas fa-calendar-check"></i> My Plans</div>
-            <div class="dropdown-item" onclick="navigate('profile')"><i class="fas fa-user"></i> Profile</div>
-            <div class="dropdown-divider"></div>
-            <div class="dropdown-item danger" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</div>
-        </div>
+        <div class="nav-actions"></div>
     </nav>
 
     <!-- PAGE: HOME -->
@@ -1803,293 +1737,14 @@
         </div>
     </div>
 
-    <!-- PAGE: WALLET -->
-    <div class="page-content hidden" id="page-wallet">
-        <div class="page-header">
-            <h2 class="page-title">My <span>Wallet</span></h2>
-        </div>
-
-        <!-- Stats -->
-        <div class="wallet-stats">
-            <div class="wallet-stat">
-                <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
-                <div class="stat-info">
-                    <h4>Balance</h4>
-                    <h2 id="wallet-stat-bal">₹0.00</h2>
-                </div>
-            </div>
-            <div class="wallet-stat">
-                <div class="stat-icon green"><i class="fas fa-calendar-day"></i></div>
-                <div class="stat-info">
-                    <h4>Today</h4>
-                    <h2 id="wallet-stat-today">₹0.00</h2>
-                </div>
-            </div>
-            <div class="wallet-stat">
-                <div class="stat-icon purple"><i class="fas fa-arrow-down"></i></div>
-                <div class="stat-info">
-                    <h4>Total Deposit</h4>
-                    <h2 id="wallet-stat-dep">₹0.00</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="wallet-tabs">
-            <div class="wallet-tab active" onclick="switchWalletTab('auto')" id="tab-btn-auto"><i class="fas fa-bolt"></i> Instant UPI</div>
-            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Crypto</div>
-            <div class="wallet-tab manual" onclick="switchWalletTab('manual')" id="tab-btn-manual"><i class="fas fa-qrcode"></i> Manual UPI</div>
-            <div class="wallet-tab support" onclick="switchWalletTab('support')" id="tab-btn-support"><i class="fas fa-headset"></i> Support</div>
-        </div>
-
-        <!-- Tab: Instant UPI -->
-        <div id="wallet-tab-auto" class="wallet-section">
-            <div class="premium-card">
-                <div class="card-head">
-                    <i class="fas fa-bolt" style="color:var(--accent-blue);"></i>
-                    <h3>Instant Gateway</h3>
-                </div>
-                <p class="card-desc">Fast UPI payment. Balance updates automatically within seconds.</p>
-                <div class="wallet-amount-label">Select Top-up Amount</div>
-                <div class="wallet-amount-pills" id="wallet-amount-pills">
-                    <button type="button" class="amount-pill" data-amount="5">₹5</button>
-                    <button type="button" class="amount-pill" data-amount="20">₹20</button>
-                    <button type="button" class="amount-pill" data-amount="50">₹50</button>
-                    <button type="button" class="amount-pill" data-amount="100">₹100</button>
-                    <button type="button" class="amount-pill" data-amount="250">₹250</button>
-                    <button type="button" class="amount-pill" data-amount="500">₹500</button>
-                    <button type="button" class="amount-pill" data-amount="1000">₹1000</button>
-                </div>
-                <input id="add-amount" type="hidden" value="5"/>
-                <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
-                    <i class="fas fa-arrow-right"></i> Pay Now
-                </button>
-
-                <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border-color);">
-                    <h4 style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:12px;"><i class="fas fa-search"></i> Check Order Status</h4>
-                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                        <input id="status-order-id" placeholder="Order ID" style="flex:1;padding:12px 16px;background:var(--bg-input);border:1.5px solid var(--border-color);border-radius:var(--radius-sm);font-size:14px;min-width:140px;color:var(--text-primary);"/>
-                        <button class="btn-outline" id="btn-check-status" style="border-color:var(--accent-gold);color:var(--accent-gold);">Verify</button>
-                    </div>
-                    <div id="status-result" class="hidden" style="margin-top:16px;">
-                        <div class="status-grid">
-                            <div class="status-row"><span class="label">Order ID</span><span class="value" id="res-oid" style="font-size:13px;">-</span></div>
-                            <div class="status-row"><span class="label">Status</span><span class="value" id="res-status" style="font-weight:700;">-</span></div>
-                            <div class="status-row"><span class="label">Amount</span><span class="value" id="res-amount" style="color:var(--accent-blue);">-</span></div>
-                            <div class="status-row" style="border-bottom:none;"><span class="label">Date</span><span class="value" id="res-date" style="font-size:13px;">-</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab: Crypto -->
-        <div id="wallet-tab-crypto" class="wallet-section hidden">
-            <div class="premium-card">
-                <div class="card-head">
-                    <i class="fab fa-bitcoin" style="color:var(--accent-gold);"></i>
-                    <h3>Binance / USDT</h3>
-                </div>
-                <p class="card-desc">Send USDT via Binance Pay or TRC20. Rate: <strong style="color:var(--accent-gold);">1 USDT = ₹<span id="crypto-rate">88.00</span></strong></p>
-
-                <div class="qr-display crypto">
-                    <img id="crypto-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
-                </div>
-                <div style="text-align:center;margin-bottom:20px;">
-                    <a id="crypto-qr-download" href="#" download="QR.jpg" class="btn-outline" style="border-color:var(--accent-gold);color:var(--accent-gold);">Download QR</a>
-                </div>
-
-                <div class="copy-row">
-                    <div>
-                        <span class="copy-label">Binance Pay ID</span>
-                        <div class="copy-value" id="crypto-payid-display">Loading...</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyToClipboard('crypto-payid-display','Binance Pay ID')">Copy</button>
-                </div>
-                <div class="copy-row">
-                    <div>
-                        <span class="copy-label">USDT Address (TRC20)</span>
-                        <div class="copy-value" id="crypto-address-display">Loading...</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyToClipboard('crypto-address-display','USDT Address')">Copy</button>
-                </div>
-
-                <button class="btn-primary-solid" style="width:100%;background:linear-gradient(135deg,var(--accent-gold),#f59e0b);color:#000;" onclick="openModal('modal-crypto-deposit')">
-                    <i class="fas fa-check-circle"></i> I Have Paid
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab: Manual UPI -->
-        <div id="wallet-tab-manual" class="wallet-section hidden">
-            <div class="premium-card">
-                <div class="card-head">
-                    <i class="fas fa-qrcode" style="color:var(--accent-purple);"></i>
-                    <h3>Manual UPI</h3>
-                </div>
-                <p class="card-desc">Scan the QR or copy UPI ID to transfer funds manually.</p>
-
-                <div class="qr-display manual">
-                    <img id="manual-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
-                </div>
-                <div style="text-align:center;margin-bottom:20px;">
-                    <a id="manual-qr-download" href="#" download="QR.jpg" class="btn-outline" style="border-color:var(--accent-purple);color:var(--accent-purple);">Download QR</a>
-                </div>
-
-                <div class="copy-row">
-                    <div>
-                        <span class="copy-label">UPI ID</span>
-                        <div class="copy-value" id="manual-upi-display">Loading...</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyToClipboard('manual-upi-display','UPI ID')">Copy</button>
-                </div>
-
-                <div class="input-group"><input id="manual-amount" placeholder="Amount Sent (₹)" type="number"/></div>
-                <div class="input-group"><input id="manual-utr" placeholder="12-Digit UTR / Ref No." type="text"/></div>
-                <div class="input-group"><input id="manual-app" placeholder="Payment App (PhonePe, Paytm, etc.)" type="text"/></div>
-                <div class="input-group"><input id="manual-screenshot" placeholder="Screenshot URL (Drive, ImgBB)" type="url"/></div>
-
-                <button class="btn-primary-solid" id="btn-submit-manual" style="width:100%;background:linear-gradient(135deg,var(--accent-purple),#7c3aed);">
-                    <i class="fas fa-paper-plane"></i> Submit Request
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab: Support -->
-        <div id="wallet-tab-support" class="wallet-section hidden">
-            <div class="premium-card" style="text-align:center;max-width:480px;">
-                <i class="fas fa-headset" style="font-size:48px;color:var(--accent-green);margin-bottom:12px;display:block;"></i>
-                <h3 style="font-size:20px;font-weight:800;margin-bottom:8px;">Need Help?</h3>
-                <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:24px;">
-                    Agar apko yaha deposit, purchase, services ya account related koi bhi issue aarhi hai to niche Support Links ka use karke solve kara skte ho !
-                </p>
-                <div style="display:flex;flex-direction:column;gap:10px;">
-                    <a href="#" id="support-wa-btn" target="_blank" class="btn-outline" style="border-color:#5865F2;color:#5865F2;justify-content:center;padding:12px;" href="https://discord.gg/ySBDUyTVae">
-                        <i class="fab fa-discord"></i> Discord Support
-                    </a>
-                    <a href="#" id="support-tg-btn" target="_blank" class="btn-outline" style="border-color:#0088cc;color:#0088cc;justify-content:center;padding:12px;">
-                        <i class="fab fa-telegram-plane"></i> Telegram Support
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE: PROFILE -->
-    <div class="page-content hidden" id="page-profile">
-        <div class="page-header"><h2 class="page-title">Account <span>Details</span></h2></div>
-        <div class="profile-card">
-            <div class="prof-item">
-                <span class="label"><i class="fas fa-envelope"></i> Email</span>
-                <span class="value" id="prof-email">...</span>
-            </div>
-            <div class="prof-item">
-                <span class="label"><i class="fas fa-wallet"></i> Balance</span>
-                <span class="value green" id="prof-bal">₹0.00</span>
-            </div>
-            <div class="prof-item">
-                <span class="label"><i class="fas fa-calendar-alt"></i> Joined</span>
-                <span class="value" id="prof-date">...</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAGE: MY PLANS -->
-    <div class="page-content hidden" id="page-plans">
-        <div class="page-header"><h2 class="page-title">My <span>Plans</span></h2></div>
-        <div id="my-plan-container">
-            <!-- Injected via JS -->
-        </div>
-    </div>
-
-    <!-- TELEGRAM FAB -->
-    <a class="telegram-fab" href="#" id="global-telegram-btn" target="_blank" style="display:none;">
-        <i class="fab fa-telegram-plane"></i>
-    </a>
-</div>
-
-<!-- ==========================================
-     MODALS
-     ========================================== -->
-
-<!-- CHECKOUT MODAL -->
-<div class="modal-overlay hidden" id="modal-checkout">
-    <div class="modal checkout-modal">
-        <div class="modal-head checkout-modal-head">
-            <div class="checkout-title"><i class="fas fa-shopping-cart"></i><span>Checkout</span></div>
-            <div class="checkout-head-actions">
-                <button type="button" class="checkout-icon-btn gift-btn" id="btn-toggle-coupon" onclick="toggleCouponUI()" aria-label="Promo Code"><i class="fas fa-gift"></i></button>
-                <button type="button" class="checkout-icon-btn close-btn" onclick="closeModal('modal-checkout')" aria-label="Close"><i class="fas fa-times"></i></button>
-            </div>
-        </div>
-        <div class="checkout-box">
-            <div class="row"><span>Item</span><strong id="chk-panel-name">Panel</strong></div>
-            <div class="row"><span>Plan</span><strong id="chk-plan-label" style="color:var(--accent-gold);">Plan</strong></div>
-            <div class="row"><span>Original Price</span><strong>₹<span id="chk-orig-price">0.00</span></strong></div>
-            <div class="checkout-total">
-                <span>To Pay</span>
-                <div>
-                    <span class="strike hidden" id="chk-strike-price">₹0.00</span>
-                    <span class="total-amount">₹<span id="chk-final-price">0.00</span></span>
-                </div>
-            </div>
-        </div>
-        <div class="coupon-section hidden" id="checkout-coupon-section">
-            <div class="coupon-head">
-                <span>Promo Code</span>
-                <span class="discount-badge hidden" id="chk-discount-badge">0% OFF</span>
-            </div>
-            <div class="coupon-box">
-                <input id="chk-coupon-input" placeholder="Enter code" autocomplete="off"/>
-                <button id="btn-apply-coupon" onclick="applyCouponUI()">Apply</button>
-            </div>
-        </div>
-        <div class="checkout-uid-section">
-            <label for="chk-uid-input">UID</label>
-            <input id="chk-uid-input" type="text" inputmode="numeric" placeholder="Enter your UID" autocomplete="off"/>
-        </div>
-        <div class="modal-actions checkout-actions">
-            <button class="btn btn-primary-modal" id="btn-confirm-pay" onclick="executePurchase()">Confirm Pay</button>
-        </div>
-    </div>
-</div>
-
-<!-- SUCCESS MODAL -->
-<div class="modal-overlay hidden" id="modal-success">
-    <div class="modal" style="text-align:center;">
-        <i class="fas fa-check-circle success-icon"></i>
-        <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
-        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Your premium key is ready.</p>
-        <div class="key-display">
-            <p class="success-order-message">We have received your order, processing will be start shortly.</p>
-        </div>
-        <div class="action-row">
-            <button class="btn btn-outline-modal" onclick="closeModal('modal-success')">Close</button>
-        </div>
-    </div>
-</div>
-
-<!-- CRYPTO DEPOSIT MODAL -->
-<div class="modal-overlay hidden" id="modal-crypto-deposit">
-    <div class="modal" style="border-color:rgba(251,191,36,0.25);">
-        <div class="modal-head"><i class="fab fa-bitcoin" style="color:var(--accent-gold);"></i> Crypto Deposit</div>
-        <div class="input-group"><input id="crypto-amount" placeholder="Amount (USDT or INR)" type="number"/></div>
-        <div class="input-group"><input id="crypto-hash" placeholder="Transaction Hash / ID" type="text"/></div>
-        <div class="input-group"><input id="crypto-screenshot" placeholder="Screenshot URL" type="url"/></div>
-        <div class="input-group"><input id="crypto-note" placeholder="Optional note" type="text"/></div>
-        <div class="modal-actions">
-            <button class="btn btn-outline-modal" onclick="closeModal('modal-crypto-deposit')">Cancel</button>
-            <button class="btn btn-primary-modal" id="btn-submit-crypto" onclick="submitCryptoDeposit()" style="background:linear-gradient(135deg,var(--accent-gold),#f59e0b);color:#000;">Submit</button>
-        </div>
-    </div>
-</div>
+    <!-- Wallet/deposit UI removed. Payments happen per-order at checkout. -->
 
 <!-- ==========================================
      FIREBASE + APP LOGIC
      ========================================== -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+    import { getAuth, signInAnonymously }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, set, get, onValue, push, runTransaction, serverTimestamp, update }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -2292,39 +1947,6 @@
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
-    // Auth toggles
-    document.getElementById('go-to-signup').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('login-box').classList.add('hidden');
-        document.getElementById('signup-box').classList.remove('hidden');
-    });
-    
-    document.getElementById('go-to-login').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.getElementById('signup-box').classList.add('hidden');
-        document.getElementById('login-box').classList.remove('hidden');
-    });
-
-    // --- WALLET TABS ---
-    window.switchWalletTab = (tab) => {
-        document.querySelectorAll('.wallet-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.wallet-section').forEach(s => s.classList.add('hidden'));
-        const tabMap = { auto: 'tab-btn-auto', crypto: 'tab-btn-crypto', manual: 'tab-btn-manual', support: 'tab-btn-support' };
-        if (tabMap[tab]) document.getElementById(tabMap[tab]).classList.add('active');
-        const section = document.getElementById(`wallet-tab-${tab}`);
-        if (section) section.classList.remove('hidden');
-    };
-
-    // --- WALLET TOP-UP AMOUNT PILLS ---
-    document.querySelectorAll('.amount-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            document.querySelectorAll('.amount-pill').forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            document.getElementById('add-amount').value = pill.dataset.amount;
-        });
-    });
-    document.querySelector('.amount-pill[data-amount="5"]')?.classList.add('active');
-
     // --- ZAPPAY PAYMENT SYSTEM ---
     const ZAPPAY_API_BASE = "https://zappay-beta.vercel.app";
     let paymentPollInterval = null;
@@ -2450,212 +2072,6 @@
             if (currentUser) await update(ref(db, `transactions/${currentUser.uid}/${orderId}`), { status: newStatus });
             await update(ref(db, `gateway_payments/${orderId}`), { status: newStatus });
         } catch (e) { console.error(e); }
-    }
-
-    // --- AUTO DEPOSIT ---
-    document.getElementById('btn-submit-payment').addEventListener('click', async function() {
-        const amt = sanitizeAmount(document.getElementById('add-amount').value);
-        const btn = this;
-
-        if (!window.ZAP_KEY) return showToast("Gateway offline. Contact admin.", "error");
-        if (!Number.isFinite(amt) || amt < 1 || amt > 5000) return showToast("Enter an amount between ₹1 and ₹5,000", "error");
-        if (!currentUser) return showToast("Please login again", "error");
-
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating Order...`;
-        btn.disabled = true;
-
-        try {
-            const order = await zapPayCreateOrder(amt, `Wallet Deposit - ${currentUser.uid}`);
-            const orderId = order.order_id;
-
-            await set(ref(db, `transactions/${currentUser.uid}/${orderId}`), {
-                id: orderId,
-                type: "deposit_auto",
-                amount: amt,
-                status: "pending",
-                desc: "ZapPay Gateway Deposit",
-                date: new Date().toISOString()
-            });
-            await set(ref(db, `gateway_payments/${orderId}`), {
-                uid: currentUser.uid,
-                email: currentUser.email || "",
-                amount: amt,
-                status: "pending",
-                gateway: "ZapPay",
-                timestamp: serverTimestamp()
-            });
-
-            localStorage.setItem("pending_zap_order", orderId);
-            localStorage.setItem("pending_zap_time", Date.now());
-
-            activePaymentWindow = window.open(order.payment_url, "zappay_checkout", "width=430,height=700,resizable=yes,scrollbars=yes");
-            if (!activePaymentWindow) {
-                window.location.href = order.payment_url;
-                return;
-            }
-
-            document.getElementById('status-order-id').value = orderId;
-            startPaymentWatcher(orderId);
-            showToast(`Order ${orderId} created. Complete the UPI payment.`, "success");
-        } catch (e) {
-            console.error("ZapPay create order error:", e);
-            showToast("Gateway error: " + e.message, "error");
-        } finally {
-            btn.innerHTML = `<i class="fas fa-arrow-right"></i> Pay Now`;
-            btn.disabled = false;
-        }
-    });
-
-    // --- CHECK ORDER STATUS ---
-    document.getElementById('btn-check-status').addEventListener('click', async function() {
-        const oid = document.getElementById('status-order-id').value.trim();
-        if (!oid) return showToast("Enter an Order ID", "warning");
-        if (!window.ZAP_KEY) return showToast("Gateway offline", "error");
-
-        const btn = this;
-        const resultDiv = document.getElementById('status-result');
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
-        btn.disabled = true;
-        resultDiv.classList.add('hidden');
-
-        try {
-            const d = await zapPayGetStatus(oid);
-            document.getElementById('res-oid').innerText = d.order_id || oid;
-            document.getElementById('res-status').innerText = d.status || 'unknown';
-            document.getElementById('res-status').style.color =
-                d.status === "success" ? "var(--accent-green)" :
-                d.status === "failed" ? "var(--accent-red)" : "var(--accent-gold)";
-            document.getElementById('res-amount').innerText = `₹${Number(d.amount || 0).toFixed(2)}`;
-            document.getElementById('res-date').innerText = '-';
-            resultDiv.classList.remove('hidden');
-
-            if (d.status === "success" && currentUser) {
-                const txSnap = await get(ref(db, `transactions/${currentUser.uid}/${oid}`));
-                if (txSnap.exists() && txSnap.val().status === "pending") {
-                    await processSuccessfulPayment(oid, d);
-                }
-            }
-        } catch (e) {
-            showToast("Failed to fetch status: " + e.message, "error");
-        } finally {
-            btn.innerHTML = `Verify`;
-            btn.disabled = false;
-        }
-    });
-
-    if (typeof ZapPay !== 'undefined' && ZapPay.setCallbacks) {
-        ZapPay.setCallbacks({
-            onSuccess: (order) => {
-                const orderId = order && order.order_id;
-                if (orderId) {
-                    showToast("Payment completed. Verifying with ZapPay...", "success");
-                    startPaymentWatcher(orderId);
-                }
-            },
-            onFailed: (order) => {
-                const orderId = order && order.order_id;
-                if (orderId) updatePaymentStatus(orderId, "failed");
-            },
-            onTimeout: (order) => {
-                const orderId = order && order.order_id;
-                if (orderId) updatePaymentStatus(orderId, "failed");
-            }
-        });
-    }
-
-    // --- MANUAL DEPOSIT ---
-    document.getElementById('btn-submit-manual').addEventListener('click', async function() {
-        const amt = document.getElementById('manual-amount').value;
-        const utr = document.getElementById('manual-utr').value.trim();
-        const appName = document.getElementById('manual-app').value.trim();
-        const screenshot = document.getElementById('manual-screenshot').value.trim();
-        const btn = this;
-        if (!amt || amt <= 0) return showToast("Enter valid amount", "error");
-        if (!utr || utr.length < 8) return showToast("Enter valid UTR", "error");
-        if (!appName) return showToast("Enter payment app name", "error");
-
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Submitting...`;
-        btn.disabled = true;
-        const txId = "MAN" + Date.now();
-
-        try {
-            await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
-                id: txId, type: "deposit_manual", amount: parseFloat(amt), status: "pending",
-                desc: `Manual Deposit via ${appName}`, utr: utr, date: new Date().toISOString()
-            });
-            await set(ref(db, `manual_deposits/${txId}`), {
-                uid: currentUser.uid, email: currentUser.email, amount: parseFloat(amt),
-                utr: utr, app: appName, screenshot: screenshot, status: "pending", timestamp: serverTimestamp()
-            });
-            showToast("Deposit submitted! Awaiting admin approval.");
-            document.getElementById('manual-amount').value = '';
-            document.getElementById('manual-utr').value = '';
-            document.getElementById('manual-app').value = '';
-            document.getElementById('manual-screenshot').value = '';
-        } catch (e) {
-            showToast("Error submitting request", "error");
-        } finally {
-            btn.innerHTML = `<i class="fas fa-paper-plane"></i> Submit Request`;
-            btn.disabled = false;
-        }
-    });
-
-    // --- CRYPTO DEPOSIT ---
-    window.submitCryptoDeposit = async function() {
-        const amt = document.getElementById('crypto-amount').value;
-        const hash = document.getElementById('crypto-hash').value.trim();
-        const screenshot = document.getElementById('crypto-screenshot').value.trim();
-        const note = document.getElementById('crypto-note').value.trim();
-        const btn = document.getElementById('btn-submit-crypto');
-        if (!amt || amt <= 0) return showToast("Enter valid amount", "error");
-        if (!hash || hash.length < 10) return showToast("Enter valid transaction hash", "error");
-        if (!screenshot) return showToast("Screenshot URL required", "error");
-
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Submitting...`;
-        btn.disabled = true;
-        const txId = "CRY" + Date.now();
-
-        try {
-            await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
-                id: txId, type: "deposit_crypto", amount: parseFloat(amt), status: "pending",
-                desc: "Crypto Deposit (USDT)", hash: hash, date: new Date().toISOString()
-            });
-            await set(ref(db, `crypto_deposits/${txId}`), {
-                uid: currentUser.uid, email: currentUser.email, amount: parseFloat(amt),
-                hash: hash, screenshot: screenshot, note: note, status: "pending", timestamp: serverTimestamp()
-            });
-            showToast("Crypto deposit submitted!");
-            document.getElementById('crypto-amount').value = '';
-            document.getElementById('crypto-hash').value = '';
-            document.getElementById('crypto-screenshot').value = '';
-            document.getElementById('crypto-note').value = '';
-            closeModal('modal-crypto-deposit');
-        } catch (e) {
-            showToast("Error submitting request", "error");
-        } finally {
-            btn.innerHTML = `Submit`;
-            btn.disabled = false;
-        }
-    };
-
-    // --- SUPPORT LINKS ---
-    function initContactLinks() {
-        if (!db) return;
-        onValue(ref(db, 'support_links'), (snap) => {
-            const data = snap.val() || {};
-            const wa = data.whatsapp || '#';
-            const tgLogin = data.telegram_login || '#';
-            const tgDash = data.telegram_dashboard || '#';
-            document.getElementById('auth-wa-link').href = wa;
-            document.getElementById('auth-wa-link-2').href = wa;
-            document.getElementById('auth-tg-link').href = tgLogin;
-            document.getElementById('auth-tg-link-2').href = tgLogin;
-            const fab = document.getElementById('global-telegram-btn');
-            fab.href = tgDash;
-            fab.style.display = tgDash === '#' ? 'none' : 'flex';
-            document.getElementById('support-wa-btn').href = wa;
-            document.getElementById('support-tg-btn').href = "https://t.me/nrzempire";
-        });
     }
 
     // --- BRANDING ---
@@ -2800,161 +2216,43 @@
         });
     }
 
-    // --- AUTH STATE ---
-    onAuthStateChanged(auth, async (user) => {
-        try {
-            if (user) {
-                currentUser = user;
-                authScreen.classList.add('hidden');
-                mainApp.style.display = 'block';
-                // Never allow a stale security overlay to cover the dashboard.
-                securityOverlay?.classList.remove('active');
+    // --- DIRECT STORE INITIALIZATION (NO CUSTOMER LOGIN/SIGNUP/LOGOUT) ---
+    authScreen?.classList.add('hidden');
+    mainApp.style.display = 'block';
+    securityOverlay?.classList.remove('active');
+    performSecurityCheck().catch(e => console.warn('Security check:', e));
+    initBranding();
+    fetchPanels();
+    initPromotions();
+    initPaymentSettings();
 
-                // Do not await the cosmetic security animation. Firebase auth
-                // must be allowed to finish and the dashboard must become usable.
-                performSecurityCheck().catch(e => console.warn('Security check:', e));
-
-                initBranding();
-                initUserData();
-                fetchDepositSettings();
-                fetchPanels();
-                initPromotions();
-                navigate('home');
-                const pending = localStorage.getItem("pending_zap_order");
-                if (pending) setTimeout(() => startPaymentWatcher(pending), 2000);
-            } else {
-            currentUser = null;
-            mainApp.style.display = 'none';
-            authScreen.classList.remove('hidden');
-            hideLoader();
-            if (paymentPollInterval) clearInterval(paymentPollInterval);
-            securityCompleted = false;
-            securityOverlay?.classList.remove('active');
-        }
-        } catch (e) {
-            console.error('Auth state handling error:', e);
-            // Never leave the user trapped behind the loader.
-            hideLoader();
-            if (user) {
-                authScreen.classList.add('hidden');
-                mainApp.style.display = 'block';
-                currentUser = user;
-                try { initBranding(); initUserData(); fetchPanels(); initPromotions(); navigate('home'); } catch (err) { console.error(err); }
-            }
-        } finally {
-            hideLoader();
-        }
+    // Invisible Firebase session: customers never see or manage an account.
+    // It keeps database writes protected by Firebase Auth rules.
+    const authReady = signInAnonymously(auth).catch(e => {
+        console.error('Anonymous auth failed:', e);
+        showToast('Secure session could not be started. Please refresh.', 'error');
+        throw e;
     });
 
-    // --- AUTH ACTIONS ---
-    document.getElementById('btn-signup').addEventListener('click', async function() {
-        const email = document.getElementById('signup-email').value.trim();
-        const pass = document.getElementById('signup-pass').value;
-        const btn = this;
-        if (!email || pass.length < 6) return showToast("Invalid email or password (<6 chars)", "error");
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading...`;
-        btn.disabled = true;
-        showLoader();
-        try {
-            const cred = await createUserWithEmailAndPassword(auth, email, pass);
-            await set(ref(db, `users/${cred.user.uid}`), { email, balance: 0, createdAt: serverTimestamp(), status: 'active' });
-            showToast("Account created!");
-        } catch (e) { showToast(e.message, "error"); } finally {
-            btn.innerHTML = `<span><i class="fas fa-user-plus"></i> Sign Up</span>`;
-            btn.disabled = false;
-            hideLoader();
-        }
-    });
-
-    document.getElementById('btn-login').addEventListener('click', async function() {
-        const email = document.getElementById('login-email').value.trim();
-        const pass = document.getElementById('login-pass').value;
-        const btn = this;
-        if (!email || !pass) return showToast("Enter email and password", "error");
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading...`;
-        btn.disabled = true;
-        showLoader();
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-            showToast("Welcome back!");
-        } catch (e) { showToast("Invalid credentials", "error"); } finally {
-            btn.innerHTML = `<span><i class="fas fa-arrow-right"></i> Login</span>`;
-            btn.disabled = false;
-            hideLoader();
-        }
-    });
-
-    document.getElementById('btn-logout').addEventListener('click', async function() {
-        showLoader();
-        try { await signOut(auth);
-            document.getElementById('dropdown-menu').classList.remove('active'); } catch (e) { console.error(e); }
-        hideLoader();
-    });
-
-    // --- USER DATA ---
-    function initUserData() {
-        if (!db || !currentUser) return;
-        onValue(ref(db, `users/${currentUser.uid}`), (snap) => {
-            if (snap.exists()) {
-                userData = snap.val();
-                if (userData.status === "banned") { signOut(auth);
-                    alert("Account banned."); return; }
-                const bal = parseFloat(userData.balance || 0).toFixed(2);
-                document.getElementById('nav-balance').innerText = bal;
-                document.getElementById('prof-bal').innerText = `₹${bal}`;
-                document.getElementById('wallet-stat-bal').innerText = `₹${bal}`;
-                document.getElementById('prof-email').innerText = userData.email;
-                if (userData.createdAt) {
-                    document.getElementById('prof-date').innerText = new Date(userData.createdAt).toLocaleDateString();
-                }
-                renderMyPlan(userData.plan || null);
-            } else {
-                renderMyPlan(null);
-            }
-            hideLoader();
-        });
-        onValue(ref(db, `transactions/${currentUser.uid}`), (snap) => {
-            let totalDep = 0, todayDep = 0;
-            const today = new Date().toLocaleDateString();
-            if (snap.exists()) {
-                snap.forEach(child => {
-                    const tx = child.val();
-                    const txDate = new Date(tx.date).toLocaleDateString();
-                    if (tx.type && tx.type.includes('deposit')) {
-                        if (tx.status === 'success') {
-                            totalDep += parseFloat(tx.amount) || 0;
-                            if (txDate === today) todayDep += parseFloat(tx.amount) || 0;
-                        }
-                    }
-                });
-            }
-            document.getElementById('wallet-stat-dep').innerText = `₹${totalDep.toFixed(2)}`;
-            document.getElementById('wallet-stat-today').innerText = `₹${todayDep.toFixed(2)}`;
-        });
-    }
+    const pending = localStorage.getItem('pending_zap_order');
+    if (pending) setTimeout(() => startPaymentWatcher(pending), 1200);
 
     // --- NAVIGATION ---
     window.navigate = (pageId) => {
         document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
         const target = document.getElementById(`page-${pageId}`);
         if (target) target.classList.remove('hidden');
-        const dropdown = document.getElementById('dropdown-menu');
-        if (dropdown) dropdown.classList.remove('active');
-        if (pageId === 'plans') fetchMyPlan();
-        if (pageId === 'wallet') switchWalletTab('auto');
         window.scrollTo(0, 0);
     };
 
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-        document.getElementById('dropdown-menu').classList.toggle('active');
-    });
-
-    window.selectPlanOption = function(el, panelId) {
-        const container = document.getElementById(`plans-${panelId}`);
-        if (!container) return;
-        container.querySelectorAll('.plan-option').forEach(btn => btn.classList.remove('active'));
-        el.classList.add('active');
-    };
+    // --- PAYMENT SETTINGS ---
+    function initPaymentSettings() {
+        if (!db) return;
+        onValue(ref(db, 'settings/payment'), snap => {
+            const data = snap.val() || {};
+            window.ZAP_KEY = String(data.zap_key || '').trim();
+        });
+    }
 
     // --- FETCH PANELS ---
     function fetchPanels() {
@@ -3095,6 +2393,7 @@
         document.getElementById('chk-final-price').innerText = (parseFloat(planData.price) || 0).toFixed(2);
         document.getElementById('chk-coupon-input').value = '';
         document.getElementById('chk-uid-input').value = '';
+        document.getElementById('chk-uid-input').setAttribute('minlength', '5');
         document.getElementById('chk-strike-price').classList.add('hidden');
         document.getElementById('chk-discount-badge').classList.add('hidden');
         document.getElementById('checkout-coupon-section').classList.add('hidden');
@@ -3150,53 +2449,193 @@
         }
     };
 
-    window.executePurchase = async function() {
-        const checkout = window.currentCheckout;
-        const enteredUid = document.getElementById('chk-uid-input')?.value.trim() || '';
-        if (!enteredUid) return showToast('Enter your UID first', 'warning');
-        const price = checkout.finalPrice || 0;
-        const btn = document.getElementById('btn-confirm-pay');
-        const balance = parseFloat(userData.balance || 0);
-        if (balance < price) return showToast(`Insufficient balance. Need ₹${price.toFixed(2)}`, "error");
-        showLoader();
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+    // --- DIRECT PURCHASE / ZAPPAY ---
+    function validatePurchaseTarget(value) {
+        const target = String(value || '').trim();
+        return target.length >= 5 && target.length <= 120 ? target : null;
+    }
+
+    async function processSuccessfulPurchase(orderId, gatewayData) {
+        if (!gatewayData) return;
+        const amount = Number(gatewayData.amount);
+        if (!Number.isFinite(amount) || amount < 1 || amount > 5000) return;
+
+        const paymentRef = ref(db, `gateway_payments/${orderId}`);
         try {
-            const result = await runTransaction(ref(db, `users/${currentUser.uid}/balance`), (bal) => {
-                if (bal === null) return 0;
-                if (bal >= price) return bal - price;
+            const result = await runTransaction(paymentRef, (payment) => {
+                if (payment && payment.status === 'pending' && payment.type === 'purchase') {
+                    payment.status = 'approved';
+                    payment.gateway_status = 'success';
+                    payment.verified_amount = amount;
+                    payment.txn_id = gatewayData.txn_id || gatewayData.transaction_id || '';
+                    payment.utr = gatewayData.utr || '';
+                    payment.verified_at = new Date().toISOString();
+                    return payment;
+                }
                 return undefined;
             });
-            if (result.committed) {
-                const newKey = generateKey(12);
-                const txId = "PUR" + Date.now();
-                await set(push(ref(db, `purchases/${currentUser.uid}`)), {
-                    panelId: checkout.panelId || '',
-                    panelName: checkout.panelName || 'Panel',
-                    plan: checkout.planKey || '',
-                    label: checkout.label || 'Plan',
-                    enteredUid: enteredUid,
-                    price: price,
-                    key: newKey,
-                    link: checkout.link || '',
-                    date: new Date().toISOString()
-                });
-                await set(ref(db, `transactions/${currentUser.uid}/${txId}`), {
-                    id: txId, type: "purchase", amount: price, status: "success",
-                    desc: `Purchased ${checkout.panelName || 'Panel'} (UID: ${enteredUid})`, uid: enteredUid, date: new Date().toISOString()
-                });
-                if (window.appliedCoupon && window.appliedCoupon.id) {
-                    await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
-                }
+
+            if (!result.committed) return;
+
+            const payment = result.snapshot.val() || gatewayData;
+            const newKey = generateKey(12);
+            const purchaseRef = ref(db, `purchases/${orderId}`);
+            const purchaseSnap = await get(purchaseRef);
+            if (purchaseSnap.exists() && purchaseSnap.val()?.status === 'paid') {
                 closeModal('modal-checkout');
                 openModal('modal-success');
-            } else {
-                showToast("Transaction failed. Insufficient funds.", "error");
+                return;
             }
-        } catch (e) { showToast("System error. Try again.", "error"); } finally {
+
+            await update(purchaseRef, {
+                status: 'paid',
+                key: newKey,
+                gatewayOrderId: orderId,
+                gatewayStatus: 'success',
+                txnId: gatewayData.txn_id || gatewayData.transaction_id || '',
+                utr: gatewayData.utr || '',
+                paidAmount: amount,
+                paidAt: new Date().toISOString()
+            });
+
+            if (payment.couponId) {
+                await runTransaction(ref(db, `coupons/${payment.couponId}/used`), curr => (curr || 0) + 1);
+            }
+
+            document.getElementById('modal-success')?.querySelector('.success-order-message')?.replaceChildren(
+                document.createTextNode('We have received your order, processing will be start shortly.')
+            );
+            closeModal('modal-checkout');
+            openModal('modal-success');
+        } catch (e) {
+            console.error('Process purchase payment error:', e);
+            showToast('Payment verified, but order update failed. Please contact support.', 'error');
+        }
+    }
+
+    async function updatePaymentStatus(orderId, newStatus) {
+        try {
+            await update(ref(db, `gateway_payments/${orderId}`), { status: newStatus });
+            await update(ref(db, `purchases/${orderId}`), { status: newStatus === 'failed' ? 'payment_failed' : newStatus });
+        } catch (e) { console.error(e); }
+    }
+
+    async function verifyZapPayOrder(orderId) {
+        try {
+            const data = await zapPayGetStatus(orderId);
+            if (data.status === 'success') {
+                clearInterval(paymentPollInterval);
+                localStorage.removeItem('pending_zap_order');
+                localStorage.removeItem('pending_zap_time');
+                if (activePaymentWindow && !activePaymentWindow.closed) activePaymentWindow.close();
+
+                const paymentSnap = await get(ref(db, `gateway_payments/${orderId}`));
+                const payment = paymentSnap.val() || {};
+                if (payment.type === 'purchase') await processSuccessfulPurchase(orderId, data);
+                return true;
+            }
+            if (data.status === 'failed') {
+                clearInterval(paymentPollInterval);
+                localStorage.removeItem('pending_zap_order');
+                localStorage.removeItem('pending_zap_time');
+                if (activePaymentWindow && !activePaymentWindow.closed) activePaymentWindow.close();
+                await updatePaymentStatus(orderId, 'failed');
+                showToast('Payment failed. Order: ' + orderId, 'error');
+                return true;
+            }
+        } catch (e) {
+            console.log('ZapPay verification error:', e);
+        }
+        return false;
+    }
+
+    function startPaymentWatcher(orderId) {
+        if (paymentPollInterval) clearInterval(paymentPollInterval);
+        localStorage.setItem('pending_zap_order', orderId);
+        localStorage.setItem('pending_zap_time', Date.now());
+        verifyZapPayOrder(orderId);
+        paymentPollInterval = setInterval(async () => {
+            const started = Number(localStorage.getItem('pending_zap_time') || Date.now());
+            if (Date.now() - started > 120000) {
+                clearInterval(paymentPollInterval);
+                localStorage.removeItem('pending_zap_order');
+                localStorage.removeItem('pending_zap_time');
+                showToast('Payment verification timed out. Your order is still saved for admin review.', 'warning');
+                return;
+            }
+            await verifyZapPayOrder(orderId);
+        }, 2500);
+    }
+
+    window.executePurchase = async function() {
+        const checkout = window.currentCheckout || {};
+        const target = validatePurchaseTarget(document.getElementById('chk-uid-input')?.value);
+        if (!target) return showToast('Enter a valid UID / Map Code with minimum 5 characters.', 'warning');
+        const price = Number(checkout.finalPrice || 0);
+        if (!Number.isFinite(price) || price < 1 || price > 5000) return showToast('Invalid plan price.', 'error');
+        if (!window.ZAP_KEY) return showToast('Payment gateway is offline. Please contact support.', 'error');
+
+        const btn = document.getElementById('btn-confirm-pay');
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating Payment...`;
+        showLoader();
+
+        try {
+            await authReady;
+            const order = await zapPayCreateOrder(price, `NRZ STORE - ${checkout.panelName || 'Plan'}`);
+            const orderId = order.order_id;
+            if (!orderId || !order.payment_url) throw new Error('Invalid payment gateway response');
+
+            const purchaseData = {
+                panelId: checkout.panelId || '',
+                panelName: checkout.panelName || 'Panel',
+                plan: checkout.planKey || '',
+                label: checkout.label || 'Plan',
+                enteredUid: target,
+                targetId: target,
+                price,
+                originalPrice: Number(checkout.originalPrice || price),
+                status: 'pending_payment',
+                gateway: 'ZapPay',
+                gatewayOrderId: orderId,
+                couponId: window.appliedCoupon?.id || '',
+                date: new Date().toISOString()
+            };
+
+            await set(ref(db, `purchases/${orderId}`), purchaseData);
+            await set(ref(db, `gateway_payments/${orderId}`), {
+                type: 'purchase',
+                orderId,
+                targetId: target,
+                enteredUid: target,
+                panelId: purchaseData.panelId,
+                panelName: purchaseData.panelName,
+                plan: purchaseData.plan,
+                label: purchaseData.label,
+                amount: price,
+                originalAmount: purchaseData.originalPrice,
+                couponId: purchaseData.couponId,
+                status: 'pending',
+                gateway: 'ZapPay',
+                timestamp: serverTimestamp()
+            });
+
+            activePaymentWindow = window.open(order.payment_url, 'zappay_checkout', 'width=430,height=700,resizable=yes,scrollbars=yes');
+            if (!activePaymentWindow) {
+                window.location.href = order.payment_url;
+                return;
+            }
+
+            startPaymentWatcher(orderId);
+            closeModal('modal-checkout');
+            showToast(`Payment order ${orderId} created. Complete the UPI payment.`, 'success');
+        } catch (e) {
+            console.error('Purchase payment error:', e);
+            showToast('Gateway error: ' + e.message, 'error');
+        } finally {
             hideLoader();
             btn.disabled = false;
-            btn.innerHTML = `Confirm Pay`;
+            btn.innerHTML = 'Confirm Payment';
         }
     };
 
@@ -3294,48 +2733,10 @@
             </div>`;
     }
 
-    function fetchMyPlan(){
-        if(!db||!currentUser) return;
-        if(userData?.plan) renderMyPlan(userData.plan);
-        else get(ref(db,`users/${currentUser.uid}/plan`)).then(snap=>renderMyPlan(snap.exists()?snap.val():null));
-    }
+    function fetchMyPlan(){ return; }
 
     // --- INIT ---
-    // Initial load - hide loader after security check if user not logged in
-    setTimeout(() => {
-        if (!currentUser) {
-            hideLoader();
-            // Run security check on auth screen as well
-            if (!securityCompleted) {
-                performSecurityCheck().then(() => {
-                    // Security check done, show auth screen normally
-                });
-            }
-        }
-    }, 2000);
-
-    // Close dropdown on outside click
-    document.addEventListener('click', (e) => {
-        const menu = document.getElementById('dropdown-menu');
-        const toggle = document.getElementById('menu-toggle');
-        if (menu && menu.classList.contains('active') && !menu.contains(e.target) && !toggle.contains(e.target)) {
-            menu.classList.remove('active');
-        }
-    });
-
-    // Enter key support for login
-    document.getElementById('login-pass').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('btn-login').click();
-    });
-    document.getElementById('login-email').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('btn-login').click();
-    });
-    document.getElementById('signup-pass').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('btn-signup').click();
-    });
-    document.getElementById('signup-email').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('btn-signup').click();
-    });
+    setTimeout(() => hideLoader(), 2500);
 
     // Global safety net: a render/data error must never keep the full-screen loader visible.
     window.addEventListener('error', (event) => {
