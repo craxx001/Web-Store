@@ -1649,7 +1649,14 @@
     .amount-pill.active { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-color: transparent; color: #fff; box-shadow: 0 7px 22px rgba(79,140,255,.22); }
     @media (max-width: 480px) { .wallet-amount-pills { gap: 8px; } .amount-pill { min-width: 58px; padding: 9px 13px; } }
 </style>
-</head>
+<style id="no-stuck-loader">
+#loading-screen, #loader, .loading-screen, .page-loader {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+</style></head>
 <body>
 
 <!-- SECURITY OVERLAY -->
