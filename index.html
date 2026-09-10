@@ -572,6 +572,9 @@
     }
     .navbar .balance-pill {
         display: flex;
+         cursor: pointer;
+         font-family: inherit;
+         outline: none;
         align-items: center;
         gap: 8px;
         padding: 8px 18px;
@@ -783,26 +786,69 @@
         gap: 24px;
     }
     .panel-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        overflow: hidden;
-        transition: var(--transition);
+        position: relative;
+        isolation: isolate;
+        background: linear-gradient(145deg, rgba(24,27,37,.98), rgba(11,13,19,.99));
+        border: 1px solid rgba(108,126,168,.42);
+        border-radius: 28px;
+        overflow: visible;
+        transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
         display: flex;
         flex-direction: column;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.09),
+            inset 0 -1px 0 rgba(0,0,0,.7),
+            0 5px 0 rgba(6,8,13,.75),
+            0 14px 30px rgba(0,0,0,.24);
+    }
+    .panel-card::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 30px;
+        padding: 2px;
+        background: linear-gradient(145deg, rgba(111,135,190,.78), rgba(35,43,63,.2) 38%, rgba(255,179,0,.34) 72%, rgba(80,99,145,.55));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: -1;
+    }
+    .panel-card::after {
+        content: '';
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: -7px;
+        height: 12px;
+        border-radius: 0 0 22px 22px;
+        background: linear-gradient(180deg, rgba(38,45,62,.85), rgba(7,9,14,.95));
+        border: 1px solid rgba(88,103,139,.28);
+        border-top: 0;
+        transform: skewX(-1deg);
+        pointer-events: none;
+        z-index: -1;
     }
     .panel-card:hover {
-        border-color: var(--border-light);
-        transform: translateY(-6px);
-        box-shadow: var(--shadow-card), var(--shadow-glow);
+        border-color: rgba(130,151,204,.65);
+        transform: translateY(-4px);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.11),
+            0 7px 0 rgba(6,8,13,.72),
+            0 18px 36px rgba(0,0,0,.32),
+            0 0 28px rgba(82,112,190,.10);
+    }
+    .panel-card.plan-open {
+        z-index: 100;
     }
     .panel-card .video-wrap {
         position: relative;
         padding-bottom: 56.25%;
         background: var(--bg-input);
         overflow: hidden;
+        border-radius: 27px 27px 0 0;
     }
-    .panel-card .banner-wrap { width: 100%; aspect-ratio: 16 / 4.5; overflow: hidden; background: var(--bg-input); }
+    .panel-card .banner-wrap { width: 100%; aspect-ratio: 16 / 4.5; overflow: hidden; background: var(--bg-input); border-radius: 27px 27px 0 0; }
     .panel-card .banner-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     .panel-card .video-wrap iframe {
@@ -827,10 +873,10 @@
     /* Inline image emoji + percentage size-code support */
     .panel-card .panel-body .panel-name .ff-inline-img,
     .ff-inline-img {
-        width: 1.15em;
-        height: 1.15em;
+        width: 2.3em;
+        height: 2.3em;
         display: inline-block;
-        vertical-align: -0.18em;
+        vertical-align: middle;
         object-fit: contain;
         border: 0;
         margin: 0 .08em;
@@ -920,34 +966,158 @@
     }
     .btn-primary-solid:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+    /* PLAN SELECTOR - compact dropdown like the reference image */
     .panel-card .plans-container {
-        display:flex;
-        flex-direction:column;
-        gap:10px;
-        margin-top:4px;
+        position:relative;
         width:100%;
+        margin-top:4px;
+        z-index:20;
+    }
+    .panel-card .plan-selector {
+        position:relative;
+        width:100%;
+    }
+    .panel-card .plan-selector-trigger {
+        width:100%;
+        min-height:58px;
+        padding:13px 46px 13px 18px;
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:22px;
+        background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.16);
+        color:var(--text-primary);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        text-align:left;
+        cursor:pointer;
+        transition:var(--transition);
+    }
+    .panel-card .plan-selector-trigger:hover,
+    .panel-card .plan-selector.open .plan-selector-trigger {
+        border-color:rgba(79,140,255,.45);
+        background:linear-gradient(135deg,rgba(79,140,255,.12),rgba(139,92,246,.08));
+    }
+    .plan-selector-current {
+        min-width:0;
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        font-size:15px;
+        font-weight:600;
+        line-height:1.35;
+    }
+    .plan-selector-current .current-label {
+        min-width:0;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+    .plan-selector-current .current-price {
+        flex-shrink:0;
+        color:#fff;
+        font-size:16px;
+        font-weight:700;
+        white-space:nowrap;
+    }
+    .plan-selector-chevron {
+        position:absolute;
+        right:18px;
+        top:50%;
+        transform:translateY(-50%);
+        color:#91a0ba;
+        font-size:17px;
+        transition:transform .25s ease,color .25s ease;
+        pointer-events:none;
+    }
+    .plan-selector.open .plan-selector-chevron {
+        transform:translateY(-50%) rotate(180deg);
+        color:var(--accent-blue);
+    }
+    .panel-card .plans-dropdown {
+        position:absolute;
+        left:0;
+        right:0;
+        top:calc(100% + 9px);
+        padding:8px;
+        background:rgba(18,20,28,.98);
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:18px;
+        box-shadow:0 18px 45px rgba(0,0,0,.48);
+        backdrop-filter:blur(22px);
+        -webkit-backdrop-filter:blur(22px);
+        opacity:0;
+        visibility:hidden;
+        transform:translateY(-7px) scale(.985);
+        transform-origin:top center;
+        transition:opacity .2s ease,transform .2s ease,visibility .2s ease;
+        max-height:280px;
+        overflow-y:auto;
+        overflow-x:hidden;
+        overscroll-behavior:contain;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:thin;
+        z-index:200;
+    }
+    .panel-card .plans-dropdown.open {
+        opacity:1;
+        visibility:visible;
+        transform:translateY(0) scale(1);
     }
     .panel-card .plan-option {
         position:relative;
         width:100%;
-        min-height:48px;
-        padding:12px 38px 12px 14px;
-        border:1px solid rgba(255,255,255,.10); border-radius:var(--radius-sm);
-        background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
-        backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.16);
-        cursor:pointer; transition:var(--transition); color:var(--text-primary);
-        display:flex; align-items:center; justify-content:space-between; gap:14px;
-        text-align:initial; overflow:hidden;
+        min-height:50px;
+        padding:11px 38px 11px 14px;
+        margin:2px 0;
+        border:1px solid transparent;
+        border-radius:13px;
+        background:transparent;
+        color:var(--text-primary);
+        cursor:pointer;
+        transition:var(--transition);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        text-align:left;
     }
-    .panel-card .plan-option:hover { transform:translateY(-2px); border-color:rgba(79,140,255,.45); background:linear-gradient(135deg,rgba(79,140,255,.13),rgba(139,92,246,.08)); }
-    .panel-card .plan-option.active { border-color:var(--accent-blue); box-shadow:0 0 0 1px rgba(79,140,255,.25),0 10px 28px rgba(79,140,255,.12); }
-    .plan-option .plan-option-label { order:1; flex:1; display:block; font-size:13px; font-weight:500; line-height:1.35; word-break:break-word; text-align:left; }
-    .plan-option .plan-option-price { order:2; display:block; margin-top:0; font-size:16px; font-weight:500; color:#fff; white-space:nowrap; }
+    .panel-card .plan-option:hover {
+        background:rgba(79,140,255,.10);
+        border-color:rgba(79,140,255,.20);
+    }
+    .panel-card .plan-option.active {
+        background:rgba(79,140,255,.13);
+        border-color:rgba(79,140,255,.34);
+    }
+    .plan-option .plan-option-label {
+        flex:1;
+        min-width:0;
+        display:flex;
+        align-items:center;
+        min-height:24px;
+        font-size:13px;
+        font-weight:600;
+        line-height:1.35;
+        word-break:break-word;
+        text-align:left;
+    }
+    .plan-option .plan-option-price {
+        display:block;
+        font-size:15px;
+        font-weight:700;
+        color:#fff;
+        white-space:nowrap;
+    }
     .plan-option .plan-option-check {
         position:absolute;
-        top:8px;
-        right:8px;
+        top:50%;
+        right:12px;
         width:18px;
         height:18px;
         border-radius:50%;
@@ -956,15 +1126,24 @@
         justify-content:center;
         background:#ffb300;
         color:#fff;
-        font-size:10px;
+        font-size:9px;
         line-height:1;
         opacity:0;
-        transform:scale(.75);
+        transform:translateY(-50%) scale(.75);
         transition:var(--transition);
-        box-shadow:0 2px 8px rgba(24,119,242,.35);
+        box-shadow:0 2px 8px rgba(255,179,0,.35);
         z-index:2;
     }
-    .plan-option.active .plan-option-check { opacity:1; transform:scale(1); }
+    .plan-option.active .plan-option-check {
+        opacity:1;
+        transform:translateY(-50%) scale(1);
+    }
+    @media (max-width:600px) {
+        .panel-card .plan-selector-trigger { min-height:56px; border-radius:19px; padding-left:16px; }
+        .plan-selector-current { font-size:14px; }
+        .plan-selector-current .current-price { font-size:15px; }
+        .panel-card .plans-dropdown { max-height:270px; border-radius:16px; }
+    }
 
     /* ============================================
        WALLET - Modern Dashboard
@@ -984,8 +1163,17 @@
         align-items: center;
         gap: 16px;
         transition: var(--transition);
+        position: relative;
     }
     .wallet-stat:hover { border-color: var(--border-light); }
+
+    /* Balance expiry indicator */
+    .wallet-expiry { position:absolute; top:18px; right:20px; display:none; flex-direction:column; align-items:flex-end; gap:3px; text-align:right; line-height:1; z-index:2; }
+    .wallet-expiry.active { display:flex; }
+    .wallet-expiry-label { color:#ff4d4d; font-size:10px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; }
+    .wallet-expiry-time { display:flex; align-items:center; gap:5px; color:#ff5b5b; font-size:13px; font-weight:800; white-space:nowrap; }
+    .wallet-expiry-time i { font-size:11px; }
+    @media (max-width:600px) { .wallet-expiry{top:15px;right:16px;} .wallet-expiry-label{font-size:9px;} .wallet-expiry-time{font-size:12px;} }
     .wallet-stat .stat-icon {
         width: 48px;
         height: 48px;
@@ -1062,6 +1250,14 @@
     }
 
     .wallet-section { animation: fadeUp 0.3s ease; }
+
+    .manual-limit-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:-2px 0 18px; }
+    .manual-limit-text { color:#ffd54a; font-size:13px; font-weight:700; line-height:1.45; }
+    .manual-info-btn { width:30px; height:30px; flex:0 0 30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:rgba(255,213,74,.08); border:1px solid rgba(255,213,74,.35); color:#ffd54a; font-size:13px; cursor:pointer; transition:var(--transition); }
+    .manual-info-btn:hover { background:rgba(255,213,74,.16); border-color:#ffd54a; transform:translateY(-1px); }
+    .manual-info-box { margin:0 0 20px; padding:18px; border:1px solid rgba(255,213,74,.24); border-radius:var(--radius-sm); background:rgba(255,213,74,.045); color:var(--text-secondary); font-size:12px; line-height:1.7; }
+    .manual-info-box h4 { color:#ffd54a; font-size:14px; font-weight:800; margin-bottom:10px; }
+    .manual-info-box strong { color:var(--text-primary); }
 
     .premium-card {
         background: var(--bg-card);
@@ -1780,7 +1976,7 @@
             <span id="site-name" class="nrz-store-glitch" data-text="NRZ STORE"><span class="nrz-red">NRZ</span> <span class="nrz-white">STORE</span></span>
         </div>
         <div class="nav-actions">
-            <div class="balance-pill"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></div>
+            <button type="button" class="balance-pill" id="nav-wallet-pill" aria-label="Open Wallet" onclick="navigate('wallet')"><i class="fas fa-wallet"></i> ₹<span id="nav-balance">0.00</span></button>
             <button class="menu-btn" id="menu-toggle"><i class="fas fa-bars"></i></button>
         </div>
         <div class="dropdown" id="dropdown-menu">
@@ -1839,11 +2035,15 @@
 
         <!-- Stats -->
         <div class="wallet-stats">
-            <div class="wallet-stat">
+            <div class="wallet-stat" id="wallet-balance-card">
                 <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
                 <div class="stat-info">
                     <h4>Balance</h4>
                     <h2 id="wallet-stat-bal">₹0.00</h2>
+                </div>
+                <div class="wallet-expiry" id="wallet-expiry">
+                    <span class="wallet-expiry-label">Expires in</span>
+                    <span class="wallet-expiry-time"><i class="far fa-clock"></i><span id="wallet-expiry-time">30d</span></span>
                 </div>
             </div>
             <div class="wallet-stat">
@@ -1858,8 +2058,8 @@
         <!-- Tabs -->
         <div class="wallet-tabs">
             <div class="wallet-tab active" onclick="switchWalletTab('auto')" id="tab-btn-auto"><i class="fas fa-bolt"></i> Instant UPI</div>
-            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Binance</div>
             <div class="wallet-tab manual" onclick="switchWalletTab('manual')" id="tab-btn-manual"><i class="fas fa-qrcode"></i> Manual UPI</div>
+            <div class="wallet-tab crypto" onclick="switchWalletTab('crypto')" id="tab-btn-crypto"><i class="fab fa-bitcoin"></i> Binance</div>
             <div class="wallet-tab support" onclick="switchWalletTab('support')" id="tab-btn-support"><i class="fas fa-headset"></i> Support</div>
         </div>
 
@@ -1878,8 +2078,6 @@
                     <button type="button" class="amount-pill" data-amount="50">₹50</button>
                     <button type="button" class="amount-pill" data-amount="100">₹100</button>
                     <button type="button" class="amount-pill" data-amount="250">₹250</button>
-                    <button type="button" class="amount-pill" data-amount="500">₹500</button>
-                    <button type="button" class="amount-pill" data-amount="1000">₹1000</button>
                 </div>
                 <input id="add-amount" type="hidden" value="5"/>
                 <button class="btn-primary-solid" id="btn-submit-payment" style="width:100%;">
@@ -1948,7 +2146,17 @@
                     <i class="fas fa-qrcode" style="color:var(--accent-purple);"></i>
                     <h3>Manual UPI</h3>
                 </div>
-                <p class="card-desc">Scan the QR code or copy the UPI ID to pay<br><strong style="color:#ffd54a;">The amount will be credited to your wallet within 30 minutes</strong></p>
+                <p class="card-desc">Scan the QR code or copy the UPI ID to pay</p>
+                <div class="manual-limit-row">
+                    <strong class="manual-limit-text">200₹ and above amount is valid to pay</strong>
+                    <button type="button" class="manual-info-btn" aria-label="Transaction limits and policy notice" onclick="toggleManualLimitInfo()"><i class="fas fa-exclamation"></i></button>
+                </div>
+                <div id="manual-limit-info" class="manual-info-box hidden">
+                    <h4>Transaction Limits &amp; Policy Notice</h4>
+                    <div><strong>Valid Range:</strong> ₹200 – ₹5,000 per transaction via Manual UPI.</div>
+                    <div><strong>Notice:</strong> Any deposit below ₹200 or above ₹5,000 will be flagged as an invalid transaction.</div>
+                    <div><strong>Policy:</strong> Funds from non-compliant transactions will not be credited to your wallet, nor will they be eligible for a refund. Please ensure your payment falls within the allowed limits before proceeding.</div>
+                </div>
 
                 <div class="qr-display manual">
                     <img id="manual-qr-display" src="" alt="QR" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-qrcode\\' style=\\'font-size:48px;color:var(--text-muted);\\'></i>'"/>
@@ -2082,10 +2290,27 @@
         <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">Purchase Success!</h2>
         <p style="color:var(--text-secondary);font-size:14px;margin-bottom:16px;">Order placed.</p>
         <div class="key-display">
-            <p class="success-order-message">We have received your order, processing will be start shortly.</p>
+            <p class="success-order-message">⌛ Delivery starts in <span id="success-delivery-time">—</span>.</p>
         </div>
         <div class="action-row">
             <button class="btn btn-outline-modal" onclick="closeModal('modal-success')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- INSUFFICIENT BALANCE / ADD MONEY MODAL -->
+<div class="modal-overlay hidden" id="modal-insufficient-balance">
+    <div class="modal" style="text-align:center;max-width:420px;">
+        <div style="width:58px;height:58px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,77,77,.12);color:#ff4d4d;font-size:24px;"><i class="fas fa-wallet"></i></div>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:6px;">Insufficient Balance</h2>
+        <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;margin-bottom:18px;">Your wallet balance is not enough for this purchase. Add money to your wallet and try again.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;text-align:left;">
+            <div style="padding:12px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-input);"><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Available</div><strong id="insufficient-current" style="font-size:16px;">₹0.00</strong></div>
+            <div style="padding:12px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-input);"><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Required</div><strong id="insufficient-required" style="font-size:16px;color:var(--accent-gold);">₹0.00</strong></div>
+        </div>
+        <div class="modal-actions" style="justify-content:center;">
+            <button class="btn btn-outline-modal" onclick="closeModal('modal-insufficient-balance')">Cancel</button>
+            <button class="btn btn-primary-modal" onclick="goToAddMoney()"><i class="fas fa-plus"></i> Add Money</button>
         </div>
     </div>
 </div>
@@ -2139,6 +2364,9 @@
     // --- STATE ---
     let currentUser = null;
     let userData = { balance: 0, plan: null };
+    let lastObservedBalance = null;
+    let walletExpiryInterval = null;
+    let walletExpiryProcessing = false;
     window.ZAP_KEY = "";
     window.MANUAL_UPI = "";
     let securityCompleted = false;
@@ -2404,7 +2632,13 @@
             });
 
             if (result.committed) {
-                await runTransaction(ref(db, `users/${currentUser.uid}/balance`), (bal) => (Number(bal) || 0) + amount);
+                const expiryAt = Date.now() + (30 * 24 * 60 * 60 * 1000);
+                await runTransaction(ref(db, `users/${currentUser.uid}`), (user) => {
+                    if (!user) return user;
+                    user.balance = (Number(user.balance) || 0) + amount;
+                    user.walletExpiresAt = expiryAt;
+                    return user;
+                });
                 await update(ref(db, `gateway_payments/${orderId}`), {
                     status: "approved",
                     gateway_status: "success",
@@ -2584,6 +2818,11 @@
         });
     }
 
+    function toggleManualLimitInfo() {
+        const box = document.getElementById('manual-limit-info');
+        if (box) box.classList.toggle('hidden');
+    }
+
     // --- MANUAL DEPOSIT ---
     document.getElementById('btn-submit-manual').addEventListener('click', async function() {
         const amt = document.getElementById('manual-amount').value;
@@ -2591,7 +2830,10 @@
         const appName = document.getElementById('manual-app').value.trim();
         const screenshot = document.getElementById('manual-screenshot').value.trim();
         const btn = this;
-        if (!amt || amt <= 0) return showToast("Enter valid amount", "error");
+        const amountNum = parseFloat(amt);
+        if (!Number.isFinite(amountNum) || amountNum < 200 || amountNum > 5000) {
+            return showToast("Manual UPI amount must be between ₹200 and ₹5,000", "error");
+        }
         if (!utr || utr.length < 8) return showToast("Enter valid UTR", "error");
         if (!appName) return showToast("Enter payment app name", "error");
 
@@ -2892,9 +3134,67 @@
     document.getElementById('btn-logout').addEventListener('click', async function() {
         showLoader();
         try { await signOut(auth);
+            lastObservedBalance = null;
+            if (walletExpiryInterval) { clearInterval(walletExpiryInterval); walletExpiryInterval = null; }
             document.getElementById('dropdown-menu').classList.remove('active'); } catch (e) { console.error(e); }
         hideLoader();
     });
+
+    // --- WALLET MONEY EXPIRY (30 DAYS) ---
+    const WALLET_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000;
+    function formatWalletExpiry(ms) {
+        if (ms <= 0) return '0d';
+        const totalSeconds = Math.ceil(ms / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        if (days > 0) return `${days}d`;
+        if (hours > 0) return `${hours}h`;
+        if (minutes > 0) return `${minutes}m`;
+        return `${seconds}s`;
+    }
+    function updateWalletExpiryUI() {
+        const box=document.getElementById('wallet-expiry'), out=document.getElementById('wallet-expiry-time');
+        if (!box || !out) return;
+        const balance=Number(userData?.balance)||0, expiryAt=Number(userData?.walletExpiresAt)||0, remaining=expiryAt-Date.now();
+        if (balance >= 1 && remaining > 0) { box.classList.add('active'); out.textContent=formatWalletExpiry(remaining); }
+        else box.classList.remove('active');
+    }
+    async function expireWalletMoney() {
+        if (!currentUser || walletExpiryProcessing) return;
+        const balance=Number(userData?.balance)||0, expiryAt=Number(userData?.walletExpiresAt)||0;
+        if (balance < 1 || !expiryAt || expiryAt > Date.now()) return;
+        walletExpiryProcessing=true;
+        try {
+            const result=await runTransaction(ref(db, `users/${currentUser.uid}`), user => {
+                if (!user) return user;
+                const bal=Number(user.balance)||0, exp=Number(user.walletExpiresAt)||0;
+                if (bal >= 1 && exp > 0 && exp <= Date.now()) { user.balance=0; user.walletExpiresAt=null; return user; }
+                return undefined;
+            });
+            if (result.committed) {
+                const id='EXP'+Date.now();
+                await set(ref(db, `transactions/${currentUser.uid}/${id}`), {id, type:'wallet_expiry', amount:-balance, status:'success', desc:'Wallet balance expired after 30 days', date:new Date().toISOString()});
+                showToast('Your wallet balance has expired.', 'warning');
+            }
+        } catch(e) { console.error('Wallet expiry error:',e); }
+        finally { walletExpiryProcessing=false; }
+    }
+    function startWalletExpiryWatcher() {
+        if (walletExpiryInterval) clearInterval(walletExpiryInterval);
+        updateWalletExpiryUI();
+        walletExpiryInterval=setInterval(async()=>{
+            updateWalletExpiryUI();
+            const balance=Number(userData?.balance)||0, expiryAt=Number(userData?.walletExpiresAt)||0;
+            if (balance >= 1 && expiryAt > 0 && expiryAt <= Date.now()) await expireWalletMoney();
+        },1000);
+    }
+    async function restartWalletExpiry() {
+        if (!currentUser) return;
+        try { await update(ref(db, `users/${currentUser.uid}`), {walletExpiresAt:Date.now()+WALLET_EXPIRY_MS}); }
+        catch(e) { console.error('Wallet expiry restart error:',e); }
+    }
 
     // --- USER DATA ---
     function initUserData() {
@@ -2904,11 +3204,16 @@
                 userData = snap.val();
                 if (userData.status === "banned") { signOut(auth);
                     alert("Account banned."); return; }
-                const bal = parseFloat(userData.balance || 0).toFixed(2);
+                const numericBalance = Number(userData.balance) || 0;
+                const bal = numericBalance.toFixed(2);
                 document.getElementById('nav-balance').innerText = bal;
                 document.getElementById('prof-bal').innerText = `₹${bal}`;
                 document.getElementById('wallet-stat-bal').innerText = `₹${bal}`;
                 document.getElementById('prof-email').innerText = userData.email;
+                if (lastObservedBalance !== null && numericBalance > lastObservedBalance && numericBalance >= 1) restartWalletExpiry();
+                if (numericBalance >= 1 && !Number(userData.walletExpiresAt)) restartWalletExpiry();
+                lastObservedBalance = numericBalance;
+                updateWalletExpiryUI();
                 if (userData.createdAt) {
                     document.getElementById('prof-date').innerText = new Date(userData.createdAt).toLocaleDateString();
                 }
@@ -2918,6 +3223,7 @@
             }
             hideLoader();
         });
+        startWalletExpiryWatcher();
         onValue(ref(db, `transactions/${currentUser.uid}`), (snap) => {
             let totalDep = 0, todayDep = 0;
             const today = new Date().toLocaleDateString();
@@ -2938,8 +3244,8 @@
         });
     }
 
-    // --- NAVIGATION ---
-    window.navigate = (pageId) => {
+    // --- NAVIGATION + BROWSER BACK SUPPORT ---
+    window.navigate = (pageId, addHistory = true) => {
         document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
         const target = document.getElementById(`page-${pageId}`);
         if (target) target.classList.remove('hidden');
@@ -2947,19 +3253,99 @@
         if (dropdown) dropdown.classList.remove('active');
         if (pageId === 'plans') fetchMyPlan();
         if (pageId === 'wallet') switchWalletTab('auto');
+
+        // Create a browser-history entry so Android/browser Back returns
+        // to the previous page inside this SPA instead of closing the site.
+        if (addHistory) {
+            const current = history.state?.page;
+            if (current !== pageId) {
+                history.pushState({ page: pageId }, '', `#${pageId}`);
+            }
+        }
+
         window.scrollTo(0, 0);
     };
+
+    // Handle Android/browser Back button.
+    window.addEventListener('popstate', function(event) {
+        const pageId = event.state?.page || 'home';
+        window.navigate(pageId, false);
+    });
+
+    // Keep the initial page in browser history.
+    if (!history.state?.page) {
+        history.replaceState({ page: 'home' }, '', '#home');
+    }
 
     document.getElementById('menu-toggle').addEventListener('click', function() {
         document.getElementById('dropdown-menu').classList.toggle('active');
     });
 
+    window.togglePlanDropdown = function(panelId) {
+        const container = document.getElementById(`plans-${panelId}`);
+        if (!container) return;
+        const selector = container.querySelector('.plan-selector');
+        const dropdown = container.querySelector('.plans-dropdown');
+        const trigger = container.querySelector('.plan-selector-trigger');
+        if (!selector || !dropdown || !trigger) return;
+
+        const willOpen = !dropdown.classList.contains('open');
+
+        // Close every other panel's plan menu first.
+        document.querySelectorAll('.plans-dropdown.open').forEach(menu => {
+            menu.classList.remove('open');
+            const parent = menu.closest('.plan-selector');
+            parent?.classList.remove('open');
+            parent?.closest('.panel-card')?.classList.remove('plan-open');
+            parent?.querySelector('.plan-selector-trigger')?.setAttribute('aria-expanded', 'false');
+        });
+
+        dropdown.classList.toggle('open', willOpen);
+        selector.classList.toggle('open', willOpen);
+        container.closest('.panel-card')?.classList.toggle('plan-open', willOpen);
+        trigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    };
+
     window.selectPlanOption = function(el, panelId) {
         const container = document.getElementById(`plans-${panelId}`);
         if (!container) return;
-        container.querySelectorAll('.plan-option').forEach(btn => btn.classList.remove('active'));
+        const selector = container.querySelector('.plan-selector');
+        const dropdown = container.querySelector('.plans-dropdown');
+        const trigger = container.querySelector('.plan-selector-trigger');
+        if (!selector || !dropdown || !trigger) return;
+
+        container.querySelectorAll('.plan-option').forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-selected', 'false');
+        });
         el.classList.add('active');
+        el.setAttribute('aria-selected', 'true');
+
+        // Update the closed selector with the newly selected plan.
+        const label = el.querySelector('.plan-option-label')?.innerHTML || 'Plan';
+        const price = el.querySelector('.plan-option-price')?.innerText || '₹0';
+        const currentLabel = container.querySelector('.current-label');
+        const currentPrice = container.querySelector('.current-price');
+        if (currentLabel) currentLabel.innerHTML = label;
+        if (currentPrice) currentPrice.innerText = price;
+
+        dropdown.classList.remove('open');
+        selector.classList.remove('open');
+        container.closest('.panel-card')?.classList.remove('plan-open');
+        trigger.setAttribute('aria-expanded', 'false');
     };
+
+    // Close plan menus when tapping anywhere outside them.
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.plan-selector')) return;
+        document.querySelectorAll('.plans-dropdown.open').forEach(menu => {
+            menu.classList.remove('open');
+            const parent = menu.closest('.plan-selector');
+            parent?.classList.remove('open');
+            parent?.closest('.panel-card')?.classList.remove('plan-open');
+            parent?.querySelector('.plan-selector-trigger')?.setAttribute('aria-expanded', 'false');
+        });
+    });
 
     // --- FETCH PANELS ---
     function fetchPanels() {
@@ -2971,10 +3357,20 @@
                 container.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>No panels available.</p></div>`;
                 return;
             }
+            const panelEntries = [];
             snap.forEach(child => {
                 const p = child.val();
                 if (!p || p.status !== 'active') return;
-                const panelId = child.key;
+                panelEntries.push({ id: child.key, p, originalIndex: panelEntries.length });
+            });
+            panelEntries.sort((a, b) => {
+                const ao = Number(a.p?.order), bo = Number(b.p?.order);
+                const ah = Number.isFinite(ao), bh = Number.isFinite(bo);
+                if (ah && bh && ao !== bo) return ao - bo;
+                if (ah !== bh) return ah ? -1 : 1;
+                return a.originalIndex - b.originalIndex;
+            });
+            panelEntries.forEach(({id: panelId, p}) => {
                 const desc = p.description || '';
                 const category = String(p.category || '').trim();
                 const features = desc.split(/\n|-/).filter(f => f && f.trim().length > 0);
@@ -2991,18 +3387,30 @@
 
                 let plansHtml = '';
                 if (p.plans && Object.keys(p.plans).length > 0) {
-                    const sorted = Object.entries(p.plans).sort((a, b) => (a[1].price || 0) - (b[1].price || 0));
-                    plansHtml = `<div class="plans-container" id="plans-${panelId}" role="group" aria-label="Plans">`;
+                    const sorted = Object.entries(p.plans).sort((a, b) => { const ao = Number(a[1]?.order); const bo = Number(b[1]?.order); if (Number.isFinite(ao) && Number.isFinite(bo)) return ao - bo; return (a[1]?.price || 0) - (b[1]?.price || 0); });
+                    const firstPlan = sorted[0];
+                    const firstLabel = firstPlan[1].label || `${firstPlan[1].days || ''} Days`;
+                    plansHtml = `<div class="plans-container" id="plans-${panelId}" role="group" aria-label="Plans">
+                        <div class="plan-selector">
+                            <button type="button" class="plan-selector-trigger" aria-haspopup="listbox" aria-expanded="false" onclick="togglePlanDropdown('${panelId}')">
+                                <span class="plan-selector-current">
+                                    <span class="current-label">${ffColorText(firstLabel)}</span>
+                                    <span class="current-price">₹${firstPlan[1].price || 0}</span>
+                                </span>
+                                <i class="fas fa-chevron-down plan-selector-chevron" aria-hidden="true"></i>
+                            </button>
+                            <div class="plans-dropdown" role="listbox">
+                    `;
                     sorted.forEach(([key, data], index) => {
                         const label = data.label || `${data.days || ''} Days`;
                         const payload = JSON.stringify({ key, label, price: data.price || 0 }).replace(/"/g, '&quot;');
-                        plansHtml += `<button type="button" class="plan-option${index === 0 ? ' active' : ''}" data-plan='${payload}' onclick="selectPlanOption(this, '${panelId}')">
+                        plansHtml += `<button type="button" role="option" aria-selected="${index === 0 ? 'true' : 'false'}" class="plan-option${index === 0 ? ' active' : ''}" data-plan='${payload}' onclick="selectPlanOption(this, '${panelId}')">
                             <span class="plan-option-check" aria-hidden="true"><i class="fas fa-check"></i></span>
                             <span class="plan-option-label">${ffColorText(label)}</span>
                             <span class="plan-option-price">₹${data.price || 0}</span>
                         </button>`;
                     });
-                    plansHtml += `</div>`;
+                    plansHtml += `</div></div></div>`;
                 } else {
                     plansHtml = `<p style="color:var(--text-muted);font-size:13px;text-align:center;margin:8px 0;">Pricing unavailable</p>`;
                 }
@@ -3030,7 +3438,7 @@
                         </div>
                         ${(updateBtn || feedbackBtn) ? `<div class="btn-row">${updateBtn}${feedbackBtn}</div>` : ''}
                         ${plansHtml}
-                        <button class="btn-primary-solid" onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}')" style="width:100%;">
+                        <button class="btn-primary-solid" onclick="handlePurchaseClick('${panelId}','${panelName}','${p.link || ''}','${String(p.deliveryTime ?? '').replace(/'/g, "\\'")}')" style="width:100%;">
                             <i class="fas fa-shopping-cart"></i> Buy Now
                         </button>
                     </div>
@@ -3076,7 +3484,7 @@
     window.currentCheckout = {};
     window.appliedCoupon = null;
 
-    window.handlePurchaseClick = (panelId, panelName, link) => {
+    window.handlePurchaseClick = (panelId, panelName, link, deliveryTime) => {
         const container = document.getElementById(`plans-${panelId}`);
         const selected = container?.querySelector('.plan-option.active');
         if (!selected) return showToast('Please select a plan', 'warning');
@@ -3088,6 +3496,7 @@
         }
         window.currentCheckout = {
             panelId, panelName, link: link || '',
+            deliveryTime: deliveryTime || '',
             planKey: planData.key || '',
             label: planData.label || 'Plan',
             originalPrice: parseFloat(planData.price) || 0,
@@ -3155,6 +3564,16 @@
         }
     };
 
+    window.goToAddMoney = function() {
+        closeModal('modal-insufficient-balance');
+        navigate('wallet');
+        setTimeout(() => {
+            switchWalletTab('auto');
+            const gateway = document.getElementById('wallet-tab-auto');
+            if (gateway) gateway.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+    };
+
     window.executePurchase = async function() {
         const checkout = window.currentCheckout;
         const enteredUid = document.getElementById('chk-uid-input')?.value.trim() || '';
@@ -3162,14 +3581,22 @@
         const price = checkout.finalPrice || 0;
         const btn = document.getElementById('btn-confirm-pay');
         const balance = parseFloat(userData.balance || 0);
-        if (balance < price) return showToast(`Insufficient balance. Need ₹${price.toFixed(2)}`, "error");
+        if (balance < price) {
+            navigate('wallet');
+            document.getElementById('insufficient-current').innerText = `₹${balance.toFixed(2)}`;
+            document.getElementById('insufficient-required').innerText = `₹${price.toFixed(2)}`;
+            openModal('modal-insufficient-balance');
+            return;
+        }
         showLoader();
         btn.disabled = true;
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
         try {
-            const result = await runTransaction(ref(db, `users/${currentUser.uid}/balance`), (bal) => {
-                if (bal === null) return 0;
-                if (bal >= price) return bal - price;
+            const expiryAt = Date.now() + WALLET_EXPIRY_MS;
+            const result = await runTransaction(ref(db, `users/${currentUser.uid}`), (user) => {
+                if (!user) return user;
+                const bal = Number(user.balance) || 0;
+                if (bal >= price) { user.balance = bal - price; user.walletExpiresAt = expiryAt; return user; }
                 return undefined;
             });
             if (result.committed) {
@@ -3194,9 +3621,15 @@
                     await runTransaction(ref(db, `coupons/${window.appliedCoupon.id}/used`), (curr) => (curr || 0) + 1);
                 }
                 closeModal('modal-checkout');
+                const successDelivery = document.getElementById('success-delivery-time');
+                if (successDelivery) successDelivery.innerText = checkout.deliveryTime || '—';
                 openModal('modal-success');
             } else {
-                showToast("Transaction failed. Insufficient funds.", "error");
+                navigate('wallet');
+                const latestBalance = Number(userData?.balance) || 0;
+                document.getElementById('insufficient-current').innerText = `₹${latestBalance.toFixed(2)}`;
+                document.getElementById('insufficient-required').innerText = `₹${price.toFixed(2)}`;
+                openModal('modal-insufficient-balance');
             }
         } catch (e) { showToast("System error. Try again.", "error"); } finally {
             hideLoader();
@@ -3252,21 +3685,12 @@
 
         const renderText = (raw) => {
             if (!raw) return '';
-            return raw.split(/(\s+)/).map(part => {
-                if (!part) return '';
-                if (/^\s+$/.test(part)) return part;
-                const imgMatch = part.match(/^https?:\/\/[^\s<]+$/i);
-                if (imgMatch) {
-                    const cleanUrl = part.replace(/[),.;!?]+$/g, '');
-                    const trailing = part.slice(cleanUrl.length);
-                    const img = `<img class="ff-inline-img" src="${escapeHtml(cleanUrl)}" alt="" loading="lazy" onerror="this.style.display='none'">`;
-                    return (currentSize !== 100 ? `<span class="ff-size" style="font-size:${currentSize}%">${img}</span>` : img) + escapeHtml(trailing);
-                }
-                let out = escapeHtml(part);
-                if (currentSize !== 100) out = `<span class="ff-size" style="font-size:${currentSize}%">${out}</span>`;
-                if (currentColor) out = `<span class="ff-color" style="color:#${currentColor}">${out}</span>`;
-                return out;
-            }).join('');
+            // Keep normal spaces intact. The previous word-by-word rendering
+            // made spaces inside flex chips disappear.
+            let out = escapeHtml(raw);
+            if (currentSize !== 100) out = `<span class="ff-size" style="font-size:${currentSize}%">${out}</span>`;
+            if (currentColor) out = `<span class="ff-color" style="color:#${currentColor}">${out}</span>`;
+            return out;
         };
 
         while ((match = tokenRe.exec(text)) !== null) {
@@ -3290,7 +3714,7 @@
         if(!container) return;
         const active=String(plan?.status||'').toLowerCase()==='active';
         if(!plan || !active){
-            container.innerHTML='<div class="plans-empty"><i class="fas fa-calendar-xmark"></i><h3>No Active Plan</h3><p>Admin ne abhi aapke account par koi plan assign nahi kiya hai.</p></div>';
+            container.innerHTML='<div class="plans-empty"><i class="fas fa-calendar-xmark"></i><h3>No Active Plan</h3><p>Buy a weekly or monthly Likes plan.</p></div>';
             return;
         }
         const daysLeft=getPlanDaysLeft(plan);
