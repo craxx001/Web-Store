@@ -1255,9 +1255,15 @@
     .manual-limit-text { color:#ffd54a; font-size:13px; font-weight:700; line-height:1.45; }
     .manual-info-btn { width:30px; height:30px; flex:0 0 30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:rgba(255,213,74,.08); border:1px solid rgba(255,213,74,.35); color:#ffd54a; font-size:13px; cursor:pointer; transition:var(--transition); }
     .manual-info-btn:hover { background:rgba(255,213,74,.16); border-color:#ffd54a; transform:translateY(-1px); }
-    .manual-info-box { margin:0 0 20px; padding:18px; border:1px solid rgba(255,213,74,.24); border-radius:var(--radius-sm); background:rgba(255,213,74,.045); color:var(--text-secondary); font-size:12px; line-height:1.7; }
-    .manual-info-box h4 { color:#ffd54a; font-size:14px; font-weight:800; margin-bottom:10px; }
-    .manual-info-box strong { color:var(--text-primary); }
+    .manual-info-modal { position:fixed; inset:0; z-index:100000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .manual-info-modal.hidden { display:none !important; }
+    .manual-info-modal-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.78); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+    .manual-info-dialog { position:relative; width:min(100%,520px); max-height:calc(100dvh - 40px); overflow:auto; padding:24px 20px 20px; border:1px solid rgba(255,213,74,.28); border-radius:20px; background:linear-gradient(145deg,#1d180f,#0f0d09); color:var(--text-secondary); font-size:13px; line-height:1.7; box-shadow:0 24px 80px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); animation:manualInfoIn .22s ease-out; }
+    .manual-info-dialog h4 { color:#ffd54a; font-size:16px; font-weight:800; margin:0 38px 14px 0; }
+    .manual-info-dialog strong { color:var(--text-primary); }
+    .manual-info-close { position:absolute; top:12px; right:12px; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); color:var(--text-primary); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .manual-info-close:hover { background:rgba(255,255,255,.13); }
+    @keyframes manualInfoIn { from { opacity:0; transform:translateY(10px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 
     .premium-card {
         background: var(--bg-card);
@@ -2149,13 +2155,17 @@
                 <p class="card-desc">Scan the QR code or copy the UPI ID to pay</p>
                 <div class="manual-limit-row">
                     <strong class="manual-limit-text">200₹ and above amount is valid to pay</strong>
-                    <button type="button" class="manual-info-btn" aria-label="Transaction limits and policy notice" onclick="toggleManualLimitInfo()"><i class="fas fa-exclamation"></i></button>
+                    <button type="button" class="manual-info-btn" id="manual-info-trigger" aria-label="Transaction limits and policy notice" aria-expanded="false"><i class="fas fa-exclamation"></i></button>
                 </div>
-                <div id="manual-limit-info" class="manual-info-box hidden">
-                    <h4>Transaction Limits &amp; Policy Notice</h4>
-                    <div><strong>Valid Range:</strong> ₹200 – ₹5,000 per transaction via Manual UPI.</div>
-                    <div><strong>Notice:</strong> Any deposit below ₹200 or above ₹5,000 will be flagged as an invalid transaction.</div>
-                    <div><strong>Policy:</strong> Funds from non-compliant transactions will not be credited to your wallet, nor will they be eligible for a refund. Please ensure your payment falls within the allowed limits before proceeding.</div>
+                <div id="manual-limit-info" class="manual-info-modal hidden" role="dialog" aria-modal="true" aria-labelledby="manual-info-title">
+                    <div class="manual-info-modal-backdrop" data-close-manual-info></div>
+                    <div class="manual-info-dialog">
+                        <button type="button" class="manual-info-close" id="manual-info-close" aria-label="Close"><i class="fas fa-times"></i></button>
+                        <h4 id="manual-info-title">Transaction Limits &amp; Policy Notice</h4>
+                        <div><strong>Valid Range:</strong> ₹200 – ₹5,000 per transaction via Manual UPI.</div>
+                        <div><strong>Notice:</strong> Any deposit below ₹200 or above ₹5,000 will be flagged as an invalid transaction.</div>
+                        <div><strong>Policy:</strong> Funds from non-compliant transactions will not be credited to your wallet, nor will they be eligible for a refund. Please ensure your payment falls within the allowed limits before proceeding.</div>
+                    </div>
                 </div>
 
                 <div class="qr-display manual">
@@ -2818,10 +2828,25 @@
         });
     }
 
-    function toggleManualLimitInfo() {
+    function toggleManualLimitInfo(forceOpen) {
         const box = document.getElementById('manual-limit-info');
-        if (box) box.classList.toggle('hidden');
+        const trigger = document.getElementById('manual-info-trigger');
+        if (!box) return;
+        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : box.classList.contains('hidden');
+        box.classList.toggle('hidden', !shouldOpen);
+        if (trigger) trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        document.body.style.overflow = shouldOpen ? 'hidden' : '';
     }
+    document.addEventListener('click', function(e) {
+        const trigger = e.target.closest('#manual-info-trigger');
+        if (trigger) { e.preventDefault(); toggleManualLimitInfo(true); return; }
+        if (e.target.closest('#manual-info-close') || e.target.closest('[data-close-manual-info]')) {
+            e.preventDefault(); toggleManualLimitInfo(false);
+        }
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') toggleManualLimitInfo(false);
+    });
 
     // --- MANUAL DEPOSIT ---
     document.getElementById('btn-submit-manual').addEventListener('click', async function() {
@@ -2870,7 +2895,8 @@
         const screenshot = document.getElementById('crypto-screenshot').value.trim();
         const note = document.getElementById('crypto-note').value.trim();
         const btn = document.getElementById('btn-submit-crypto');
-        if (!amt || amt <= 0) return showToast("Enter valid amount", "error");
+        const amountNum = parseFloat(amt);
+        if (!Number.isFinite(amountNum) || amountNum < 200 || amountNum > 5000) return showToast("Manual UPI amount must be between ₹200 and ₹5,000", "error");
         if (!hash || hash.length < 10) return showToast("Enter valid transaction hash", "error");
         if (!screenshot) return showToast("Screenshot URL required", "error");
 
@@ -3143,13 +3169,15 @@
     // --- WALLET MONEY EXPIRY (30 DAYS) ---
     const WALLET_EXPIRY_MS = 30 * 24 * 60 * 60 * 1000;
     function formatWalletExpiry(ms) {
-        if (ms <= 0) return '0d';
+        if (!Number.isFinite(ms) || ms <= 0) return '0d';
+        // Use ceiling for the day count so a fresh 30-day balance starts at 30d
+        // and changes to 29d, 28d, 27d... exactly as each 24-hour period passes.
+        const days = Math.ceil(ms / 86400000);
+        if (days > 0) return `${days}d`;
         const totalSeconds = Math.ceil(ms / 1000);
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        if (days > 0) return `${days}d`;
         if (hours > 0) return `${hours}h`;
         if (minutes > 0) return `${minutes}m`;
         return `${seconds}s`;
@@ -3184,11 +3212,14 @@
     function startWalletExpiryWatcher() {
         if (walletExpiryInterval) clearInterval(walletExpiryInterval);
         updateWalletExpiryUI();
-        walletExpiryInterval=setInterval(async()=>{
+        const tick = async () => {
             updateWalletExpiryUI();
             const balance=Number(userData?.balance)||0, expiryAt=Number(userData?.walletExpiresAt)||0;
             if (balance >= 1 && expiryAt > 0 && expiryAt <= Date.now()) await expireWalletMoney();
-        },1000);
+        };
+        walletExpiryInterval=setInterval(tick,1000);
+        document.addEventListener('visibilitychange', tick);
+        window.addEventListener('focus', tick);
     }
     async function restartWalletExpiry() {
         if (!currentUser) return;
