@@ -76,17 +76,17 @@
 
   function renderHome() {
     const apis = getApis();
-    document.title = "BHUWAN APIS";
+    document.title = "NRZ APIS";
     document.querySelector("#root").innerHTML = `
       <div class="doodle-wrap">
         <div class="doodle-card">
-          <div class="tape-strip">★ BHUWAN APIS ★</div>
+          <div class="tape-strip">★ NRZRAVI APIS ★</div>
 
           <div class="doodle-nav">
             <a class="brand-link" href="index.html">
               <div class="brand-avatar">★</div>
               <div class="brand-info-text">
-                <div class="brand-title">BHUWAN APIS</div>
+                <div class="brand-title">NRZRAVI APIS</div>
                 <div class="brand-tagline">Test and manage APIs with raw power.</div>
               </div>
             </a>
@@ -114,7 +114,7 @@
               <a class="btn btn-primary btn-sm" href="#" onclick="return false">◉ GitHub</a>
               <a class="btn btn-danger btn-sm" href="#" onclick="return false">▶ YouTube</a>
             </div>
-            <div style="color:var(--ink-muted);font-weight:700">❤️ Developed with raw power — Bhuwan APIs</div>
+            <div style="color:var(--ink-muted);font-weight:700">Made with ❤️ by @nrzravi</div>
           </div>
         </div>
       </div>`;
