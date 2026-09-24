@@ -80,13 +80,13 @@
     document.querySelector("#root").innerHTML = `
       <div class="doodle-wrap">
         <div class="doodle-card">
-          <div class="tape-strip">★ NRZRAVI APIS ★</div>
+          <div class="tape-strip">★ nrzravi apis ★</div>
 
           <div class="doodle-nav">
             <a class="brand-link" href="index.html">
               <div class="brand-avatar">★</div>
               <div class="brand-info-text">
-                <div class="brand-title">NRZRAVI APIS</div>
+                <div class="brand-title">NRZ RAVI</div>
                 <div class="brand-tagline">Test and manage APIs with raw power.</div>
               </div>
             </a>
@@ -110,11 +110,11 @@
 
           <div class="doodle-footer">
             <div class="social-row">
-              <a class="btn btn-blue btn-sm" href="#" onclick="return false">☁ Discord</a>
-              <a class="btn btn-primary btn-sm" href="#" onclick="return false">◉ GitHub</a>
-              <a class="btn btn-danger btn-sm" href="#" onclick="return false">▶ YouTube</a>
+              <a class="btn btn-blue btn-sm" href="https://discord.gg/ChRQ8YCuEu" onclick="return false">☁ Discord</a>
+              <a class="btn btn-primary btn-sm" href="https://discord.gg/ChRQ8YCuEu" onclick="return false">◉ GitHub</a>
+              <a class="btn btn-danger btn-sm" href="https://discord.gg/ChRQ8YCuEu" onclick="return false">▶ YouTube</a>
             </div>
-            <div style="color:var(--ink-muted);font-weight:700">Made with ❤️ by @nrzravi</div>
+            <div style="color:var(--ink-muted);font-weight:700">Made with ❤️ by Ravi</div>
           </div>
         </div>
       </div>`;
