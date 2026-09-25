@@ -108,7 +108,7 @@
           <div class="doodle-footer">
             <div class="social-row">
               <a class="btn btn-blue btn-sm" href="https://discord.gg/ChRQ8YCuEu" onclick="return false">☁ Discord</a>
-              <a class="btn btn-primary btn-sm" href="https://discord.gg/ChRQ8YCuEu" onclick="return false">◉ GitHub</a>
+              <a class="btn btn-primary btn-sm" href="https://t.me/princezz_bot" onclick="return false">◉ Telegram</a>
               <a class="btn btn-danger btn-sm" href="https://discord.gg/ChRQ8YCuEu" onclick="return false">▶ YouTube</a>
             </div>
             <div style="color:var(--ink-muted);font-weight:700">Made with ❤️ by Ravi</div>
