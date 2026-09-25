@@ -12,15 +12,12 @@
       params:[{name:"uid",type:"text",required:true}]
     },
     {
-      id:"jwt",
-      name:"jwt api",
-      description:"No description provided.",
+      id:"like",
+      name:"free likes",
+      description:"Get 20 free likes daily",
       method:"GET",
-      url:"http://mp.mahi host.uk:9011/token?uid={uid}&password={password}".replace("mahi host","mahihost"),
-      params:[
-        {name:"uid",type:"text",required:true},
-        {name:"password",type:"password",required:true}
-      ]
+      url:"https://tg-20-likes-one.vercel.app/like?uid={uid}&key=CRAXX",
+      params:[{name:"uid",type:"text",required:true}]
     },
     {
       id:"level",
