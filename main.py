@@ -51,14 +51,14 @@ DEFAULT_CONFIG = {
     "autolike_packages": [
         {"id": "a1", "name": "❤️ NEW ➠ ₹10", "price": 10, "days": 1, "likes": 220, "active": True},
         {"id": "a2", "name": "❤️ BASIC ➠ ₹49", "price": 49, "days": 10, "likes": 2200, "active": True},
-        {"id": "a3", "name": "❤️ STANDARD ➠ ₹119", "price": 119, "days": 20, "likes": 4400, "active": True},
-        {"id": "a4", "name": "💎 PREMIUM ➠ ₹179", "price": 179, "days": 30, "likes": 6600, "active": True},
+        {"id": "a3", "name": "❤️ STANDARD ➠ ₹100", "price": 100, "days": 20, "likes": 4400, "active": True},
+        {"id": "a4", "name": "💎 PREMIUM ➠ ₹150", "price": 150, "days": 30, "likes": 6600, "active": True},
     ],
     "glory_packages": [
-        {"id": "g1", "name": "🤖 2 Bots ➛ 3k to 10k Glory ➛ ₹99", "price": 99, "days": 0, "bots": 2, "glory": "3k to 10k", "active": True},
-        {"id": "g2", "name": "🤖 4 Bots ➛ 5k to 30k Glory ➛ ₹199", "price": 199, "days": 0, "bots": 4, "glory": "5k to 30k", "active": True},
-        {"id": "g3", "name": "🤖 8 Bots ➛ 10k to 50k Glory ➛ ₹399", "price": 399, "days": 0, "bots": 8, "glory": "10k to 50k", "active": True},
-        {"id": "g4", "name": "🤖 20 Bots ➛ 30k to 100k Glory ➛ ₹999", "price": 999, "days": 0, "bots": 20, "glory": "30k to 100k", "active": True},
+        {"id": "g1", "name": "🤖 4 Bots ➛ 15k to 30k Glory ➛ ₹150", "price": 150, "days": 0, "bots": 4, "glory": "15k to 30k", "active": True},
+        {"id": "g2", "name": "🤖 8 Bots ➛ 30k to 50k Glory ➛ ₹280", "price": 280, "days": 0, "bots": 8, "glory": "30k to 50k", "active": True},
+        {"id": "g3", "name": "🤖 20 Bots ➛ 100k to 150k Glory ➛ ₹700", "price": 700, "days": 0, "bots": 20, "glory": "100k to 150k", "active": True},
+        {"id": "g4", "name": "🏆 Guild Level Max ➛ ₹3000", "price": 3000, "days": 0, "bots": 0, "glory": "Guild Level Max", "active": True},
     ],
     "purchase_packages": [],
 }
@@ -195,10 +195,10 @@ def package_kb(kind):
     for p in active_packages(kind):
         if kind == "auto":
             labels = {"a1": "❤️ NEW   ➠  ₹10", "a2": "❤️ BASIC  ➠  ₹49",
-                      "a3": "❤️ STANDARD ➠ ₹119", "a4": "💎 PREMIUM ➠ ₹179"}
+                      "a3": "❤️ STANDARD ➠ ₹100", "a4": "💎 PREMIUM ➠ ₹150"}
             label = labels.get(str(p.get("id")), f"❤️ {p.get('name', 'Package')}")
         elif kind == "glory":
-            label = f"🤖 {p.get('bots', 0)} Bots ➠ ₹{money(p.get('price', 0))}"
+            label = str(p.get("name", f"🤖 {p.get('bots', 0)} Bots ➠ ₹{money(p.get('price', 0))}"))
         else:
             label = str(p.get("name", "Package"))
         rows.append([InlineKeyboardButton(label, callback_data=f"pkg_{kind}_{p['id']}")])
@@ -213,8 +213,8 @@ def package_menu_text(kind):
             "<blockquote>"
             "<b>❤️ NEW</b> ➛\n1 Day ┊ 220 Likes ┊ ₹10\n\n"
             "❤️ <b>BASIC</b> ➛\n10 Days ┊ 2.2k Likes ┊ ₹49\n\n"
-            "❤️ <b>STANDARD</b> ➛\n20 Days ┊ 4.4k Likes ┊ ₹119\n\n"
-            "💎 <b>PREMIUM</b> ➛\n30 Days ┊ 6.6k Likes ┊ ₹179\n\n"
+            "❤️ <b>STANDARD</b> ➛\n20 Days ┊ 4.4k Likes ┊ ₹100\n\n"
+            "💎 <b>PREMIUM</b> ➛\n30 Days ┊ 6.6k Likes ┊ ₹150\n\n"
             "</blockquote>"
             "👇🏻 <b>Select Your Plan</b> 👇🏻"
         )
@@ -225,7 +225,10 @@ def package_menu_text(kind):
             "<blockquote>",
         ]
         for p in plans:
-            lines.append(f"🤖 <b>{int(p.get('bots', 0))} Bots</b> ➛ {escape(str(p.get('glory', 'Glory')))} Glory ➛ ₹{money(p.get('price', 0))}")
+            if p.get("glory") == "Guild Level Max":
+                lines.append(f"🏆 <b>Guild Level Max</b> ➛ ₹{money(p.get('price', 0))}")
+            else:
+                lines.append(f"🤖 <b>{int(p.get('bots', 0))} Bots</b> ➛ {escape(str(p.get('glory', 'Glory')))} Glory ➛ ₹{money(p.get('price', 0))}")
             lines.append("")
         lines.extend(["</blockquote>", "👇🏻 <b>Select Your plan 👇🏻</b>"])
         return "\n".join(lines)
@@ -330,7 +333,7 @@ def order_summary(s):
     if kind == "glory":
         return ("📦 <b>Order Details:</b>\n"
                 "<blockquote>"
-                f"<b>Plan</b>: 🤖 {int(p.get('bots', 0))} Guild Bots\n"
+                f"<b>Plan</b>: {escape(str(p.get('name', 'Guild Glory Package')))}\n"
                 f"<b>ID</b>: <code>{escape(s['uid'])}</code>\n"
                 f"<b>Region</b>: {region}\n"
                 f"<b>Glory</b>: {escape(str(p.get('glory', '')))}\n"
@@ -718,7 +721,7 @@ async def msg_handler(update, context):
         await send_my_orders_message(update.message, update.effective_user.id); return
     if text == "❓ Help & Support":
         await update.message.reply_text(db["config"].get("help_text", DEFAULT_CONFIG["help_text"]), reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("📹 How To Use (Video)", url=db["config"].get("how_to_pay_url"))] if db["config"].get("how_to_pay_url"),
+            ([InlineKeyboardButton("📹 How To Use (Video)", url=db["config"].get("how_to_pay_url"))] if db["config"].get("how_to_pay_url") else []),
             [InlineKeyboardButton("📞 Contact Admin", url=f"https://t.me/{str(db['config'].get('admin_contact','@nrzravi')).lstrip('@')}")],
         ]), parse_mode="HTML")
         return
@@ -829,11 +832,11 @@ async def admin_callback(q, context, data):
                 text = ("✅ <b>Order Confirmed!</b>\n\n"
                         f"<b>Order ID</b>: <code>{oid}</code>\n"
                         "<blockquote>"
-                        f"<b>📦Plan</b>: 🤖 {int(o.get('bots', 0))} Guild Bots\n"
+                        f"<b>📦Plan</b>: {escape(str(o.get('package_name', 'Guild Glory Package')))}\n"
                         f"<b>🆔Guild ID</b>: <code>{o['uid']}</code>\n"
                         f"<b>🌍Region</b>: {escape(REGION_NAMES.get(o['region'], o['region']))}\n"
                         f"<b>🏆Glory</b>: {escape(str(o.get('glory', '')))}</blockquote>\n\n"
-                        "⚡ <b>IMPORTANT SETTINGS: </b>Please set your Guild all Settings to Default and Auto approval = ON)
+                        "⚡ <b>IMPORTANT SETTINGS:</b> Please set all your Guild settings to Default and Auto Approval = ON.")
             await notify(context,o["user_id"],text,InlineKeyboardMarkup([[InlineKeyboardButton("📦 My Orders",callback_data="my_orders")]]))
             await edit_or_reply(q,"✅ Order approved. User has been notified.\n\n"+admin_order_text(o),admin_back_kb())
         return
