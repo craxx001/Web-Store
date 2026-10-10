@@ -214,26 +214,21 @@ def package_menu_text(kind):
             "<b>❤️ NEW</b> ➛\n1 Day ┊ 220 Likes ┊ ₹10\n\n"
             "❤️ <b>BASIC</b> ➛\n10 Days ┊ 2.2k Likes ┊ ₹49\n\n"
             "❤️ <b>STANDARD</b> ➛\n20 Days ┊ 4.4k Likes ┊ ₹100\n\n"
-            "💎 <b>PREMIUM</b> ➛\n30 Days ┊ 6.6k Likes ┊ ₹150\n\n"
-            "</blockquote>"
+            "💎 <b>PREMIUM</b> ➛\n30 Days ┊ 6.6k Likes ┊ ₹150"
+            "</blockquote>\n\n"
             "👇🏻 <b>Select Your Plan</b> 👇🏻"
         )
     if kind == "glory":
-        plans = active_packages("glory")
-        lines = [
-            "💳 <b>Payment: UPI (INR)</b>",
-            "<blockquote>",
-        ]
-        for p in plans:
-            if p.get("glory") == "Guild Level Max":
-                lines.append(f"🏆 <b>Guild Level Max</b> ➛ ₹{money(p.get('price', 0))}")
-            else:
-                lines.append(f"🤖 <b>{int(p.get('bots', 0))} Bots</b> ➛ {escape(str(p.get('glory', 'Glory')))} Glory ➛ ₹{money(p.get('price', 0))}")
-            lines.append("")
-        lines.extend(["</blockquote>", "👇🏻 <b>Select Your plan 👇🏻</b>"])
-        return "\n".join(lines)
-    return "👇🏻 <b>Select Your Plan 👇🏻</b>\n\n🛒 <b>Purchase ID</b>"
-
+        return (
+            "🏆 <b>Boost your Guild to the TOP!</b>\n\n"
+            "<blockquote>"
+            "🤖 <b>4 GUILD BOTS</b> ➛\n15k to 30k Glory ┊ ₹150\n\n"
+            "🤖 <b>8 GUILD BOTS</b> ➛\n30k to 60k Glory ┊ ₹280\n\n"
+            "🤖 <b>20 GUILD BOTS</b> ➛\n100k to 150k ┊ ₹700\n\n"
+            "🏆 <b>GUILD LEVEL MAX</b> ➛\nGuild Max Glory ┊ ₹3000"
+            "</blockquote>\n\n"
+            "👇🏻 <b>Select Your Plan</b> 👇🏻"
+        )
 
 def region_kb(kind):
     rows = []
