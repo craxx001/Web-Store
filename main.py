@@ -194,7 +194,7 @@ def package_kb(kind):
     rows = []
     for p in active_packages(kind):
         if kind == "auto":
-            labels = {"a1": "❤️ NEW ➠ ₹10", "a2": "❤️ BASIC ➠ ₹49",
+            labels = {"a1": "❤️ NEW   ➠  ₹10", "a2": "❤️ BASIC  ➠  ₹49",
                       "a3": "❤️ STANDARD ➠ ₹119", "a4": "💎 PREMIUM ➠ ₹179"}
             label = labels.get(str(p.get("id")), f"❤️ {p.get('name', 'Package')}")
         elif kind == "glory":
@@ -209,30 +209,27 @@ def package_kb(kind):
 def package_menu_text(kind):
     if kind == "auto":
         return (
-            "🎉 <b>October - November Specials 🎉</b>\n"
-            "━━━━━━━━━━━━━━━━━━\n"
+            "🎉 <b>Enjoy the October - November Special Discount on our Autolike Services 🎉</b>\n\n"
+            "<blockquote>"
             "<b>❤️ NEW</b> ➛\n1 Day ┊ 220 Likes ┊ ₹10\n\n"
             "❤️ <b>BASIC</b> ➛\n10 Days ┊ 2.2k Likes ┊ ₹49\n\n"
             "❤️ <b>STANDARD</b> ➛\n20 Days ┊ 4.4k Likes ┊ ₹119\n\n"
-            "💎 <b>PREMIUM</b> ➛\n30 Days ┊ 6.6k Likes ┊ ₹179\n"
-            "━━━━━━━━━━━━━━━━━━\n👇🏻 <b>Choose your plan:</b>"
+            "💎 <b>PREMIUM</b> ➛\n30 Days ┊ 6.6k Likes ┊ ₹179\n\n"
+            "</blockquote>"
+            "👇🏻 <b>Select Your Plan</b> 👇🏻"
         )
     if kind == "glory":
         plans = active_packages("glory")
         lines = [
-            "🌍 <b>Region: IND</b>",
-            "🏆 <b>Guild ID:</b> Enter after selecting a plan",
-            "",
             "💳 <b>Payment: UPI (INR)</b>",
-            "━━━━━━━━━━━━━━━━━━",
-            ""
+            "<blockquote>",
         ]
         for p in plans:
             lines.append(f"🤖 <b>{int(p.get('bots', 0))} Bots</b> ➛ {escape(str(p.get('glory', 'Glory')))} Glory ➛ ₹{money(p.get('price', 0))}")
             lines.append("")
-        lines.extend(["━━━━━━━━━━━━━━━━━━", "👇 <b>Select a plan:</b>"])
+        lines.extend(["</blockquote>", "👇🏻 <b>Select Your plan 👇🏻</b>"])
         return "\n".join(lines)
-    return "👇🏻 <b>Select a plan below:</b>\n\n🛒 <b>Purchase ID</b>"
+    return "👇🏻 <b>Select Your Plan 👇🏻</b>\n\n🛒 <b>Purchase ID</b>"
 
 
 def region_kb(kind):
@@ -310,7 +307,7 @@ def make_qr(amount):
 
 def payment_text(order):
     return (
-        f"<b>➤ Scan &amp; Pay ₹{money(order['amount'])} via any  UPI  app.</b>\n\n"
+        f"<b>➤ Scan &amp; Pay ₹{money(order['amount'])} via any UPI App!</b>\n\n"
         "<blockquote>"
         f"🇮🇳 <b>UPI ID</b>: <code>{escape(str(db['config'].get('upi_id')))}</code>\n"
         f"📦 <b>Order ID:</b> <code>{order['id']}</code>\n"
@@ -323,7 +320,7 @@ def order_summary(s):
     kind, p = s["kind"], s["package"]
     region = escape(REGION_NAMES.get(s.get("region", "IND"), s.get("region", "IND")))
     if kind == "auto":
-        return ("📦 <b>Order Details:</b>\n\n"
+        return ("📦 <b>Order Details:</b>\n"
                 "<blockquote>"
                 f"<b>Plan</b>: ❤️ {int(p.get('likes', 0))} likes\n"
                 f"<b>UID</b>: <code>{escape(s['uid'])}</code>\n"
@@ -331,14 +328,14 @@ def order_summary(s):
                 f"<b>Duration</b>: {int(p.get('days', 1))} days\n"
                 f"<b>Price</b>: ₹{money(p.get('price', 0))}</blockquote>\n\nConfirm to buy ?")
     if kind == "glory":
-        return ("📦 <b>Order Details:</b>\n\n"
+        return ("📦 <b>Order Details:</b>\n"
                 "<blockquote>"
                 f"<b>Plan</b>: 🤖 {int(p.get('bots', 0))} Guild Bots\n"
                 f"<b>ID</b>: <code>{escape(s['uid'])}</code>\n"
                 f"<b>Region</b>: {region}\n"
                 f"<b>Glory</b>: {escape(str(p.get('glory', '')))}\n"
                 f"<b>Price</b>: ₹{money(p.get('price', 0))}</blockquote>\n\nConfirm to buy ?")
-    return f"📦 <b>Order Details:</b>\n\n{escape(str(p.get('name', 'Package')))}\n💰 Price: ₹{money(p.get('price', 0))}\n\nConfirm to buy ?"
+    return f"📦 <b>Order Details:</b>\n{escape(str(p.get('name', 'Package')))}\n💰 Price: ₹{money(p.get('price', 0))}\n\nConfirm to buy ?"
 
 
 def admin_order_text(o):
@@ -721,7 +718,7 @@ async def msg_handler(update, context):
         await send_my_orders_message(update.message, update.effective_user.id); return
     if text == "❓ Help & Support":
         await update.message.reply_text(db["config"].get("help_text", DEFAULT_CONFIG["help_text"]), reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("📹 How To Use (Video)", url=db["config"].get("how_to_pay_url"))] if db["config"].get("how_to_pay_url") else [InlineKeyboardButton("📞 Contact Admin", url=f"https://t.me/{str(db['config'].get('admin_contact','@nrzravi')).lstrip('@')}")],
+            [InlineKeyboardButton("📹 How To Use (Video)", url=db["config"].get("how_to_pay_url"))] if db["config"].get("how_to_pay_url"),
             [InlineKeyboardButton("📞 Contact Admin", url=f"https://t.me/{str(db['config'].get('admin_contact','@nrzravi')).lstrip('@')}")],
         ]), parse_mode="HTML")
         return
@@ -818,23 +815,25 @@ async def admin_callback(q, context, data):
             await edit_or_reply(q,"✅ <b>Payment approved.</b>\n\nNow send the file for this Purchase ID order.",InlineKeyboardMarkup([[InlineKeyboardButton("📤 Send File",callback_data=f"sendfile_{oid}")],[InlineKeyboardButton("⬅️ Admin Panel",callback_data="admin_panel")]]))
         else:
             if o["kind"] == "auto":
-                text = ("✅ <b>Order Confirmed</b>\n\n"
+                text = ("✅ <b>Order Confirmed!</b>\n\n"
                         "<blockquote>"
                         f"<b>Order ID</b>: <code>{oid}</code>\n"
-                        f"<b>Plan</b>: ❤️ {int(o.get('likes', 0))} likes\n"
-                        f"<b>UID</b>: <code>{o['uid']}</code>\n"
-                        f"<b>Region</b>: {escape(REGION_NAMES.get(o['region'], o['region']))}\n"
-                        f"<b>Duration</b>: {o['days']} days\n"
-                        f"<b>Expiry</b>: {o['expiry_date']}\n"
+                        f"<b>📦Plan</b>: ❤️ {int(o.get('likes', 0))} likes\n"
+                        f"<b>🆔UID</b>: <code>{o['uid']}</code>\n"
+                        f"<b>🌍Region</b>: {escape(REGION_NAMES.get(o['region'], o['region']))}\n"
+                        f"<b>⏳Duration</b>: {o['days']} days\n"
+                        f"<b>📆Expiry</b>: {o['expiry_date']}\n"
                         "</blockquote>\n"
-                        f"<b>Daily run</b>: {db['config'].get('daily_run_time','4:00 AM IST')}")
+                        f"<b>🕓Daily run</b>: {db['config'].get('daily_run_time','4:00 AM IST')}")
             else:
-                text = ("✅ <b>Order Confirmed</b>\n\n"
+                text = ("✅ <b>Order Confirmed!</b>\n\n"
                         f"<b>Order ID</b>: <code>{oid}</code>\n"
-                        f"<b>Plan</b>: 🤖 {int(o.get('bots', 0))} Guild Bots\n"
-                        f"<b>ID</b>: <code>{o['uid']}</code>\n"
-                        f"<b>Region</b>: {escape(REGION_NAMES.get(o['region'], o['region']))}\n"
-                        f"<b>Glory</b>: {escape(str(o.get('glory', '')))}")
+                        "<blockquote>"
+                        f"<b>📦Plan</b>: 🤖 {int(o.get('bots', 0))} Guild Bots\n"
+                        f"<b>🆔Guild ID</b>: <code>{o['uid']}</code>\n"
+                        f"<b>🌍Region</b>: {escape(REGION_NAMES.get(o['region'], o['region']))}\n"
+                        f"<b>🏆Glory</b>: {escape(str(o.get('glory', '')))}</blockquote>\n\n"
+                        "⚡ <b>IMPORTANT SETTINGS: </b>Please set your Guild all Settings to Default and Auto approval = ON)
             await notify(context,o["user_id"],text,InlineKeyboardMarkup([[InlineKeyboardButton("📦 My Orders",callback_data="my_orders")]]))
             await edit_or_reply(q,"✅ Order approved. User has been notified.\n\n"+admin_order_text(o),admin_back_kb())
         return
